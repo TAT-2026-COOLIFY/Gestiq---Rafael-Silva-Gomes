@@ -121,7 +121,7 @@ class Communication(models.Model):
         AFTER_MEETING = "MEETING", "Após cada reunião"
         AS_NEEDED = "NEEDED", "Conforme Necessário"
 
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
     description = models.TextField()
     objective = models.TextField()
@@ -169,19 +169,15 @@ class Risks(models.Model):
         ANDAMENTO = "ANDAMENTO", "Em Andamento"
         CONCLUIDO = "CONCLUIDO", "Concluído"
 
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
     description = models.TextField()
     category = models.CharField(max_length=3, choices=CategoryRisk.choices)
-    cost = models.DecimalField(max_digits=3, decimal_places=2, choices=Score.choices)
-    timeline = models.DecimalField(
-        max_digits=3, decimal_places=2, choices=Score.choices
-    )
-    scope = models.DecimalField(max_digits=3, decimal_places=2, choices=Score.choices)
-    quality = models.DecimalField(max_digits=3, decimal_places=2, choices=Score.choices)
-    probability = models.DecimalField(
-        max_digits=3, decimal_places=2, choices=Score.choices
-    )
+    cost = models.CharField(max_length=4, choices=Score.choices)
+    timeline = models.CharField(max_length=4, choices=Score.choices)
+    scope = models.CharField(max_length=4, choices=Score.choices)
+    quality = models.CharField(max_length=4, choices=Score.choices)
+    probability = models.CharField(max_length=4, choices=Score.choices)
     score = models.DecimalField(max_digits=5, decimal_places=3, blank=True, null=True)
     action_plan = models.TextField()
     action = models.CharField(
@@ -201,7 +197,7 @@ class Risks(models.Model):
         ]
 
         max_impact = max(impact)
-        self.score = max_impact * self.probability
+        self.score = max_impact * Decimal(self.probability)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -209,7 +205,7 @@ class Risks(models.Model):
 
 
 class Milestones(models.Model):
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     task = models.CharField(max_length=100)
     start_date = models.DateField()

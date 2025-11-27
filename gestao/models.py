@@ -13,6 +13,20 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+class Area(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Project(models.Model):
     class TypeProject(models.TextChoices):
         CORPORATIVO = "CORP", ("Corporativo")
@@ -24,7 +38,7 @@ class Project(models.Model):
         CONCLUIDO = "CONC", "Concluído"
         CANCELADO = "CANC", "Cancelado"
 
-    crate_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     pmo = models.ForeignKey(User, on_delete=models.PROTECT, related_name="project_pmo")
     name = models.CharField(max_length=250)
     objective = models.TextField()
@@ -45,7 +59,7 @@ class Project(models.Model):
         db_index=True,
     )
     project_status = models.CharField(
-        max_length=5,
+        max_length=10,
         choices=StatusProject.choices,
         default=StatusProject.PLANEJAMENTO,
         db_index=True,
@@ -61,20 +75,6 @@ class Project(models.Model):
         return self.name
 
 
-class Area(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
 class ProjectMembers(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
@@ -85,14 +85,14 @@ class ProjectMembers(models.Model):
 
 
 class Canvas(models.Model):
-    create_date = models.DateTimeField()
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
+    create_date = models.DateTimeField(auto_now_add=True)
+    project = models.OneToOneField("Project", on_delete=models.CASCADE)
     benefits = models.TextField()
     product = models.TextField()
     requirements = models.TextField()
     stakeholders = models.TextField()
     team = models.TextField()
-    systems = models.TextChoices()
+    systems = models.TextField()
     assumptions = models.TextField()
     deliverables = models.TextField()
     constraints = models.TextField()
@@ -104,7 +104,7 @@ class Canvas(models.Model):
         return f"Canvas: {self.project.name}"
 
 
-class Comunication(models.Model):
+class Communication(models.Model):
     class Channel(models.TextChoices):
         EMAIL = "EMAIL", "E-mail"
         TEAMS = "TEAMS", "Teams"
@@ -182,6 +182,7 @@ class Risks(models.Model):
     probability = models.DecimalField(
         max_digits=3, decimal_places=2, choices=Score.choices
     )
+    score = models.DecimalField(max_digits=5, decimal_places=3, blank=True, null=True)
     action_plan = models.TextField()
     action = models.CharField(
         max_length=10, choices=ActionRisk.choices, default=ActionRisk.MITIGAR
@@ -192,7 +193,12 @@ class Risks(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        impact = [self.cost, self.timeline, self.scope, self.quality]
+        impact = [
+            Decimal(self.cost),
+            Decimal(self.timeline),
+            Decimal(self.scope),
+            Decimal(self.quality),
+        ]
 
         max_impact = max(impact)
         self.score = max_impact * self.probability
@@ -208,8 +214,8 @@ class Milestones(models.Model):
     task = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
-    taks_percentage_plan = models.DecimalField(max_digits=5, decimal_places=2)
-    taks_percentage_real = models.DecimalField(max_digits=5, decimal_places=2)
+    task_percentage_plan = models.DecimalField(max_digits=5, decimal_places=2)
+    task_percentage_real = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         return f"Marco {self.task} - Projeto {self.project.name}"

@@ -68,7 +68,7 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     percentage_plan = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     percentage_real = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    cancel_justification = models.TextField()
+    cancel_justification = models.TextField(blank=True)
     members = models.ManyToManyField(User, through="ProjectMembers")
 
     def __str__(self):
@@ -178,7 +178,7 @@ class Risks(models.Model):
     scope = models.CharField(max_length=4, choices=Score.choices)
     quality = models.CharField(max_length=4, choices=Score.choices)
     probability = models.CharField(max_length=4, choices=Score.choices)
-    score = models.DecimalField(max_digits=5, decimal_places=3, blank=True, null=True)
+    score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     action_plan = models.TextField()
     action = models.CharField(
         max_length=10, choices=ActionRisk.choices, default=ActionRisk.MITIGAR

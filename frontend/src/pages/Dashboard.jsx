@@ -1,33 +1,33 @@
+import { useState, useEffect, use } from "react";
+import api from "../services/api";
 import ProjectCard from "../components/ProjectCard";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const projetosFalsos = [
-    {
-      id: 1,
-      name: "Implantação SAP",
-      project_type: "CORP",
-      project_status: "ATIVO",
-      leader_username: "Rafael",
-      percentage_real: 65,
-    },
-    {
-      id: 2,
-      name: "Novo Site Institucional",
-      project_type: "DEP",
-      project_status: "PLANEJAMENTO",
-      leader_username: "Ana",
-      percentage_real: 10,
-    },
-    {
-      id: 3,
-      name: "Migração de Servidores",
-      project_type: "CORP",
-      project_status: "CONCLUIDO",
-      leader_username: "Carlos",
-      percentage_real: 100,
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("projects/")
+      .then((response) => {
+        console.log("Chegou a pizza!", response.data);
+        setProjects(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+        alert(
+          "Erro ao conectar ao servidor. Por favor, tente novamente mais tarde."
+        );
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Carregando projetos...</div>;
+  }
 
   return (
     <div className="dashboard-container">
@@ -37,9 +37,11 @@ function Dashboard() {
       </div>
 
       <div className="projects-grid">
-        {projetosFalsos.map((projeto) => (
-          <ProjectCard key={projeto.id} project={projeto} />
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
         ))}
+
+        {projects.length === 0 && <p>Nenhum projeto encontrado.</p>}
       </div>
     </div>
   );

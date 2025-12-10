@@ -1,11 +1,11 @@
 from rest_framework import viewsets
-from .models import Project, ProjectMembers
-from .serializers import ProjectSerializer, ProjectMemberSerializer
+from .models import Projects, ProjectMembers
+from .serializers import ProjectsSerializer, ProjectMembersSerializer
 
-class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all().order_by('-create_date')
-    serializer_class = ProjectSerializer
+class ProjectsViewSet(viewsets.ModelViewSet):
+    queryset = Projects.objects.all().order_by('-create_date')
+    serializer_class = ProjectsSerializer
     
-class ProjectMemberViewSet(viewsets.ModelViewSet):
+class ProjectMembersViewSet(viewsets.ModelViewSet):
     queryset = ProjectMembers.objects.all()
-    serializer_class = ProjectMemberSerializer
+    serializer_class = ProjectMembersSerializer

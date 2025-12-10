@@ -13,6 +13,11 @@
   padding: 20px;
 }
 
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+}
+
 .logo {
   font-size: 24px;
   font-weight: bold;

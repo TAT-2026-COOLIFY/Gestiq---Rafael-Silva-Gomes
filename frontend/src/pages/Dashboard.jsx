@@ -1,4 +1,5 @@
 import { useState, useEffect, use } from "react";
+import { Link } from 'react-router-dom'
 import api from "../services/api";
 import ProjectCard from "../components/ProjectCard";
 import "./Dashboard.css";
@@ -12,7 +13,6 @@ function Dashboard() {
     api
       .get("projects/")
       .then((response) => {
-        console.log("Chegou a pizza!", response.data);
         setProjects(response.data);
         setLoading(false);
       })
@@ -33,7 +33,9 @@ function Dashboard() {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>Meus Projetos</h1>
-        <button className="new-btn">+ Novo Projeto</button>
+        <Link to="/projeto/novo" className="new-btn">
+          + Novo Projeto
+        </Link>
       </div>
 
       <div className="projects-grid">

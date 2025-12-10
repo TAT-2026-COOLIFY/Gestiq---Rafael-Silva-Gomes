@@ -1,12 +1,12 @@
 from django.contrib import admin
 from .models import (
-    UserProfile,
-    Area,
-    Category,
-    Project,
+    UsersProfile,
+    Areas,
+    Categories,
+    Projects,
     ProjectMembers,
     Canvas,
-    Communication,
+    Communications,
     Risks,
     Milestones,
 )
@@ -32,26 +32,28 @@ class ProjectMembersInline(admin.TabularInline):
 # -------------------------------------------------------------------------
 
 
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
+@admin.register(UsersProfile)
+class UsersProfileAdmin(admin.ModelAdmin):
+
     list_display = ("user", "job_title", "department")
     search_fields = ("user__username", "job_title", "department")
 
 
-@admin.register(Area)
-class AreaAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+@admin.register(Areas)
+class AreasAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name",)
+@admin.register(Categories)
+class CategoriesAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
 
 
-@admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
+@admin.register(Projects)
+class ProjectsAdmin(admin.ModelAdmin):
     # Colunas que aparecem na lista
     list_display = (
+        "id",
         "name",
         "project_type",
         "project_status",
@@ -76,9 +78,10 @@ class ProjectAdmin(admin.ModelAdmin):
     list_per_page = 20
 
 
-@admin.register(Communication)
-class CommunicationAdmin(admin.ModelAdmin):
+@admin.register(Communications)
+class CommunicationsAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "short_description",
         "project",
         "channel",
@@ -102,6 +105,7 @@ class CommunicationAdmin(admin.ModelAdmin):
 @admin.register(Risks)
 class RisksAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "description",
         "project",
         "category",
@@ -118,6 +122,13 @@ class RisksAdmin(admin.ModelAdmin):
 
 @admin.register(Milestones)
 class MilestonesAdmin(admin.ModelAdmin):
-    list_display = ("task", "project", "start_date", "end_date", "task_percentage_real")
+    list_display = (
+        "id",
+        "task",
+        "project",
+        "start_date",
+        "end_date",
+        "task_percentage_real",
+    )
     list_filter = ("project",)
     search_fields = ("task", "project__name")

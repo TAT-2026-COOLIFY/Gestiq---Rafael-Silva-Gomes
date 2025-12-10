@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import Layout from "./components/Layout";
+import ProjectForm from "./pages/ProjectForm";
 import "./App.css";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
 
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/projeto/novo" element={<ProjectForm />} />
           <Route path="/projeto/:id" element={<ProjectDetails />} />
         </Route>
       </Routes>

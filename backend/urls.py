@@ -23,8 +23,8 @@ from rest_framework import routers
 from gestao import views
 
 router = routers.DefaultRouter()
-router.register(r'projects', views.ProjectViewSet)
-router.register(r'project-members', views.ProjectMemberViewSet)
+router.register(r'projects', views.ProjectsViewSet)
+router.register(r'project-members', views.ProjectMembersViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

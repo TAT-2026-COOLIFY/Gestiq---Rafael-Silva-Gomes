@@ -11,9 +11,6 @@ function Layout() {
           <Link to="/" className="menu-item">
             📊 Dashboard
           </Link>
-          <Link to="/projeto/1" className="menu-item">
-            📁 Projeto Exemplo
-          </Link>
           <Link to="/login" className="menu-item">
             🚪 Sair (Ir p/ Login)
           </Link>

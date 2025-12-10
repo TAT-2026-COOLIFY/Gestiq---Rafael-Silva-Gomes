@@ -1,20 +1,20 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Project, ProjectMembers
+from .models import Projects, ProjectMembers
 
-class UserSerializer(serializers.ModelSerializer):
+class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
         
-class ProjectMemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+class ProjectMembersSerializer(serializers.ModelSerializer):
+    user = UsersSerializer(read_only=True)
     
     class Meta:
         model = ProjectMembers
         fields = ['id', 'user', 'function']
         
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectsSerializer(serializers.ModelSerializer):
     pmo_username = serializers.CharField(source='pmo.username', read_only=True)
     leader_username = serializers.CharField(source='leader.username', read_only=True)
     
@@ -22,7 +22,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.name', read_only=True)
     
     class Meta:
-        model = Project
+        model = Projects
         fields = [
             'id', 
             'name', 

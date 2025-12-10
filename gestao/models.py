@@ -3,31 +3,43 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class UserProfile(models.Model):
+class UsersProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     job_title = models.CharField(max_length=100)
     department = models.CharField(max_length=100)
     photo = models.ImageField(upload_to="pictures/%Y/%m/", null=True, blank=True)
 
+    class Meta:
+        verbose_name = "User Profile"
+        verbose_name_plural = "Users Profile"
+
     def __str__(self):
         return self.user.username
 
 
-class Area(models.Model):
+class Areas(models.Model):
     name = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name = "Area"
+        verbose_name_plural = "Areas"
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
+class Categories(models.Model):
     name = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name
 
 
-class Project(models.Model):
+class Projects(models.Model):
     class TypeProject(models.TextChoices):
         CORPORATIVO = "CORP", ("Corporativo")
         DEPARTAMENTAL = "DEP", ("Departamental")
@@ -45,9 +57,9 @@ class Project(models.Model):
     justification = models.TextField()
     scope = models.TextField()
     results = models.TextField()
-    area = models.ForeignKey("Area", on_delete=models.PROTECT, related_name="projects")
+    area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects")
     category = models.ForeignKey(
-        "Category", on_delete=models.PROTECT, related_name="projects"
+        Categories, on_delete=models.PROTECT, related_name="projects"
     )
     leader = models.ForeignKey(
         User, on_delete=models.PROTECT, related_name="project_leader"
@@ -77,7 +89,7 @@ class Project(models.Model):
 
 class ProjectMembers(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     function = models.CharField(max_length=100)
 
     def __str__(self):
@@ -86,7 +98,7 @@ class ProjectMembers(models.Model):
 
 class Canvas(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
-    project = models.OneToOneField("Project", on_delete=models.CASCADE)
+    project = models.OneToOneField(Projects, on_delete=models.CASCADE)
     benefits = models.TextField()
     product = models.TextField()
     requirements = models.TextField()
@@ -104,7 +116,7 @@ class Canvas(models.Model):
         return f"Canvas: {self.project.name}"
 
 
-class Communication(models.Model):
+class Communications(models.Model):
     class Channel(models.TextChoices):
         EMAIL = "EMAIL", "E-mail"
         TEAMS = "TEAMS", "Teams"
@@ -122,7 +134,7 @@ class Communication(models.Model):
         AS_NEEDED = "NEEDED", "Conforme Necessário"
 
     create_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     description = models.TextField()
     objective = models.TextField()
     sender = models.TextField()
@@ -170,7 +182,7 @@ class Risks(models.Model):
         CONCLUIDO = "CONCLUIDO", "Concluído"
 
     create_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     description = models.TextField()
     category = models.CharField(max_length=3, choices=CategoryRisk.choices)
     cost = models.CharField(max_length=4, choices=Score.choices)
@@ -200,18 +212,26 @@ class Risks(models.Model):
         self.score = max_impact * Decimal(self.probability)
         super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = "Risk"
+        verbose_name_plural = "Risks"
+
     def __str__(self):
         return f"{self.description} (Score: {self.score})"
 
 
 class Milestones(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
     task = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
     task_percentage_plan = models.DecimalField(max_digits=5, decimal_places=2)
     task_percentage_real = models.DecimalField(max_digits=5, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Milestone"
+        verbose_name_plural = "Milestones"
 
     def __str__(self):
         return f"Marco {self.task} - Projeto {self.project.name}"

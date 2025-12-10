@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import api from '../services/api'
 import './ProjectForm.css'
@@ -6,16 +6,43 @@ import './ProjectForm.css'
 function ProjectForm() {
     const navigate = useNavigate()
 
+    const [users, setUsers] = useState([]);
+    const [areas, setAreas] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      Promise.all([
+        api.get('users/'),
+        api.get('areas/'),
+        api.get('categories/')
+      ])
+      .then(([usersResponse, areasResponse, categoriesResponse]) => {
+        setUsers(usersResponse.data)
+        setAreas(areasResponse.data)
+        setCategories(categoriesResponse.data)
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error("Erro ao encontrar dados: ", error);
+        alert(
+          "Erro ao conectar ao servidor. Por favor, tente novamente mais tarde."
+        );
+        setLoading(false);
+      })
+    }, []);
+
     const [formData, setFormData] = useState({
         name: '',
         project_type: 'CORP',
         project_status: 'PLAN',
         start_date: '',
         end_date: '',
-        pmo: 1,
-        leader: 1,
-        area: 1,
-        category: 3
+        pmo: '',
+        leader: '',
+        area: '',
+        category: ''
     })
 
     const handleChange = (e) => {
@@ -26,7 +53,13 @@ function ProjectForm() {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        api.post('projects/', formData)
+        const dadosParaEnviar = {
+          ...formData,
+          start_date: formData.start_date || null,
+          end_date: formData.end_date || null
+        }
+
+        api.post('projects/', dadosParaEnviar)
         .then(() => {
             alert("Projeto criado com sucesso!")
             navigate('/')
@@ -35,6 +68,10 @@ function ProjectForm() {
             console.error("Erro ao salvar: ", error)
             alert("Erro ao criar projeto. Veja o console (F12) para detalhes.")
         })
+    }
+
+    if (loading) {
+      return <div>Carregando dados...</div>;
     }
 
     return (
@@ -57,6 +94,62 @@ function ProjectForm() {
             required 
             placeholder="Ex: Implantação de Wi-Fi"
           />
+        </div>
+
+        <div className="form-row">
+          {/* PMO */}
+          <div className="form-group">
+            <label>PMO</label>
+            <select name="pmo" value={formData.pmo} onChange={handleChange} required>
+              <option value="">Convidar...</option>
+              {users.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Leader */}
+          <div className="form-group">
+            <label>Líder</label>
+            <select name="leader" value={formData.leader} onChange={handleChange} required>
+              <option value="">Convidar...</option>
+              {users.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.username}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="form-row">
+          {/* Area */}
+          <div className="form-group">
+            <label>Área</label>
+            <select name="area" value={formData.area} onChange={handleChange} required>
+              <option value="">Selecione...</option>
+              {areas.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Categoria */}
+          <div className="form-group">
+            <label>Categoria</label>
+            <select name="category" value={formData.category} onChange={handleChange} required>
+              <option value="">Selecione...</option>
+              {categories.map(item => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="form-row">

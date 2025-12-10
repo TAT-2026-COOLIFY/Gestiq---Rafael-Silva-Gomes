@@ -23,12 +23,15 @@ from rest_framework import routers
 from gestao import views
 
 router = routers.DefaultRouter()
-router.register(r'projects', views.ProjectsViewSet)
-router.register(r'project-members', views.ProjectMembersViewSet)
+router.register(r"users", views.UsersViewSet)
+router.register(r"areas", views.AreasViewSet)
+router.register(r"categories", views.CategoriesViewSet)
+router.register(r"projects", views.ProjectsViewSet)
+router.register(r"project-members", views.ProjectMembersViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/', include(router.urls)),
+    path("api/", include(router.urls)),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -21,6 +21,7 @@ class Areas(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
+        ordering = ["id"]
         verbose_name = "Area"
         verbose_name_plural = "Areas"
 
@@ -32,6 +33,7 @@ class Categories(models.Model):
     name = models.CharField(max_length=50)
 
     class Meta:
+        ordering = ["id"]
         verbose_name = "Category"
         verbose_name_plural = "Categories"
 
@@ -82,6 +84,10 @@ class Projects(models.Model):
     percentage_real = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     cancel_justification = models.TextField(blank=True)
     members = models.ManyToManyField(User, through="ProjectMembers")
+
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
 
     def __str__(self):
         return self.name
@@ -145,6 +151,10 @@ class Communications(models.Model):
     frequency = models.CharField(
         max_length=7, choices=Frequency.choices, default=Frequency.ONCE
     )
+
+    class Meta:
+        verbose_name = "Communication"
+        verbose_name_plural = "Communications"
 
     def __str__(self):
         return (

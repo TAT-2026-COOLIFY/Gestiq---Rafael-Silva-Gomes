@@ -6,14 +6,14 @@ function ProjectCard({ project }) {
   // Funçãozinha para definir a cor da bolinha do status
   const getStatusColor = (status) => {
     switch (status) {
-      case "ATIVO":
-        return "green";
-      case "PLANEJAMENTO":
+      case "PLAN":
         return "orange";
-      case "CANCELADO":
-        return "red";
-      case "CONCLUIDO":
+      case "ACTIVE":
         return "blue";
+      case "CONC":
+        return "green";
+      case "CANC":
+        return "red";
       default:
         return "gray";
     }
@@ -27,14 +27,19 @@ function ProjectCard({ project }) {
           className="status-badge"
           style={{ backgroundColor: getStatusColor(project.project_status) }}
         >
-          {project.project_status}
+          { project.project_status === 'PLAN' ? 'Planejamento' : 
+            project.project_status === 'ACTIVE' ? 'ATIVO' :
+            project.project_status === 'CANC' ? 'Cancelado' :
+            project.project_status === 'Conc' ? 'Concluído' :
+            project.project_status
+          }
         </span>
       </div>
 
       <h3>{project.name}</h3>
 
       <p className="leader">
-        Líder: <strong>{project.leader_username || "Não definido"}</strong>
+        Líder: <strong>{project.leader_first_name + " " + project.leader_last_name || "Não definido"}</strong>
       </p>
 
       <div className="progress-bar">

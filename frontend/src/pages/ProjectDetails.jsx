@@ -1,5 +1,6 @@
 import { useState, useEffect, use } from "react";
 import { useParams, Link } from "react-router-dom";
+import { formatDate } from "../utils/formatDate";
 import api from "../services/api";
 import "./ProjectDetails.css";
 
@@ -48,19 +49,27 @@ function ProjectDetails() {
       <div className="info-grid">
         <div className="info-card">
           <h3>Status</h3>
-          <p>{project.project_status}</p>
+          <p>
+            { 
+              project.project_status === 'PLAN' ? 'Planejamento' : 
+              project.project_status === 'ACTIVE' ? 'ATIVO' :
+              project.project_status === 'CANC' ? 'Cancelado' :
+              project.project_status === 'Conc' ? 'Concluído' :
+              project.project_status
+            }
+          </p>
         </div>
         <div className="info-card">
           <h3>Líder</h3>
-          <p>{project.leader_username || "Não definido"}</p>
+          <p>{project.leader_first_name + " " + project.leader_last_name || "Não definido"}</p>
         </div>
         <div className="info-card">
           <h3>Início</h3>
-          <p>{project.start_date || "Não definido"}</p>
+          <p>{formatDate(project.start_date)}</p>
         </div>
         <div className="info-card">
           <h3>Fim Previsto</h3>
-          <p>{project.end_date || "Não definido"}</p>
+          <p>{formatDate(project.end_date)}</p>
         </div>
       </div>
 

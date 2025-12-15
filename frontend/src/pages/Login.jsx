@@ -32,8 +32,11 @@ function Login() {
         <h2>Acesso ao Sistema</h2>
         
         <div className="input-group">
-          <label>Usuário</label>
+          <label htmlFor="username">Usuário</label>
           <input 
+            id="username"
+            name="username"
+            autoComplete="username"
             type="text" 
             value={username}
             onChange={e => setUsername(e.target.value)}
@@ -41,8 +44,11 @@ function Login() {
         </div>
 
         <div className="input-group">
-          <label>Senha</label>
+          <label htmlFor="password">Senha</label>
           <input 
+            id="password" 
+            name="password" 
+            autoComplete="current-password"
             type="password" 
             value={password}
             onChange={e => setPassword(e.target.value)}

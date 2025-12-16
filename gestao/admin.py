@@ -77,6 +77,7 @@ class ProjectsAdmin(admin.ModelAdmin):
     # Paginação (se tiver muitos projetos)
     list_per_page = 20
 
+admin.site.register(Canvas)
 
 @admin.register(Communications)
 class CommunicationsAdmin(admin.ModelAdmin):

@@ -1,0 +1,63 @@
+.canvas-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 3 Colunas */
+    gap: 15px;
+    margin-bottom: 60px; /* Espaço para o botão flutuante */
+}
+
+.canvas-box {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.canvas-box h3 {
+    margin-top: 0;
+    font-size: 0.9rem;
+    color: #555;
+    text-transform: uppercase;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.canvas-box textarea {
+    flex: 1;
+    min-height: 100px;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 4px;
+    resize: vertical; /* Permite esticar a altura */
+    font-family: inherit;
+}
+
+.canvas-box textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* Barra de Ação Flutuante ou Fixa */
+.actions-bar {
+    grid-column: 1 / -1; /* Ocupa a largura toda */
+    text-align: right;
+    margin-top: 10px;
+}
+
+.btn-save {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-save:hover {
+    background-color: #219150;
+}

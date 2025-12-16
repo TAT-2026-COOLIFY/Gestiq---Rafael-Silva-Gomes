@@ -30,7 +30,7 @@ function ProjectCard({ project }) {
           { project.project_status === 'PLAN' ? 'Planejamento' : 
             project.project_status === 'ACTIVE' ? 'ATIVO' :
             project.project_status === 'CANC' ? 'Cancelado' :
-            project.project_status === 'Conc' ? 'Concluído' :
+            project.project_status === 'CONC' ? 'Concluído' :
             project.project_status
           }
         </span>

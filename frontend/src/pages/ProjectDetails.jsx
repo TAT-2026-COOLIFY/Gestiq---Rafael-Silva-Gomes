@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom"; // useParams pega o ID da UR
 import api from "../services/api";
 import ProjectCanvas from "../components/ProjectCanvas";
 import RiskList from "../components/RisksList";
+import ProjectTeam from "../components/ProjectTeam";
 import "./ProjectDetails.css"; // CSS básico de estrutura
 
 function ProjectDetails() {
@@ -83,8 +84,7 @@ function ProjectDetails() {
         
         {activeTab === 'membros' && (
             <div>
-                <h2>Equipe do Projeto</h2>
-                <p>Lista de membros...</p>
+                <ProjectTeam projectId={id}/>
             </div>
         )}
       </div>

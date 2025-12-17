@@ -168,10 +168,6 @@ class Risks(models.Model):
         EXTERNO = "EXT", "Externo"
         ORGANIZACIONAL = "ORG", "Organizacional"
         GESTAO = "GP", "Gestão de Projetos"
-        LOGICO = "LOG", "Lógico"
-        FISICO = "FIS", "Físico"
-        COMPORTAMENTO = "HUM", "Comportamento Humano"
-        CONTINUIDADE = "CON", "Continuidade"
 
     class Score(models.TextChoices):
         MUITO_BAIXO = "0.10", "Muito Baixo"
@@ -201,7 +197,7 @@ class Risks(models.Model):
     quality = models.CharField(max_length=4, choices=Score.choices)
     probability = models.CharField(max_length=4, choices=Score.choices)
     score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    action_plan = models.TextField()
+    action_plan = models.TextField(blank=True, null=True)
     action = models.CharField(
         max_length=10, choices=ActionRisk.choices, default=ActionRisk.MITIGAR
     )

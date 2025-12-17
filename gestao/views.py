@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import viewsets, status
 from django.contrib.auth.models import User
 from .models import Areas, Categories, Projects, Canvas, Risks, ProjectMembers
 from .serializers import (
@@ -63,3 +64,54 @@ class RisksViewSet(viewsets.ModelViewSet):
 class ProjectMembersViewSet(viewsets.ModelViewSet):
     queryset = ProjectMembers.objects.all()
     serializer_class = ProjectMembersSerializer
+
+    def get_queryset(self):
+        queryset = ProjectMembers.objects.all()
+        project_id = self.request.query_params.get("project")
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        return queryset
+
+    # ESTA É A PARTE QUE O DJANGO NÃO ESTÁ LENDO:
+    def create(self, request, *args, **kwargs):
+        project_id = request.data.get("project")
+        email_recebido = request.data.get("email")
+        function = request.data.get("function", "Colaborador")
+
+        # 1. Validação
+        if not email_recebido:
+            return Response(
+                {"detail": "O e-mail é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # 2. Busca o usuário
+        user_to_add = User.objects.filter(email=email_recebido).first()
+
+        if not user_to_add:
+            return Response(
+                {"detail": "Usuário não encontrado. Peça para ele se cadastrar."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # 3. Verifica duplicidade
+        if ProjectMembers.objects.filter(
+            project_id=project_id, user=user_to_add
+        ).exists():
+            return Response(
+                {"detail": "Usuário já está na equipe."},
+                status=status.HTTP_409_CONFLICT,
+            )
+
+        try:
+            member = ProjectMembers.objects.create(
+                project_id=project_id, user=user_to_add, function=function
+            )
+            serializer = self.get_serializer(member)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response(
+                {"detail": f"Erro Técnico: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

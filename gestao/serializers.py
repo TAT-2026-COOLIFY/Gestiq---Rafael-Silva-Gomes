@@ -16,14 +16,30 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class ProjectMembersSerializer(serializers.ModelSerializer):
-    user = UsersSerializer(read_only=True)
+    nome_completo = serializers.CharField(source="user.first_name", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True)
+    job_title = serializers.CharField(
+        source="user.profile.job_title", read_only=True, default=""
+    )
+    department = serializers.CharField(
+        source="user.profile.department", read_only=True, default=""
+    )
+    photo = serializers.ImageField(source="user.profile.photo", read_only=True)
 
     class Meta:
         model = ProjectMembers
         fields = [
             "id",
+            "project",
             "user",
             "function",
+            "nome_completo",
+            "username",
+            "email",
+            "job_title",
+            "department",
+            "photo",
         ]
 
 

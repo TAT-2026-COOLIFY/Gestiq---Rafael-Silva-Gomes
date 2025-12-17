@@ -3,9 +3,8 @@
 /* Substitua o antigo .form-inline por este .form-grid */
 .form-grid {
     display: grid;
-    /* Descrição(2) + 5 Selects(1 cada) + Plano(2) + Botão(auto) */
-    /* REMOVIDA UMA COLUNA DAQUI: */
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 2fr auto; 
+    /* Ajustei as larguras para caber tudo */
+    grid-template-columns: 2fr 1fr 1fr 0.8fr 0.8fr 0.8fr 0.8fr 0.8fr 1.5fr auto; 
     gap: 5px;
     align-items: center;
 }
@@ -15,12 +14,11 @@
     padding: 5px;
 }
 
-/* Estilo dos Títulos (Labels) que ficam na linha de cima */
 .form-grid label {
     font-size: 0.85rem;
     font-weight: bold;
     color: #666;
-    margin-bottom: -5px; /* Puxa um pouco para perto do input */
+    margin-bottom: -5px;
 }
 
 .form-grid input, 

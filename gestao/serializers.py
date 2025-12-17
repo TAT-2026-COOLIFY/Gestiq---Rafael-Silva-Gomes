@@ -126,6 +126,7 @@ class RisksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Risks
         fields = [
+            "id",
             "project",
             "project_name",
             "description",

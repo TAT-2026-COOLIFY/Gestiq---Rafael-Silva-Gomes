@@ -1,0 +1,190 @@
+/* Container Principal */
+.risk-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* --- ÁREA DO FORMULÁRIO (ADD RISCO) --- */
+.risk-form-box {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    margin-bottom: 30px;
+}
+
+.risk-form-box h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #343a40;
+    font-size: 1.2rem;
+}
+
+/* --- O GRID MÁGICO (Alinhamento Perfeito) --- */
+.communication-grid {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr auto;
+    gap: 8px; /* Espaço entre os campos */
+    align-items: center; /* Centraliza verticalmente */
+}
+
+/* Estilo dos Labels (Títulos acima dos inputs) */
+.communication-grid label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #6c757d;
+    text-transform: uppercase;
+    white-space: nowrap; /* Não deixa o texto quebrar */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Estilo dos Inputs e Selects */
+.communication-grid input, 
+.communication-grid select {
+    width: 100%;
+    padding: 8px 5px;
+    font-size: 0.8rem; /* Fonte um pouco menor para caber tudo */
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+    color: #495057;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.communication-grid input:focus, 
+.communication-grid select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Botão de Adicionar (+) */
+.btn-add {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    height: 35px; /* Altura igual a dos inputs */
+    width: 100%;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    margin-top: auto; /* Empurra para baixo se precisar */
+}
+
+.btn-add:hover {
+    background-color: #218838;
+}
+
+/* --- TABELA DE LISTAGEM --- */
+.risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.risk-table th, 
+.risk-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.risk-table th {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Zebra Striping (Linhas alternadas) */
+.risk-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.risk-table tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* --- BADGES (Sinalizadores Coloridos) --- */
+.risk-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: inline-block;
+    min-width: 50px;
+    text-align: center;
+}
+
+.risk-badge.low {
+    background-color: #28a745; /* Verde */
+}
+
+.risk-badge.medium {
+    background-color: #ffc107; /* Amarelo */
+    color: #212529; /* Texto escuro para contraste */
+}
+
+.risk-badge.high {
+    background-color: #dc3545; /* Vermelho */
+}
+
+/* --- BOTÕES DE AÇÃO --- */
+.btn-delete {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.btn-delete:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* --- RESPONSIVIDADE --- */
+/* Quando a tela for menor que 1200px (Notebook pequeno/Tablet), ajusta o grid */
+@media (max-width: 1200px) {
+    .communication-grid {
+        /* Quebra o formulário em duas linhas visualmente ou empilha */
+        grid-template-columns: 1fr 1fr; /* Duas colunas */
+        gap: 15px;
+    }
+    
+    /* Esconde o label vazio */
+    .communication-grid span {
+        display: none;
+    }
+    
+    .btn-add {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .communication-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-add {
+        grid-column: span 1;
+    }
+
+    .risk-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

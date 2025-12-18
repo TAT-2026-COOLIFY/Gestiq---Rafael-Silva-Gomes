@@ -1,7 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.contrib.auth.models import User
-from .models import Areas, Categories, Projects, Canvas, Risks, ProjectMembers
+from .models import (
+    Areas,
+    Categories,
+    Projects,
+    Canvas,
+    Risks,
+    Communications,
+    ProjectMembers,
+)
 from .serializers import (
     UsersSerializer,
     AreasSerializer,
@@ -72,20 +80,17 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(project_id=project_id)
         return queryset
 
-    # ESTA É A PARTE QUE O DJANGO NÃO ESTÁ LENDO:
     def create(self, request, *args, **kwargs):
         project_id = request.data.get("project")
         email_recebido = request.data.get("email")
         function = request.data.get("function", "Colaborador")
 
-        # 1. Validação
         if not email_recebido:
             return Response(
                 {"detail": "O e-mail é obrigatório."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # 2. Busca o usuário
         user_to_add = User.objects.filter(email=email_recebido).first()
 
         if not user_to_add:
@@ -94,7 +99,6 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # 3. Verifica duplicidade
         if ProjectMembers.objects.filter(
             project_id=project_id, user=user_to_add
         ).exists():
@@ -115,3 +119,8 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
                 {"detail": f"Erro Técnico: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class CommunicationViewSet(viewsets.ModelViewSet):
+    queryset = Communications.objects.all()
+    serializer_class = ProjectMembersSerializer

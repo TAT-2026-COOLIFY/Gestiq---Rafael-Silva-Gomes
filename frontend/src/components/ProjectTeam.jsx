@@ -67,15 +67,20 @@ function ProjectTeam({ projectId }) {
         <form onSubmit={handleAddMember} className="form-inline">
             {/* INPUT DE E-MAIL (Substitui o Select) */}
             <input 
+                id="email"
+                name="email"
                 type="email" 
                 placeholder="exemplo@email.com"
                 value={emailInvite}
                 onChange={e => setEmailInvite(e.target.value)}
+                autoComplete="email"
                 required
                 className="input-email"
             />
 
             <input 
+                id="function"
+                name="function"
                 type="text" 
                 placeholder="Função (ex: Dev, PO)"
                 value={role}

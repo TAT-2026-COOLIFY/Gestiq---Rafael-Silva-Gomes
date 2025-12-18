@@ -33,6 +33,7 @@ router.register(r"categories", views.CategoriesViewSet)
 router.register(r"projects", views.ProjectsViewSet)
 router.register(r"canvas", views.CanvasViewSet)
 router.register(r"risks", views.RisksViewSet)
+router.register(r"communications", views.CommunicationViewSet)
 router.register(r"members", views.ProjectMembersViewSet)
 
 urlpatterns = [

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Projects, Canvas, Risks, ProjectMembers, Areas, Categories
+from .models import Projects, Canvas, Risks, ProjectMembers, Areas, Categories, Communications
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -145,3 +145,21 @@ class RisksSerializer(serializers.ModelSerializer):
         ]
 
     read_only_fields = ["score"]
+
+class CommunicationSerializer(serializers.ModelSerializer):
+    project_name = serializers.CharField(source="project.name", read_only=True)
+
+    class Meta:
+        model = Communications
+        fields = [
+            "id",
+            "create_date",
+            "project",
+            "project_name",
+            "description",
+            "objective",
+            "sender",
+            "recipient",
+            "channel",
+            "frequency",
+        ]

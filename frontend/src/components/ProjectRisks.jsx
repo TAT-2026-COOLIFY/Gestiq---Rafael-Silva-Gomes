@@ -1,24 +1,23 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import "./RisksList.css"; // Vamos criar jajá
+import "./ProjectRisks.css"; // Vamos criar jajá
 
-function RiskList({ projectId }) {
+function ProjectRisks({ projectId }) {
   const [risks, setRisks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [newRisk, setNewRisk] = useState({
     description: "",
-    category: "TEC", // Valor padrão: Técnico
-    action: "MITIGAR", // Valor padrão: Mitigar
-    cost: "0.10", // String, conforme CharField do model
+    category: "TEC",
+    action: "MITIGAR",
+    cost: "0.10",
     timeline: "0.10",
     scope: "0.10",
     quality: "0.10",
     probability: "0.10",
-    mitigation_plan: "", // Será mapeado para action_plan
+    mitigation_plan: "",
   });
 
-  // 1. Carregar Riscos
   useEffect(() => {
     fetchRisks();
   }, [projectId]);
@@ -27,7 +26,6 @@ function RiskList({ projectId }) {
     api
       .get(`risks/?project=${projectId}`)
       .then((response) => {
-        // Blindagem contra Paginação (igual fizemos no Canvas)
         const lista = response.data.results
           ? response.data.results
           : response.data;
@@ -99,21 +97,23 @@ function RiskList({ projectId }) {
       <div className="risk-form-box">
         <h3>🚨 Adicionar Novo Risco</h3>
 
-        <form onSubmit={handleSubmit} className="form-grid">
+        <form onSubmit={handleSubmit} className="risk-grid">
           {/* CABEÇALHOS */}
-          <label>Descrição</label>
-          <label>Categoria</label>
-          <label>Ação</label>
-          <label>Custo</label>
-          <label>Tempo</label>
-          <label>Escopo</label>
-          <label>Qualid.</label>
-          <label>Prob.</label>
-          <label>Plano</label>
+          <label htmlFor="description">Descrição</label>
+          <label htmlFor="category">Categoria</label>
+          <label htmlFor="action">Ação</label>
+          <label htmlFor="cost">Custo</label>
+          <label htmlFor="timeline">Cronograma</label>
+          <label htmlFor="scope">Escopo</label>
+          <label htmlFor="quality">Qualidade</label>
+          <label htmlFor="probability">Probabilidade</label>
+          <label htmlFor="mitigation_plan">Plano</label>
           <span></span>
 
           {/* INPUT DESCRIÇÃO */}
           <input
+            name="description"
+            id="description"
             type="text"
             value={newRisk.description}
             onChange={(e) =>
@@ -124,6 +124,8 @@ function RiskList({ projectId }) {
 
           {/* SELECT CATEGORIA (Values = Chaves do Model) */}
           <select
+            name="category"
+            id="category"
             value={newRisk.category}
             onChange={(e) =>
               setNewRisk({ ...newRisk, category: e.target.value })
@@ -137,6 +139,8 @@ function RiskList({ projectId }) {
 
           {/* SELECT AÇÃO (Values = Chaves do Model) */}
           <select
+            name="action"
+            id="action"
             value={newRisk.action}
             onChange={(e) => setNewRisk({ ...newRisk, action: e.target.value })}
           >
@@ -148,68 +152,80 @@ function RiskList({ projectId }) {
 
           {/* SELECTS DE VALORES (Strings 0.10...) */}
           <select
+            name="cost"
+            id="cost"
             value={newRisk.cost}
             onChange={(e) => setNewRisk({ ...newRisk, cost: e.target.value })}
           >
-            <option value="0.10">M. Baixo (0.1)</option>
-            <option value="0.30">Baixo (0.3)</option>
-            <option value="0.50">Médio (0.5)</option>
-            <option value="0.70">Alto (0.7)</option>
-            <option value="0.90">M. Alto (0.9)</option>
+            <option value="0.10">Muito Baixo</option>
+            <option value="0.30">Baixo</option>
+            <option value="0.50">Médio</option>
+            <option value="0.70">Alto</option>
+            <option value="0.90">Muito Alto</option>
           </select>
 
           <select
+            name="timeline"
+            id="timeline"
             value={newRisk.timeline}
             onChange={(e) =>
               setNewRisk({ ...newRisk, timeline: e.target.value })
             }
           >
-            <option value="0.10">M. Baixo</option>
+            <option value="0.10">Muito Baixo</option>
             <option value="0.30">Baixo</option>
             <option value="0.50">Médio</option>
             <option value="0.70">Alto</option>
-            <option value="0.90">M. Alto</option>
+            <option value="0.90">Muito Alto</option>
           </select>
 
           <select
+            name="scope"
+            id="scope"
             value={newRisk.scope}
             onChange={(e) => setNewRisk({ ...newRisk, scope: e.target.value })}
           >
-            <option value="0.10">M. Baixo</option>
+            <option value="0.10">Muito Baixo</option>
             <option value="0.30">Baixo</option>
             <option value="0.50">Médio</option>
             <option value="0.70">Alto</option>
-            <option value="0.90">M. Alto</option>
+            <option value="0.90">Muito Alto</option>
           </select>
 
           <select
+            name="quality"
+            id="quality"
             value={newRisk.quality}
             onChange={(e) =>
               setNewRisk({ ...newRisk, quality: e.target.value })
             }
           >
-            <option value="0.10">M. Baixo</option>
+            <option value="0.10">Muito Baixo</option>
             <option value="0.30">Baixo</option>
             <option value="0.50">Médio</option>
             <option value="0.70">Alto</option>
-            <option value="0.90">M. Alto</option>
+            <option value="0.90">Muito Alto</option>
           </select>
 
           <select
+            name="probability"
+            id="probability"
             value={newRisk.probability}
             onChange={(e) =>
               setNewRisk({ ...newRisk, probability: e.target.value })
             }
           >
-            <option value="0.10">M. Baixa</option>
+            <option value="0.10">Muito Baixa</option>
             <option value="0.30">Baixa</option>
             <option value="0.50">Média</option>
             <option value="0.70">Alta</option>
-            <option value="0.90">M. Alta</option>
+            <option value="0.90">Muito Alta</option>
           </select>
 
           {/* PLANO DE AÇÃO (Mapeado para action_plan) */}
           <input
+            name="mitigation_plan"
+            id="mitigation_plan"
             type="text"
             value={newRisk.mitigation_plan}
             onChange={(e) =>
@@ -276,4 +292,4 @@ function RiskList({ projectId }) {
   );
 }
 
-export default RiskList;
+export default ProjectRisks;

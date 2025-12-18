@@ -13,22 +13,22 @@ function ProjectForm() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+      // Busca dados auxiliares para preencher os Selects
       Promise.all([
         api.get('users/'),
         api.get('areas/'),
         api.get('categories/')
       ])
       .then(([usersResponse, areasResponse, categoriesResponse]) => {
-        setUsers(usersResponse.data)
-        setAreas(areasResponse.data)
-        setCategories(categoriesResponse.data)
+        // Ajuste: Verifica se os dados vêm em .results (paginação) ou direto
+        setUsers(usersResponse.data.results || usersResponse.data)
+        setAreas(areasResponse.data.results || areasResponse.data)
+        setCategories(categoriesResponse.data.results || categoriesResponse.data)
         setLoading(false)
       })
       .catch((error) => {
-        console.error("Erro ao encontrar dados: ", error);
-        alert(
-          "Erro ao conectar ao servidor. Por favor, tente novamente mais tarde."
-        );
+        console.error("Erro ao carregar dados do formulário: ", error);
+        alert("Erro ao carregar listas (Usuários, Áreas ou Categorias). Verifique se o Backend está rodando.");
         setLoading(false);
       })
     }, []);
@@ -55,6 +55,7 @@ function ProjectForm() {
 
         const dadosParaEnviar = {
           ...formData,
+          // Garante que datas vazias vão como null (evita erro no Django)
           start_date: formData.start_date || null,
           end_date: formData.end_date || null
         }
@@ -66,12 +67,13 @@ function ProjectForm() {
         })
         .catch((error) => {
             console.error("Erro ao salvar: ", error)
-            alert("Erro ao criar projeto. Veja o console (F12) para detalhes.")
+            const msg = error.response?.data ? JSON.stringify(error.response.data) : "Erro desconhecido.";
+            alert("Erro ao criar projeto: " + msg)
         })
     }
 
     if (loading) {
-      return <div>Carregando dados...</div>;
+      return <div className="loading-container">Carregando dados do formulário...</div>;
     }
 
     return (
@@ -85,12 +87,14 @@ function ProjectForm() {
         
         {/* Nome do Projeto */}
         <div className="form-group">
-          <label>Nome do Projeto</label>
+          <label htmlFor='name'>Nome do Projeto</label>
           <input 
+            id='name' // JÁ TINHA ID, MANTIDO
             type="text" 
             name="name"
             value={formData.name}
             onChange={handleChange}
+            autoComplete='off'
             required 
             placeholder="Ex: Implantação de Wi-Fi"
           />
@@ -99,12 +103,18 @@ function ProjectForm() {
         <div className="form-row">
           {/* PMO */}
           <div className="form-group">
-            <label>PMO</label>
-            <select name="pmo" value={formData.pmo} onChange={handleChange} required>
-              <option value="">Convidar...</option>
+            <label htmlFor='pmo'>PMO</label>
+            <select 
+                id='pmo' // ADICIONADO ID
+                name="pmo" 
+                value={formData.pmo} 
+                onChange={handleChange} 
+                required
+            >
+              <option value="">Selecione o PMO...</option>
               {users.map(item => (
                 <option key={item.id} value={item.id}>
-                  {item.username}
+                  {item.username} {/* Se tiver first_name, pode usar item.first_name */}
                 </option>
               ))}
             </select>
@@ -112,9 +122,15 @@ function ProjectForm() {
 
           {/* Leader */}
           <div className="form-group">
-            <label>Líder</label>
-            <select name="leader" value={formData.leader} onChange={handleChange} required>
-              <option value="">Convidar...</option>
+            <label htmlFor='leader'>Líder</label>
+            <select 
+                id='leader' // ADICIONADO ID
+                name="leader" 
+                value={formData.leader} 
+                onChange={handleChange} 
+                required
+            >
+              <option value="">Selecione o Líder...</option>
               {users.map(item => (
                 <option key={item.id} value={item.id}>
                   {item.username}
@@ -127,8 +143,14 @@ function ProjectForm() {
         <div className="form-row">
           {/* Area */}
           <div className="form-group">
-            <label>Área</label>
-            <select name="area" value={formData.area} onChange={handleChange} required>
+            <label htmlFor='area'>Área</label>
+            <select 
+                id='area' // ADICIONADO ID
+                name="area" 
+                value={formData.area} 
+                onChange={handleChange} 
+                required
+            >
               <option value="">Selecione...</option>
               {areas.map(item => (
                 <option key={item.id} value={item.id}>
@@ -140,8 +162,14 @@ function ProjectForm() {
 
           {/* Categoria */}
           <div className="form-group">
-            <label>Categoria</label>
-            <select name="category" value={formData.category} onChange={handleChange} required>
+            <label htmlFor='category'>Categoria</label>
+            <select 
+                id='category' // ADICIONADO ID
+                name="category" 
+                value={formData.category} 
+                onChange={handleChange} 
+                required
+            >
               <option value="">Selecione...</option>
               {categories.map(item => (
                 <option key={item.id} value={item.id}>
@@ -155,8 +183,13 @@ function ProjectForm() {
         <div className="form-row">
           {/* Tipo */}
           <div className="form-group">
-            <label>Tipo</label>
-            <select name="project_type" value={formData.project_type} onChange={handleChange}>
+            <label htmlFor='project_type'>Tipo</label>
+            <select 
+                id='project_type'
+                name="project_type" 
+                value={formData.project_type} 
+                onChange={handleChange}
+            >
               <option value="CORP">Corporativo</option>
               <option value="DEP">Departamental</option>
             </select>
@@ -164,8 +197,13 @@ function ProjectForm() {
 
           {/* Status */}
           <div className="form-group">
-            <label>Status Inicial</label>
-            <select name="project_status" value={formData.project_status} onChange={handleChange}>
+            <label htmlFor='project_status'>Status Inicial</label>
+            <select 
+                id='project_status'
+                name="project_status" 
+                value={formData.project_status} 
+                onChange={handleChange}
+            >
               <option value="PLAN">Planejamento</option>
               <option value="ACTIVE">Ativo</option>
             </select>
@@ -175,8 +213,9 @@ function ProjectForm() {
         <div className="form-row">
           {/* Datas */}
           <div className="form-group">
-            <label>Data de Início</label>
+            <label htmlFor='start_date'>Data de Início</label>
             <input 
+              id='start_date'
               type="date" 
               name="start_date" 
               value={formData.start_date} 
@@ -185,8 +224,9 @@ function ProjectForm() {
           </div>
           
           <div className="form-group">
-            <label>Previsão de Fim</label>
+            <label htmlFor='end_date'>Previsão de Fim</label>
             <input 
+              id='end_date'
               type="date" 
               name="end_date" 
               value={formData.end_date} 

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom"; // useParams pega o ID da URL
 import api from "../services/api";
 import ProjectCanvas from "../components/ProjectCanvas";
-import RiskList from "../components/RisksList";
+import ProjectRisks from "../components/ProjectRisks";
 import ProjectTeam from "../components/ProjectTeam";
-import "./ProjectDetails.css"; // CSS básico de estrutura
+import ProjectCommunications from "../components/ProjectCommunications";
+import "./ProjectDetails.css";
 
 function ProjectDetails() {
   const { id } = useParams(); // Pega o número que está na URL
@@ -61,6 +62,12 @@ function ProjectDetails() {
             ⚠️ Riscos
         </button>
         <button 
+            className={activeTab === 'comunicacoes' ? 'active' : ''} 
+            onClick={() => setActiveTab('comunicacoes')}
+        >
+            👥 Comunicações
+        </button>
+        <button 
             className={activeTab === 'membros' ? 'active' : ''} 
             onClick={() => setActiveTab('membros')}
         >
@@ -78,7 +85,13 @@ function ProjectDetails() {
 
         {activeTab === 'riscos' && (
             <div className="risks-area">
-                <RiskList projectId={id} />
+                <ProjectRisks projectId={id} />
+            </div>
+        )}
+
+        {activeTab === 'comunicacoes' && (
+            <div className="communications-area">
+                <ProjectCommunications projectId={id} />
             </div>
         )}
         

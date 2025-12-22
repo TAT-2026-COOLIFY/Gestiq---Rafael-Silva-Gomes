@@ -9,6 +9,7 @@ from .models import (
     Risks,
     Communications,
     ProjectMembers,
+    Activity,
 )
 from .serializers import (
     UsersSerializer,
@@ -17,7 +18,9 @@ from .serializers import (
     ProjectsSerializer,
     CanvasSerializer,
     RisksSerializer,
+    CommunicationsSerializer,
     ProjectMembersSerializer,
+    ActivitiesSerializer,
 )
 
 
@@ -123,4 +126,24 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
 
 class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communications.objects.all()
-    serializer_class = ProjectMembersSerializer
+    serializer_class = CommunicationsSerializer
+
+    def get_queryset(self):
+        queryset = Communications.objects.all()
+        project_id = self.request.query_params.get("project")
+
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        return queryset
+
+
+class ActivitiesViewSet(viewsets.ModelViewSet):
+    queryset = Activity.objects.all()
+    serializer_class = ActivitiesSerializer
+
+    def get_queryset(self):
+        queryset = Activity.objects.all()
+        project_id = self.request.query_params.get("project")
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        return queryset

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Projects, Canvas, Risks, ProjectMembers, Areas, Categories, Communications
+from .models import Projects, Canvas, Risks, ProjectMembers, Areas, Categories, Communications, Activity
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -146,7 +146,7 @@ class RisksSerializer(serializers.ModelSerializer):
 
     read_only_fields = ["score"]
 
-class CommunicationSerializer(serializers.ModelSerializer):
+class CommunicationsSerializer(serializers.ModelSerializer):
     project_name = serializers.CharField(source="project.name", read_only=True)
 
     class Meta:
@@ -163,3 +163,24 @@ class CommunicationSerializer(serializers.ModelSerializer):
             "channel",
             "frequency",
         ]
+
+class ActivitiesSerializer(serializers.ModelSerializer):
+    assigned_to_username = serializers.CharField(source = 'assigned_to.username', read_only=True)
+    assigned_to_photo = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Activity
+        fields = [
+            'id', 'project', 'title', 'description', 
+            'start_date', 'end_date', 'assigned_to', 
+            'assigned_to_username', 'assigned_to_photo',
+            'status', 'priority', 'created_at'
+        ]
+
+    def get_assigned_to_photo(self, obj):
+        if obj.assigned_to and hasattr(obj.assigned_to, 'profile') and obj.assigned_to.profile.photo:
+            try:
+                return obj.assigned_to.profile.photo.url
+            except:
+                return None
+            return None

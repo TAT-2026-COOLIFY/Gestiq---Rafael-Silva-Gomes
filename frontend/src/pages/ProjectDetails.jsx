@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom"; // useParams pega o ID da URL
 import api from "../services/api";
 import ProjectCanvas from "../components/ProjectCanvas";
+import ProjectKanban from '../components/ProjectKanban';
 import ProjectRisks from "../components/ProjectRisks";
 import ProjectTeam from "../components/ProjectTeam";
 import ProjectCommunications from "../components/ProjectCommunications";
@@ -68,10 +69,16 @@ function ProjectDetails() {
             👥 Comunicações
         </button>
         <button 
-            className={activeTab === 'membros' ? 'active' : ''} 
-            onClick={() => setActiveTab('membros')}
+          className={activeTab === 'membros' ? 'active' : ''} 
+          onClick={() => setActiveTab('membros')}
         >
-            👥 Equipe
+          👥 Equipe
+        </button>
+        <button
+          className={activeTab === 'kanban' ? 'active' : ''}
+          onClick={() => setActiveTab('kanban')}
+        >
+          Kanban
         </button>
       </div>
 
@@ -96,10 +103,15 @@ function ProjectDetails() {
         )}
         
         {activeTab === 'membros' && (
-            <div>
+            <div className="members-area">
                 <ProjectTeam projectId={id}/>
             </div>
         )}
+        {activeTab === 'kanban' && (
+          <div className="kanban-area">
+            <ProjectKanban projectId={id} />
+          </div>
+        )}  
       </div>
     </div>
   );

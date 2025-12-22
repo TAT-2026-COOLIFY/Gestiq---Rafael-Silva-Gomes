@@ -1,0 +1,168 @@
+/* --- CONTAINER PRINCIPAL --- */
+.team-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- ÁREA DE CONVITE (Cinza Claro) --- */
+.add-member-box {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.add-member-box h3 {
+  margin-top: 0;
+  color: #343a40;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+/* Formulário em Linha */
+.form-inline {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap; /* Quebra linha no celular */
+}
+
+/* Inputs do Formulário */
+.input-email,
+.input-role {
+  flex: 1; /* Ocupam o espaço disponível */
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  min-width: 200px; /* Tamanho mínimo antes de quebrar linha */
+  font-size: 0.9rem;
+}
+
+.btn-add {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+  background-color: #218838;
+}
+
+/* --- GRID DE MEMBROS --- */
+.members-grid {
+  display: grid;
+  /* Cria colunas automáticas com largura mínima de 300px */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* CARD DO MEMBRO */
+.member-card {
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex; /* Alinha Avatar e Texto lado a lado */
+  align-items: center; /* Centraliza verticalmente */
+  position: relative; /* Para o botão de fechar */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.member-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* AVATAR (Foto ou Letra) */
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #007bff; /* Azul padrão para quem não tem foto */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: 15px;
+  flex-shrink: 0; /* Impede o avatar de amassar */
+  overflow: hidden; /* Garante que a imagem redonda não vaze */
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px #dee2e6;
+}
+
+/* INFORMAÇÕES DO MEMBRO */
+.member-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Para textos longos não quebrarem o layout */
+}
+
+.member-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adiciona ... se o nome for muito longo */
+}
+
+/* Estilo genérico para todos os spans de detalhes */
+.member-info span {
+  font-size: 0.8rem;
+  color: #6c757d;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Destaque para a Função no Projeto (primeiro span) */
+.member-info span:first-of-type {
+  color: #007bff; /* Azul */
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* BOTÃO REMOVER (X) */
+.btn-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #adb5bd;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.btn-remove:hover {
+  color: #dc3545; /* Vermelho ao passar o mouse */
+}
+
+/* --- RESPONSIVIDADE (Celular) --- */
+@media (max-width: 600px) {
+  .form-inline {
+    flex-direction: column; /* Empilha input e botão */
+  }
+
+  .btn-add {
+    width: 100%; /* Botão largura total */
+  }
+  
+  .member-card {
+    align-items: flex-start; /* Alinha no topo caso tenha muita info */
+  }
+}

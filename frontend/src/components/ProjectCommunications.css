@@ -1,5 +1,5 @@
 /* Container Principal */
-.risk-container {
+.communication-container {
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
@@ -7,7 +7,7 @@
 }
 
 /* --- ÁREA DO FORMULÁRIO (ADD RISCO) --- */
-.risk-form-box {
+.communication-form-box {
     background-color: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
@@ -15,7 +15,7 @@
     margin-bottom: 30px;
 }
 
-.risk-form-box h3 {
+.communication-form-box h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #343a40;
@@ -84,37 +84,37 @@
 }
 
 /* --- TABELA DE LISTAGEM --- */
-.risk-table {
+.communication-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 0.9rem;
 }
 
-.risk-table th, 
-.risk-table td {
+.communication-table th, 
+.communication-table td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #dee2e6;
 }
 
-.risk-table th {
+.communication-table th {
     background-color: #e9ecef;
     color: #495057;
     font-weight: 600;
 }
 
 /* Zebra Striping (Linhas alternadas) */
-.risk-table tr:nth-child(even) {
+.communication-table tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
-.risk-table tr:hover {
+.communication-table tr:hover {
     background-color: #f1f3f5;
 }
 
 /* --- BADGES (Sinalizadores Coloridos) --- */
-.risk-badge {
+.communication-badge {
     padding: 5px 10px;
     border-radius: 12px;
     color: white;
@@ -125,16 +125,16 @@
     text-align: center;
 }
 
-.risk-badge.low {
+.communication-badge.low {
     background-color: #28a745; /* Verde */
 }
 
-.risk-badge.medium {
+.communication-badge.medium {
     background-color: #ffc107; /* Amarelo */
     color: #212529; /* Texto escuro para contraste */
 }
 
-.risk-badge.high {
+.communication-badge.high {
     background-color: #dc3545; /* Vermelho */
 }
 
@@ -182,7 +182,7 @@
         grid-column: span 1;
     }
 
-    .risk-table {
+    .communication-table {
         display: block;
         overflow-x: auto;
         white-space: nowrap;

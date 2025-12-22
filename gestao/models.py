@@ -241,3 +241,52 @@ class Milestones(models.Model):
 
     def __str__(self):
         return f"Marco {self.task} - Projeto {self.project.name}"
+
+
+class Activity(models.Model):
+    class Status(models.TextChoices):
+        BACKLOG = "BACKLOG", "Backlog"
+        PLAN = "PLAN", "A Iniciar"
+        DOING = "DOING", "Em Andamento"
+        DONE = "DONE", "Concluído"
+
+    class Priority(models.TextChoices):
+        LOW = "LOW", "Baixa"
+        MEDIUM = "MEDIUM", "Média"
+        HIGH = "HIGH", "Alta"
+        CRITICAL = "CRITICAL", "Crítica"
+
+    project = models.ForeignKey(
+        Projects, on_delete=models.CASCADE, related_name="activities"
+    )
+
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_activities",
+    )
+
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PLAN
+    )
+    priority = models.CharField(
+        max_length=20, choices=Priority.choices, default=Priority.MEDIUM
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Activity"
+        verbose_name_plural = "Activities"
+        ordering = ["end_date", "priority"]  # Ordena por prazo e prioridade
+
+    def __str__(self):
+        return f"[{self.project.name}] {self.title}"

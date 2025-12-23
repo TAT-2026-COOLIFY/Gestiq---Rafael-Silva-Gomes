@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
+import EditTaskModal from "./EditKanbanModal";
 import "./ProjectKanban.css";
 
 function ProjectKanban({ projectId }) {
   const [tasks, setTasks] = useState([]);
   const [members, setMembers] = useState([]); // <--- NOVO: Lista de membros
   const [loading, setLoading] = useState(true);
+  const [editingTask, setEditingTask] = useState(null);
 
   const STATUS_FLOW = ["BACKLOG", "PLAN", "DOING", "DONE"];
   
@@ -83,6 +85,18 @@ function ProjectKanban({ projectId }) {
           });
       }
   }
+
+  const handleSaveFromModal = (taskId, updatedData) => {
+      api.patch(`activities/${taskId}/`, updatedData)
+        .then(res => {
+            const updatedTasks = tasks.map(t => 
+                t.id === taskId ? res.data : t
+            );
+            setTasks(updatedTasks);
+            setEditingTask(null);
+        })
+        .catch(err => alert("Erro ao atualizar tarefa."));
+  };
 
   const getTasksByColumn = (statusKey) => {
       return tasks.filter(t => t.status === statusKey);
@@ -168,7 +182,8 @@ function ProjectKanban({ projectId }) {
                     const photoUrl = task.assigned_to_photo || getMemberPhoto(task.assigned_to_username);
 
                     return (
-                    <div key={task.id} className={`kanban-card priority-${task.priority}`}>
+                    <div key={task.id} className={`kanban-card priority-${task.priority}`}onClick={() => setEditingTask(task)} style={{cursor: 'pointer'}} 
+                    >
                         <span className="card-title">{task.title}</span>
                         
                         <div className="card-footer">
@@ -215,6 +230,14 @@ function ProjectKanban({ projectId }) {
             </div>
         ))}
       </div>
+      {editingTask && (
+          <EditTaskModal 
+              task={editingTask}
+              members={members}
+              onClose={() => setEditingTask(null)}
+              onSave={handleSaveFromModal}
+          />
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import Layout from "./components/Layout";
 import ProjectForm from "./pages/ProjectForm";
+import Settings from './pages/Settings';
 import "./App.css";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/projeto/novo" element={<ProjectForm />} />
           <Route path="/projeto/:id" element={<ProjectDetails />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
     </Routes>

@@ -1,6 +1,9 @@
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from django.contrib.auth.models import User
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import (
     Areas,
     Categories,
@@ -13,6 +16,7 @@ from .models import (
 )
 from .serializers import (
     UsersSerializer,
+    UserProfileUpdateSerializer,
     AreasSerializer,
     CategoriesSerializer,
     ProjectsSerializer,
@@ -27,6 +31,25 @@ from .serializers import (
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
+
+
+class UserMeView(APIView):
+
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        serializer = UserProfileUpdateSerializer(request.user)
+        return Response(serializer.data)
+
+    def put(self, request):
+        serializer = UserProfileUpdateSerializer(
+            request.user, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
 
 class AreasViewSet(viewsets.ModelViewSet):

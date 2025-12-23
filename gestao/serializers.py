@@ -1,6 +1,16 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Projects, Canvas, Risks, ProjectMembers, Areas, Categories, Communications, Activity
+from .models import (
+    UsersProfile,
+    Projects,
+    Canvas,
+    Risks,
+    ProjectMembers,
+    Areas,
+    Categories,
+    Communications,
+    Activity,
+)
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -13,6 +23,49 @@ class UsersSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
         ]
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    job_title = serializers.CharField(source="profile.job_title", required=False)
+    department = serializers.CharField(source="profile.department", required=False)
+    photo = serializers.ImageField(source="profile.photo", required=False)
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "job_title",
+            "department",
+            "photo",
+        ]
+        read_only_fields = ["username"]
+
+    def update(self, instance, validated_data):
+
+        profile_data = validated_data.pop("profile", {})
+
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.email = validated_data.get("email", instance.email)
+        instance.save()
+
+        profile, created = UsersProfile.objects.get_or_create(user=instance)
+
+        if "job_title" in profile_data:
+            profile.job_title = profile_data["job_title"]
+
+        if "department" in profile_data:
+            profile.department = profile_data["department"]
+
+        if "photo" in profile_data:
+            profile.photo = profile_data["photo"]
+
+        profile.save()
+
+        return instance
 
 
 class ProjectMembersSerializer(serializers.ModelSerializer):
@@ -146,6 +199,7 @@ class RisksSerializer(serializers.ModelSerializer):
 
     read_only_fields = ["score"]
 
+
 class CommunicationsSerializer(serializers.ModelSerializer):
     project_name = serializers.CharField(source="project.name", read_only=True)
 
@@ -164,21 +218,36 @@ class CommunicationsSerializer(serializers.ModelSerializer):
             "frequency",
         ]
 
+
 class ActivitiesSerializer(serializers.ModelSerializer):
-    assigned_to_username = serializers.CharField(source = 'assigned_to.username', read_only=True)
+    assigned_to_username = serializers.CharField(
+        source="assigned_to.username", read_only=True
+    )
     assigned_to_photo = serializers.SerializerMethodField()
 
     class Meta:
         model = Activity
         fields = [
-            'id', 'project', 'title', 'description', 
-            'start_date', 'end_date', 'assigned_to', 
-            'assigned_to_username', 'assigned_to_photo',
-            'status', 'priority', 'created_at'
+            "id",
+            "project",
+            "title",
+            "description",
+            "start_date",
+            "end_date",
+            "assigned_to",
+            "assigned_to_username",
+            "assigned_to_photo",
+            "status",
+            "priority",
+            "created_at",
         ]
 
     def get_assigned_to_photo(self, obj):
-        if obj.assigned_to and hasattr(obj.assigned_to, 'profile') and obj.assigned_to.profile.photo:
+        if (
+            obj.assigned_to
+            and hasattr(obj.assigned_to, "profile")
+            and obj.assigned_to.profile.photo
+        ):
             try:
                 return obj.assigned_to.profile.photo.url
             except:

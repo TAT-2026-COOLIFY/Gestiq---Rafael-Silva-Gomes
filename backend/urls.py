@@ -35,13 +35,14 @@ router.register(r"canvas", views.CanvasViewSet)
 router.register(r"risks", views.RisksViewSet)
 router.register(r"communications", views.CommunicationViewSet)
 router.register(r"members", views.ProjectMembersViewSet)
-router.register(r'activities', views.ActivitiesViewSet)
+router.register(r"activities", views.ActivitiesViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/me/", views.UserMeView.as_view(), name="user-me"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

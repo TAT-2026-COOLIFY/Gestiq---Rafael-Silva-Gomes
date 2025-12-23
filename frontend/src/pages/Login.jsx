@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import './Login.css'
 
@@ -56,6 +56,9 @@ function Login() {
         </div>
 
         <button type="submit">ENTRAR</button>
+        <p style={{marginTop: '15px', textAlign: 'center'}}>
+            Não tem uma conta? <Link to="/register">Cadastre-se</Link>
+        </p>
       </form>
     </div>
   )

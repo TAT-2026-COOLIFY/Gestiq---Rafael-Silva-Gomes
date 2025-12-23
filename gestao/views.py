@@ -1,9 +1,12 @@
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from django.db.models import Q
 from .models import (
     Areas,
     Categories,
@@ -16,6 +19,7 @@ from .models import (
 )
 from .serializers import (
     UsersSerializer,
+    RegisterSerializer,
     UserProfileUpdateSerializer,
     AreasSerializer,
     CategoriesSerializer,
@@ -31,6 +35,12 @@ from .serializers import (
 class UsersViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
+
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
 
 class UserMeView(APIView):
@@ -63,8 +73,21 @@ class CategoriesViewSet(viewsets.ModelViewSet):
 
 
 class ProjectsViewSet(viewsets.ModelViewSet):
-    queryset = Projects.objects.all().order_by("-create_date")
     serializer_class = ProjectsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return Projects.objects.all()
+
+        return Projects.objects.filter(
+            Q(pmo=user) | Q(project_members__user=user)
+        ).distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(pmo=self.request.user)
 
 
 class CanvasViewSet(viewsets.ModelViewSet):

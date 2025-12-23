@@ -95,7 +95,9 @@ class Projects(models.Model):
 
 class ProjectMembers(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        Projects, on_delete=models.CASCADE, related_name="project_members"
+    )
     function = models.CharField(max_length=100)
 
     def __str__(self):

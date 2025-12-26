@@ -1,0 +1,89 @@
+/* src/components/ProjectMilestone.css */
+
+.milestone-container {
+    padding: 20px 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* CONTROLES (Formulário + Botões de Zoom) */
+.milestone-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Formulinho Compacto */
+.milestone-form-compact {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.milestone-form-compact input {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.btn-add-mini {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botões de Zoom (Dia/Semana/Mês) */
+.view-mode-selector {
+    display: flex;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+.view-mode-selector button {
+    background: none;
+    border: none;
+    padding: 6px 15px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #495057;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.view-mode-selector button.active {
+    background-color: white;
+    color: #0d6efd;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    font-weight: 600;
+}
+
+/* Área do Gráfico */
+.gantt-wrapper {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden; /* Importante para o gráfico não vazar */
+    padding: 10px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px;
+    color: #aaa;
+}

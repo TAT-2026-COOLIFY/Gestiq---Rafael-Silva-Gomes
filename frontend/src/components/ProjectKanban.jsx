@@ -12,8 +12,8 @@ function ProjectKanban({ projectId }) {
   const STATUS_FLOW = ["BACKLOG", "PLAN", "DOING", "DONE"];
   
   const STATUS_LABELS = {
-    "BACKLOG": "Backlog (Ideias)",
-    "PLAN": "A Fazer",
+    "BACKLOG": "Backlog",
+    "PLAN": "A Iniciar",
     "DOING": "Em Andamento",
     "DONE": "Concluído"
   };
@@ -60,7 +60,9 @@ function ProjectKanban({ projectId }) {
     .catch(err => alert("Erro ao criar tarefa."));
   };
 
-  const handleMove = (task, direction) => {
+  const handleMove = (e, task, direction) => {
+    e.stopPropagation();
+
     const currentIndex = STATUS_FLOW.indexOf(task.status);
     const newIndex = currentIndex + direction;
 
@@ -78,12 +80,13 @@ function ProjectKanban({ projectId }) {
       .catch(() => alert("Erro ao mover tarefa."));
   };
 
-  const handleDelete = (id) => {
-      if(confirm("Excluir tarefa?")) {
-          api.delete(`activities/${id}/`).then(() => {
-              setTasks(tasks.filter(t => t.id !== id));
-          });
-      }
+  const handleDelete = (e, id) => {
+    e.stopPropagation();
+    if(confirm("Excluir tarefa?")) {
+        api.delete(`activities/${id}/`).then(() => {
+            setTasks(tasks.filter(t => t.id !== id));
+        });
+    }
   }
 
   const handleSaveFromModal = (taskId, updatedData) => {
@@ -213,16 +216,16 @@ function ProjectKanban({ projectId }) {
                                 </span>
                             </div>
 
-                            <button onClick={() => handleDelete(task.id)} style={{border:'none', background:'transparent', cursor:'pointer', color:'#aaa'}}>x</button>
+                            <button onClick={(e) => handleDelete(e, task.id)} style={{border:'none', background:'transparent', cursor:'pointer', color:'#aaa'}}>x</button>
                         </div>
 
                         <div className="card-actions">
                             {index > 0 ? (
-                                <button className="btn-move" onClick={() => handleMove(task, -1)}>⬅️</button>
+                                <button className="btn-move" onClick={(e) => handleMove(e, task, -1)}>⬅️</button>
                             ) : <span></span>}
 
                             {index < STATUS_FLOW.length - 1 ? (
-                                <button className="btn-move" onClick={() => handleMove(task, 1)}>➡️</button>
+                                <button className="btn-move" onClick={(e) => handleMove(e, task, 1)}>➡️</button>
                             ) : <span></span>}
                         </div>
                     </div>

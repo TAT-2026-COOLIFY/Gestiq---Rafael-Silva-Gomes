@@ -16,6 +16,7 @@ from .models import (
     Communications,
     ProjectMembers,
     Activity,
+    Milestones
 )
 from .serializers import (
     UsersSerializer,
@@ -29,6 +30,7 @@ from .serializers import (
     CommunicationsSerializer,
     ProjectMembersSerializer,
     ActivitiesSerializer,
+    MilestonesSerializer
 )
 
 
@@ -190,6 +192,18 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Activity.objects.all()
         project_id = self.request.query_params.get("project")
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        return queryset
+
+class MilestonesViewSet(viewsets.ModelViewSet):
+    queryset = Milestones.objects.all()
+    serializer_class = MilestonesSerializer
+
+    def get_queryset(self):
+        queryset = Milestones.objects.all()
+        project_id = self.request.query_params.get("project")
+
         if project_id:
             queryset = queryset.filter(project_id=project_id)
         return queryset

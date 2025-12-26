@@ -7,6 +7,7 @@ import ProjectRisks from "../components/ProjectRisks";
 import ProjectTeam from "../components/ProjectTeam";
 import ProjectCommunications from "../components/ProjectCommunications";
 import "./ProjectDetails.css";
+import ProjectMilestones from "../components/ProjectMilestones";
 
 function ProjectDetails() {
   const { id } = useParams(); // Pega o número que está na URL
@@ -80,6 +81,12 @@ function ProjectDetails() {
         >
           Kanban
         </button>
+        <button
+          className={activeTab === 'milestones' ? 'active' : ''}
+          onClick={() => setActiveTab('milestones')}
+        >
+          Linha do Tempo
+        </button>
       </div>
 
       {/* 3. Área de Conteúdo (Muda conforme a aba) */}
@@ -111,7 +118,12 @@ function ProjectDetails() {
           <div className="kanban-area">
             <ProjectKanban projectId={id} />
           </div>
-        )}  
+        )} 
+        {activeTab === 'milestones' && (
+          <div className="milestones-area">
+            <ProjectMilestones projectId={id} />
+          </div>
+        )}   
       </div>
     </div>
   );

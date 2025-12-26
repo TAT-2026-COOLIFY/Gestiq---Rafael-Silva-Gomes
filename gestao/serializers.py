@@ -10,6 +10,7 @@ from .models import (
     Categories,
     Communications,
     Activity,
+    Milestones,
 )
 
 
@@ -272,3 +273,17 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             except:
                 return None
             return None
+
+class MilestonesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Milestones
+        fields = [
+            "id",
+            "project",
+            "task",
+            "start_date",
+            "end_date",
+            "task_percentage_plan",
+            "task_percentage_real",
+        ]
+        

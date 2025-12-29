@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -16,7 +17,7 @@ from .models import (
     Communications,
     ProjectMembers,
     Activity,
-    Milestones
+    Milestones,
 )
 from .serializers import (
     UsersSerializer,
@@ -30,7 +31,7 @@ from .serializers import (
     CommunicationsSerializer,
     ProjectMembersSerializer,
     ActivitiesSerializer,
-    MilestonesSerializer
+    MilestonesSerializer,
 )
 
 
@@ -96,40 +97,24 @@ class CanvasViewSet(viewsets.ModelViewSet):
     queryset = Canvas.objects.all()
     serializer_class = CanvasSerializer
 
-    def get_queryset(self):
-        queryset = Canvas.objects.all()
-        project_id = self.request.query_params.get("project")
-
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-            print(f"Itens encontrados: {queryset.count()}")
-
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
 
 
 class RisksViewSet(viewsets.ModelViewSet):
     queryset = Risks.objects.all()
     serializer_class = RisksSerializer
 
-    def get_queryset(self):
-        queryset = Risks.objects.all()
-        project_id = self.request.query_params.get("project")
-
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
 
 
 class ProjectMembersViewSet(viewsets.ModelViewSet):
     queryset = ProjectMembers.objects.all()
     serializer_class = ProjectMembersSerializer
 
-    def get_queryset(self):
-        queryset = ProjectMembers.objects.all()
-        project_id = self.request.query_params.get("project")
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
 
     def create(self, request, *args, **kwargs):
         project_id = request.data.get("project")
@@ -176,34 +161,21 @@ class CommunicationViewSet(viewsets.ModelViewSet):
     queryset = Communications.objects.all()
     serializer_class = CommunicationsSerializer
 
-    def get_queryset(self):
-        queryset = Communications.objects.all()
-        project_id = self.request.query_params.get("project")
-
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
 
 
 class ActivitiesViewSet(viewsets.ModelViewSet):
     queryset = Activity.objects.all()
     serializer_class = ActivitiesSerializer
 
-    def get_queryset(self):
-        queryset = Activity.objects.all()
-        project_id = self.request.query_params.get("project")
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
+
 
 class MilestonesViewSet(viewsets.ModelViewSet):
     queryset = Milestones.objects.all()
     serializer_class = MilestonesSerializer
 
-    def get_queryset(self):
-        queryset = Milestones.objects.all()
-        project_id = self.request.query_params.get("project")
-
-        if project_id:
-            queryset = queryset.filter(project_id=project_id)
-        return queryset
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]

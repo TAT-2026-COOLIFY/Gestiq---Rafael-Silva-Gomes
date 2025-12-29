@@ -5,6 +5,79 @@ import "gantt-task-react/dist/index.css"; // <--- IMPORTANTE: O CSS PADRÃO
 import api from "../services/api";
 import "./ProjectMilestones.css";
 
+const formatDate = (date) => {
+  return date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  });
+};
+
+// Componente personalizado para as linhas da tabela
+const PortugueseTaskList = ({
+  rowHeight,
+  rowWidth,
+  tasks,
+  fontFamily,
+  fontSize,
+  onExpanderClick, // Necessário se você tiver sub-tarefas no futuro
+}) => {
+  return (
+    <div style={{ fontFamily: fontFamily, fontSize: fontSize }}>
+      {tasks.map((t) => (
+        <div
+          key={t.id}
+          style={{
+            height: rowHeight,
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            borderBottom: "1px solid #e0e0e0", // Linha divisória suave
+            backgroundColor: "#fff",
+          }}
+        >
+          {/* Coluna Nome da Tarefa */}
+          <div
+            style={{
+              flex: 1,
+              paddingLeft: "15px",
+              minWidth: rowWidth,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={t.name}
+          >
+            {t.name}
+          </div>
+
+          {/* Coluna Data Início (Formatada) */}
+          <div
+            style={{
+              width: "80px", // Mesma largura do Header
+              textAlign: "center",
+              borderLeft: "1px solid #e0e0e0",
+            }}
+          >
+            {formatDate(t.start)}
+          </div>
+
+          {/* Coluna Data Fim (Formatada) */}
+          <div
+            style={{
+              width: "80px", // Mesma largura do Header
+              textAlign: "center",
+              borderLeft: "1px solid #e0e0e0",
+            }}
+          >
+            {formatDate(t.end)}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const PortugueseHeader = ({ headerHeight, fontFamily, fontSize, rowWidth }) => {
   return (
     <div
@@ -110,21 +183,40 @@ function ProjectMilestone({ projectId }) {
 
   // Função chamada quando o usuário ARRASTA a barra
   const handleTaskChange = (task) => {
-    // 1. Atualiza visualmente na hora
+    // 1. Formatar as datas para o padrão do banco (YYYY-MM-DD)
+    // A biblioteca devolve objetos Date completos, precisamos limpar.
+    const newStartDate = task.start.toISOString().split('T')[0];
+    const newEndDate = task.end.toISOString().split('T')[0];
+
+    console.log("Enviando para o banco:", newStartDate, newEndDate);
+
+    // 2. Atualiza visualmente na hora (Otimista)
     const newMilestones = milestones.map(m => {
         if (String(m.id) === task.id) {
             return {
                 ...m,
-                start_date: task.start.toISOString().split('T')[0],
-                end_date: task.end.toISOString().split('T')[0]
+                start_date: newStartDate,
+                end_date: newEndDate
             };
         }
         return m;
     });
     setMilestones(newMilestones);
 
-    // 2. (Opcional) Aqui você faria o api.patch para salvar no banco
-    console.log("Nova data salva:", task.start, task.end);
+    // 3. Salva no Banco de Dados via API
+    api.patch(`milestones/${task.id}/`, {
+      start_date: newStartDate,
+      end_date: newEndDate
+    })
+    .then((res) => {
+      console.log("Salvo com sucesso!", res.data);
+    })
+    .catch((err) => {
+      console.error("Erro ao salvar a alteração:", err);
+      alert("Erro ao salvar a nova data no sistema.");
+      // Opcional: Aqui você poderia reverter o setMilestones se der erro
+      fetchMilestones(); 
+    });
   };
 
   if (loading) return <div>Carregando Timeline...</div>;
@@ -172,8 +264,9 @@ function ProjectMilestone({ projectId }) {
                 onDateChange={handleTaskChange}
                 listCellWidth={isChecked ? "155px" : ""}
                 columnWidth={viewMode === ViewMode.Month ? 180 : 65}
-                locale="pt-BR" 
+                locale="pt-BR"
                 TaskListHeader={PortugueseHeader}
+                TaskListTable={PortugueseTaskList}
                 barFill={60}
                 fontFamily="Segoe UI, sans-serif"
                 headerHeight={50}

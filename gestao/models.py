@@ -288,7 +288,49 @@ class Activity(models.Model):
     class Meta:
         verbose_name = "Activity"
         verbose_name_plural = "Activities"
-        ordering = ["end_date", "priority"]  # Ordena por prazo e prioridade
+        ordering = ["end_date", "priority"]
 
     def __str__(self):
         return f"[{self.project.name}] {self.title}"
+
+
+class StatusReport(models.Model):
+    STATUS_CHOICES = [
+        ("OK", "OK (Verde)"),
+        ("WARNING", "Atenção (Amarelo)"),
+        ("CRITICAL", "Risco (Vermelho)"),
+    ]
+
+    TREND_CHOICES = [
+        ("IMPROVING", "Melhorando"),
+        ("STABLE", "Estável"),
+        ("WORSENING", "Piorando"),
+    ]
+
+    project = models.ForeignKey(
+        Projects, on_delete=models.CASCADE, related_name="reports"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    previous_status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, verbose_name="Status Anterior"
+    )
+    current_status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, verbose_name="Status Atual"
+    )
+
+    trend = models.CharField(
+        max_length=10, choices=TREND_CHOICES, verbose_name="Tendência"
+    )
+    trend_description = models.TextField(verbose_name="Descrição da Tendência")
+
+    ongoing_activities = models.TextField(verbose_name="Atividades em Andamento")
+    next_activities = models.TextField(verbose_name="Próximas Atividades")
+    pending_activities = models.TextField(verbose_name="Pendências")
+    attention_points = models.TextField(verbose_name="Pontos de Atenção")
+    observations = models.TextField(
+        verbose_name="Observações Gerais", blank=True, null=True
+    )
+
+    def __str__(self):
+        return f"Report {self.created_at.strftime('%d/%m/%Y')} - {self.project.name}"

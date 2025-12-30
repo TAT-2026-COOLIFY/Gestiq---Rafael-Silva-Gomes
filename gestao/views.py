@@ -18,6 +18,7 @@ from .models import (
     ProjectMembers,
     Activity,
     Milestones,
+    StatusReport,
 )
 from .serializers import (
     UsersSerializer,
@@ -32,6 +33,7 @@ from .serializers import (
     ProjectMembersSerializer,
     ActivitiesSerializer,
     MilestonesSerializer,
+    StatusReportSerializer,
 )
 
 
@@ -176,6 +178,14 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
 class MilestonesViewSet(viewsets.ModelViewSet):
     queryset = Milestones.objects.all()
     serializer_class = MilestonesSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project"]
+
+
+class StatusReportViewSet(viewsets.ModelViewSet):
+    serializer_class = StatusReportSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]

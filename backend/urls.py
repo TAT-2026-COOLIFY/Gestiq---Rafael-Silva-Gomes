@@ -37,6 +37,7 @@ router.register(r"communications", views.CommunicationViewSet)
 router.register(r"members", views.ProjectMembersViewSet)
 router.register(r"activities", views.ActivitiesViewSet)
 router.register(r"milestones", views.MilestonesViewSet)
+router.register(r'reports', views.StatusReportViewSet, basename='statusreport')
 
 urlpatterns = [
     path("admin/", admin.site.urls),

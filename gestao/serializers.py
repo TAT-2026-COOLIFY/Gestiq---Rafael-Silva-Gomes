@@ -11,6 +11,7 @@ from .models import (
     Communications,
     Activity,
     Milestones,
+    StatusReport,
 )
 
 
@@ -286,4 +287,14 @@ class MilestonesSerializer(serializers.ModelSerializer):
             "task_percentage_plan",
             "task_percentage_real",
         ]
+
+class StatusReportSerializer(serializers.ModelSerializer):
+    created_at_formatted = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StatusReport
+        fields = '__all__'
+    
+    def get_created_at_formatted(self, obj):
+        return obj.created_at.strftime('%d/%m/%Y às %H:%M')
         

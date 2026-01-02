@@ -4,7 +4,6 @@ import "./ProjectStatusReport.css";
 
 function ProjectStatusReport({ projectId }) {
   const [reports, setReports] = useState([]);
-  const [showForm, setShowForm] = useState(false);
 
   // Estado inicial do formulário com todos os campos novos
   const [formData, setFormData] = useState({
@@ -12,11 +11,11 @@ function ProjectStatusReport({ projectId }) {
     current_status: "OK",
     trend: "STABLE",
     trend_description: "",
-    ongoing_activities: "",
-    next_activities: "",
-    pending_activities: "",
-    attention_points: "",
-    observations: ""
+    observations: "",
+    ongoing_activities: [],
+    next_activities: [],
+    pending_activities: [],
+    attention_points: [],
   });
 
   useEffect(() => {
@@ -25,9 +24,32 @@ function ProjectStatusReport({ projectId }) {
 
   const loadReports = () => {
     api.get(`reports/?project=${projectId}`)
-       .then(res => setReports(res.data.results || res.data))
+       .then(res => {
+        const data = res.data.results ? res.data.results[0] : res.data;
+
+        setFormData({
+            ...data,
+            ongoing_activities: data.ongoing_activities ? data.ongoing_activities.split('\n') : [],
+            next_activities: data.next_activities ? data.next_activities.split('\n') : [],
+            pending_activities: data.pending_activities ? data.pending_activities.split('\n') : [],
+            attention_points: data.attention_points ? data.attention_points.split('\n') : [],
+        });
+       })
        .catch(console.error);
   };
+
+  const handleChangeItem = (id, newValue, taskName) => {
+        setFormData(totalList => {
+            const listaAtualizada = [...totalList[taskName]];
+            
+            listaAtualizada[id] = newValue;
+
+            return {
+                ...totalList,
+                [taskName]: listaAtualizada
+            };
+        });
+    }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +57,6 @@ function ProjectStatusReport({ projectId }) {
        .then(res => {
          setReports([res.data, ...reports]);
          setShowForm(false);
-         // Resetar form (opcional)
          setFormData({
             previous_status: "OK",
             current_status: "OK",
@@ -51,64 +72,45 @@ function ProjectStatusReport({ projectId }) {
        .catch(err => alert("Erro ao salvar reporte."));
   };
 
-  // Helper para renderizar os textos com quebra de linha
-  const renderList = (text) => {
-      if(!text) return null;
-      return text.split('\n').map((line, i) => <div key={i}>• {line}</div>);
-  };
+  const handleAddItem = (taskName) => {
+    setFormData(totalList => {
+        return {
+            ...totalList,
+            [taskName]: [
+                ...totalList[taskName],
+                ""
+            ]
+        }
+    })
+  }
 
   return (
     <div className="report-container">
-      {!showForm && (
-        <button className="btn-new-report" onClick={() => setShowForm(true)}>
-          + Gerar Novo Reporte Executivo
-        </button>
-      )}
-
-      {showForm && (
         <form onSubmit={handleSubmit} className="report-form">
-            <h2>Novo Status Report</h2>
+            <h3>Atividades em Andamento</h3>
             
-            {/* BLOCO 1: VISÃO GERAL */}
             <div className="form-section">
-                <h3>1. Visão Geral e Tendência</h3>
-                <div className="status-grid">
-                    <div>
-                        <label>Status Anterior</label>
-                        <select value={formData.previous_status} onChange={e => setFormData({...formData, previous_status: e.target.value})}>
-                            <option value="OK">🟢 OK</option>
-                            <option value="WARNING">🟡 Atenção</option>
-                            <option value="CRITICAL">🔴 Risco</option>
-                        </select>
+                {formData.ongoing_activities.map((item, id) => (
+                    <div key={id} style={{ display: 'flex', marginBottom: '5px' }}>
+                        
+                        {/* O Input da Tarefa */}
+                        <input 
+                            type="text"
+                            value={item} 
+                            onChange={(e) => handleChangeItem(id, e.target.value, 'ongoing_activities')}
+                        />
+
+                        {/* O Botão de Remover */}
+                        <button type="button" onClick={() => handleRemoveItem(id, 'ongoing_activities')}>
+                            X
+                        </button>
                     </div>
-                    <div className="arrow">➡️</div>
-                    <div>
-                        <label>Status Atual</label>
-                        <select value={formData.current_status} onChange={e => setFormData({...formData, current_status: e.target.value})}>
-                            <option value="OK">🟢 OK</option>
-                            <option value="WARNING">🟡 Atenção</option>
-                            <option value="CRITICAL">🔴 Risco</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Tendência</label>
-                        <select value={formData.trend} onChange={e => setFormData({...formData, trend: e.target.value})}>
-                            <option value="IMPROVING">↗️ Melhorando</option>
-                            <option value="STABLE">➡️ Estável</option>
-                            <option value="WORSENING">↘️ Piorando</option>
-                        </select>
-                    </div>
-                </div>
-                <div style={{marginTop: '10px'}}>
-                    <label>Justificativa da Tendência:</label>
-                    <input 
-                        type="text" 
-                        placeholder="Ex: A equipe recuperou o atraso..."
-                        value={formData.trend_description}
-                        onChange={e => setFormData({...formData, trend_description: e.target.value})}
-                        required
-                    />
-                </div>
+                ))}
+
+                {/* Botão de Adicionar Nova Linha */}
+                <button type="button" onClick={() => handleAddItem('ongoing_activities')}>
+                    + Adicionar Atividade
+                </button>
             </div>
 
             {/* BLOCO 2: DETALHES (TEXTAREAS) */}
@@ -141,55 +143,6 @@ function ProjectStatusReport({ projectId }) {
                 <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancelar</button>
             </div>
         </form>
-      )}
-
-      {/* TIMELINE DE REPORTES */}
-      <div className="reports-list">
-          {reports.map(report => (
-              <div key={report.id} className={`report-card border-${report.current_status}`}>
-                  <div className="card-header-report">
-                      <span className="report-date">{new Date(report.created_at).toLocaleDateString()}</span>
-                      <div className="status-badges">
-                          <span className={`badge badge-${report.previous_status} opacity-50`}>{report.previous_status}</span>
-                          <span>➜</span>
-                          <span className={`badge badge-${report.current_status}`}>{report.current_status}</span>
-                          <span className="trend-icon">
-                              {report.trend === 'IMPROVING' ? '↗️ Melhorando' : report.trend === 'WORSENING' ? '↘️ Piorando' : '➡️ Estável'}
-                          </span>
-                      </div>
-                  </div>
-
-                  <div className="trend-desc">
-                      <strong>Tendência:</strong> {report.trend_description}
-                  </div>
-
-                  <div className="card-grid">
-                      <div className="card-section">
-                          <h4>Em Andamento</h4>
-                          {renderList(report.ongoing_activities)}
-                      </div>
-                      <div className="card-section">
-                          <h4>Próximos Passos</h4>
-                          {renderList(report.next_activities)}
-                      </div>
-                      <div className="card-section bg-light-yellow">
-                          <h4>Pontos de Atenção</h4>
-                          {renderList(report.attention_points)}
-                      </div>
-                      <div className="card-section">
-                          <h4>Pendências</h4>
-                          {renderList(report.pending_activities)}
-                      </div>
-                  </div>
-                  
-                  {report.observations && (
-                      <div className="card-obs">
-                          <strong>Obs:</strong> {report.observations}
-                      </div>
-                  )}
-              </div>
-          ))}
-      </div>
     </div>
   );
 }

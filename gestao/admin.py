@@ -9,6 +9,7 @@ from .models import (
     Communications,
     Risks,
     Milestones,
+    StatusReport
 )
 
 # -------------------------------------------------------------------------
@@ -133,3 +134,20 @@ class MilestonesAdmin(admin.ModelAdmin):
     )
     list_filter = ("project",)
     search_fields = ("task", "project__name")
+
+@admin.register(StatusReport)
+class StatusReportAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "project",
+        "previous_status",
+        "current_status",
+        "trend",
+        "trend_description",
+        "ongoing_activities",
+        "next_activities",
+        "pending_activities",
+        "attention_points",
+        "observations",
+    )
+    list_filter = ("project",)

@@ -260,7 +260,7 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "assigned_to_photo",
             "status",
             "priority",
-            "created_at",
+            "create_date",
         ]
 
     def get_assigned_to_photo(self, obj):
@@ -289,12 +289,12 @@ class MilestonesSerializer(serializers.ModelSerializer):
         ]
 
 class StatusReportSerializer(serializers.ModelSerializer):
-    created_at_formatted = serializers.SerializerMethodField()
+    create_date_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = StatusReport
         fields = '__all__'
     
-    def get_created_at_formatted(self, obj):
-        return obj.created_at.strftime('%d/%m/%Y às %H:%M')
+    def get_create_date_formatted(self, obj):
+        return obj.create_date.strftime('%d/%m/%Y às %H:%M')
         

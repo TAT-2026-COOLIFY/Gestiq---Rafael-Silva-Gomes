@@ -283,7 +283,7 @@ class Activity(models.Model):
         max_length=20, choices=Priority.choices, default=Priority.MEDIUM
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    create_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Activity"
@@ -310,7 +310,7 @@ class StatusReport(models.Model):
     project = models.ForeignKey(
         Projects, on_delete=models.CASCADE, related_name="reports"
     )
-    created_at = models.DateTimeField(auto_now_add=True)
+    create_date = models.DateTimeField(auto_now_add=True)
 
     previous_status = models.CharField(
         max_length=10, choices=STATUS_CHOICES, verbose_name="Status Anterior"
@@ -333,4 +333,4 @@ class StatusReport(models.Model):
     )
 
     def __str__(self):
-        return f"Report {self.created_at.strftime('%d/%m/%Y')} - {self.project.name}"
+        return f"Report {self.create_date.strftime('%d/%m/%Y')} - {self.project.name}"

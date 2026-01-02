@@ -184,8 +184,24 @@ class MilestonesViewSet(viewsets.ModelViewSet):
 
 
 class StatusReportViewSet(viewsets.ModelViewSet):
+    queryset = StatusReport.objects.all()
     serializer_class = StatusReportSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["project"]
+    def get_queryset(self):
+        project_id = self.request.query_params.get('project')
+
+        if not project_id:
+            return StatusReport.objects.none()
+        
+        report, _ = StatusReport.objects.get_or_create(
+            project_id=project_id,
+            defaults={
+                'previous_status': 'OK',
+                'current_status': 'OK',
+                'trend': 'STABLE',
+            }
+        )
+
+        return StatusReport.objects.filter(project_id=project_id)
+
+

@@ -1,0 +1,24 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 260px; 
+  transition: margin-left 0.3s ease; 
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.contentExpanded {
+  margin-left: 80px !important;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0 !important;
+    padding-top: 4rem;
+  }
+}

@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
-import Layout from "./components/Layout";
+import { Layout } from "./components/Layout";
 import ProjectForm from "./pages/ProjectForm";
 import Settings from './pages/Settings';
 import "./App.css";

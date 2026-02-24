@@ -1,0 +1,136 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background-color: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.header {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 70px;
+}
+
+.collapseBtn {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--text-muted);
+}
+
+.collapseBtn:hover {
+  color: var(--primary);
+}
+
+.nav {
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link, .activeLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  margin: 0 0.5rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  justify-content: flex-start;
+}
+
+.link:hover {
+  background-color: var(--background);
+  color: var(--primary);
+}
+
+.sidebar.collapsed .link, 
+.sidebar.collapsed .activeLink,
+.sidebar.collapsed .logoutBtn {
+  justify-content: center;
+  padding: 12px 0;
+  margin: 0 10px;
+  gap: 0;
+}
+
+.activeLink {
+  background-color: #eff6ff;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.logoutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sidebar.collapsed svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mobileBtn {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1100;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .collapseBtn { display: none; }
+
+    .mobileBtn { display: block; }
+  
+    .sidebar { transform: translateX(-100%); }
+
+    .sidebar.collapsed { width: 260px; }
+    
+    .sidebar.open { transform: translateX(0); }
+
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 999;
+    }
+}

@@ -6,19 +6,23 @@
 .mainContent {
   flex: 1;
   padding: 2rem;
-  margin-left: 260px; 
-  transition: margin-left 0.3s ease; 
+  margin-left: 260px;
+  transition: margin-left 0.3s ease;
   min-height: 100vh;
   background-color: var(--background);
 }
 
 .contentExpanded {
-  margin-left: 80px !important;
+  margin-left: 80px;
 }
 
 @media (max-width: 768px) {
   .mainContent {
-    margin-left: 0 !important;
-    padding-top: 4rem;
+    margin-left: 0;
+    padding: 5rem 1rem 1rem;
+  }
+
+  .contentExpanded {
+    margin-left: 0;
   }
 }

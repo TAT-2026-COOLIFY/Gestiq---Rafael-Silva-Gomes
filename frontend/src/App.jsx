@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import { Layout } from "./components/Layout";
 import ProjectForm from "./pages/ProjectForm";
-import Settings from './pages/Settings';
+import { Settings } from "./features/Settings";
 import "./App.css";
 import PrivateRoute from "./components/PrivateRoute";
 

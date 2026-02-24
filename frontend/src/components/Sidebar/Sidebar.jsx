@@ -13,13 +13,14 @@ import {
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
-export function Sidebar() {
+export function Sidebar({isCollapsed, onToggleCollapse }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const { signOut, user } = useAuth();
+    const { signOut } = useAuth();
 
     const toggleSideBar = () => setIsOpen(!isOpen);
-    const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
+    const isMobile = window.innerWidth <= 768;
+    const collapsed = isMobile ? false : isCollapsed;
 
     return (
         <>
@@ -37,7 +38,7 @@ export function Sidebar() {
                 <div className={styles.header}>
                     {!isCollapsed && <span className={styles.logo}>GP Projects</span>}
 
-                    <button className={styles.collapseBtn} onClick={toggleCollapse}>
+                    <button className={styles.collapseBtn} onClick={onToggleCollapse}>
                         {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                     </button>
                 </div>
@@ -60,11 +61,6 @@ export function Sidebar() {
                 </nav>
 
                 <div className={styles.footer}>
-                    {!isCollapsed && (
-                        <div className={styles.userInfo}>
-                            <p>{user?.first_name || 'Usuário'}</p>
-                        </div>
-                    )}
                     <button onClick={signOut} className={styles.logoutBtn}>
                         <LogOut size={20} />
                         {!isCollapsed && <span>Sair</span>}

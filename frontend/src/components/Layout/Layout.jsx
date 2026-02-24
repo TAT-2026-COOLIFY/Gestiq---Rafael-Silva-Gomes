@@ -8,7 +8,10 @@ export function Layout() {
 
   return (
     <div className={styles.wrapper}>
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <Sidebar 
+        isCollapsed={isCollapsed} 
+        onToggleCollapse={() => setIsCollapsed(prev => !prev)}
+      />
 
       <main className={`${styles.mainContent} ${isCollapsed ? styles.contentExpanded : ''}`}>
         <Outlet />

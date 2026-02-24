@@ -1,0 +1,25 @@
+.baseButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s active;
+}
+
+.baseButton:hover {
+  background-color: #1d4ed8;
+}
+
+.baseButton:active {
+  transform: scale(0.98);
+}
+
+.baseButton:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}

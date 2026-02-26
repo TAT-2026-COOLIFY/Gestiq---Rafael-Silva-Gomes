@@ -33,7 +33,7 @@ export function Sidebar({isCollapsed, onToggleCollapse }) {
             <aside className={`
                     ${styles.sidebar} 
                     ${isOpen ? styles.open : ''}
-                    ${isCollapsed ? styles.collapsed : ''}
+                    ${collapsed ? styles.collapsed : ''}
                 `}>
                 <div className={styles.header}>
                     {!isCollapsed && <span className={styles.logo}>GP Projects</span>}

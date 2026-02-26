@@ -39,8 +39,8 @@ function ProjectDetails() {
         <div>
             <h1>{project.name}</h1>
             <span className={`status-badge ${project.project_status}`}>
-                { project.project_status === 'PLAN' ? 'Planejamento' : 
-                  project.project_status === 'ACTIVE' ? 'ATIVO' :
+                { project.project_status === 'PLAN' ? 'A iniciar' : 
+                  project.project_status === 'ACTIVE' ? 'Em andamento' :
                   project.project_status === 'CANC' ? 'Cancelado' :
                   project.project_status === 'CONC' ? 'Concluído' :
                   project.project_status

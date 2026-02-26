@@ -5,11 +5,12 @@
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 1rem;
   transition: box-shadow 0.2s, transform 0.2s;
-  max-width: 480px;
   width: 100%;
+  box-sizing: border-box;
 }
+
 .card:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
@@ -17,30 +18,10 @@
 
 .cardHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
-
-.projectType {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.statusBadge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-}
-
-.statusPlan  { background: #fff7ed; color: #c2410c; }
-.statusActive { background: #eff6ff; color: #1d4ed8; }
-.statusConc  { background: #f0fdf4; color: #15803d; }
-.statusCanc  { background: #fef2f2; color: #b91c1c; }
 
 .projectName {
   font-size: 1rem;
@@ -50,11 +31,19 @@
   line-height: 1.4;
 }
 
-.leader {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin: 0;
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+
+.statusPlan   { background: #fff7ed; color: #c2410c; }
+.statusActive { background: #eff6ff; color: #1d4ed8; }
+.statusConc   { background: #f0fdf4; color: #15803d; }
+.statusCanc   { background: #fef2f2; color: #b91c1c; }
 
 .progressWrapper {
   display: flex;
@@ -79,10 +68,10 @@
 .progressLabel {
   font-size: 0.78rem;
   color: var(--text-muted);
+  text-align: right;
 }
 
 .detailsBtn {
-  margin-top: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -94,6 +83,7 @@
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.2s;
+  margin-top: auto;
 }
 
 .detailsBtn:hover {

@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import { Dashboard } from "./features/Dashboard";
 import ProjectDetails from "./pages/ProjectDetails";
 import { Layout } from "./components/Layout";
-import ProjectForm from "./pages/ProjectForm";
+import { ProjectForm } from "./features/ProjectForm";
 import { Settings } from "./features/Settings";
 import "./App.css";
 import PrivateRoute from "./components/PrivateRoute";

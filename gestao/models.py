@@ -53,7 +53,16 @@ class Projects(models.Model):
         CANCELADO = "CANC", "Cancelado"
 
     create_date = models.DateTimeField(auto_now_add=True)
-    pmo = models.ForeignKey(User, on_delete=models.PROTECT, related_name="project_pmo")
+    pmo = models.ForeignKey(
+        User, on_delete=models.PROTECT, 
+        related_name="project_pmo",
+        null=True, blank=True 
+    )
+    leader = models.ForeignKey(
+        User, on_delete=models.PROTECT, 
+        related_name="project_leader",
+        null=True, blank=True
+    )
     name = models.CharField(max_length=250)
     objective = models.TextField()
     justification = models.TextField()
@@ -62,9 +71,6 @@ class Projects(models.Model):
     area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects")
     category = models.ForeignKey(
         Categories, on_delete=models.PROTECT, related_name="projects"
-    )
-    leader = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name="project_leader"
     )
     project_type = models.CharField(
         max_length=4,

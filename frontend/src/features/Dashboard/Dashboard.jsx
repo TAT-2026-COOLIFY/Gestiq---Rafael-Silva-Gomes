@@ -2,12 +2,18 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { dashboardService } from "./services/dashboardService";
-import ProjectCard from "@/components/ProjectCard";
+import { ProjectCard } from "./components/ProjectCard";
 import { Toast } from "@/components/Toast";
 import styles from "./Dashboard.module.css";
 
+const TABS = [
+    { key: "CORP", label: "Corporativos" },
+    { key: "DEP",  label: "Departamentais" },
+];
+
 export function Dashboard() {
     const [projects, setProjects] = useState([]);
+    const [activeTab, setActiveTab] = useState("CORP");
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
 
@@ -18,11 +24,13 @@ export function Dashboard() {
     useEffect(() => {
         dashboardService.getProjects()
             .then(setProjects)
-            .catch(() => showToast("Erro ao carregar projetos. Tente Novamente."))
+            .catch(() => showToast("Erro ao carregar projetos. Tente novamente."))
             .finally(() => setLoading(false));
     }, [showToast]);
 
-    if ( loading ) {
+    const filtered = projects.filter((p) => p.project_type === activeTab);
+
+    if (loading) {
         return (
             <div className={styles.loadingWrapper}>
                 <div className={styles.spinner} />
@@ -43,17 +51,33 @@ export function Dashboard() {
                 </Link>
             </div>
 
-            {projects.length === 0 ? (
+            <div className={styles.tabs}>
+                {TABS.map((tab) => {
+                    const count = projects.filter((p) => p.project_type === tab.key).length;
+                    return (
+                        <button
+                            key={tab.key}
+                            className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ""}`}
+                            onClick={() => setActiveTab(tab.key)}
+                        >
+                            {tab.label}
+                            <span className={styles.tabCount}>{count}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {filtered.length === 0 ? (
                 <div className={styles.emptyState}>
-                    <p>Nenhum projeto encontrado</p>
+                    <p>Nenhum projeto {activeTab === "CORP" ? "corporativo" : "departamental"} encontrado.</p>
                     <Link to="/projeto/novo" className={styles.newBtn}>
                         <Plus size={18} />
-                        Criar primeiro projeto
+                        Criar projeto
                     </Link>
                 </div>
             ) : (
                 <div className={styles.grid}>
-                    {projects.map((project) => (
+                    {filtered.map((project) => (
                         <ProjectCard key={project.id} project={project} />
                     ))}
                 </div>

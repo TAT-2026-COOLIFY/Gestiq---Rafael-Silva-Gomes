@@ -1,3 +1,4 @@
+from datetime import date
 from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
@@ -86,8 +87,24 @@ class Projects(models.Model):
     )
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    percentage_plan = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
-    percentage_real = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
+    
+    @property
+    def total_percentage_real(self):
+        marcos = self.milestones_set.all()
+        if not marcos.exists():
+            return 0
+
+        soma_progresso = sum(marco.percentage_real for marco in marcos)
+        return round(soma_progresso / marcos.count(), 2)
+
+    @property
+    def total_percentage_plan(self):
+        marcos = self.milestones.all()
+        if not marcos.exists():
+            return 0
+        
+        soma_planejado = sum(marco.percentage_plan for marco in marcos)
+        return round(soma_planejado / marcos.count(), 2)
     cancel_justification = models.TextField(blank=True)
     members = models.ManyToManyField(User, through="ProjectMembers")
 
@@ -232,25 +249,8 @@ class Risks(models.Model):
 
     def __str__(self):
         return f"{self.description} (Score: {self.score})"
-
-
-class Milestones(models.Model):
-    create_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE)
-    task = models.CharField(max_length=100)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    task_percentage_plan = models.DecimalField(max_digits=5, decimal_places=2)
-    task_percentage_real = models.DecimalField(max_digits=5, decimal_places=2)
-
-    class Meta:
-        verbose_name = "Milestone"
-        verbose_name_plural = "Milestones"
-
-    def __str__(self):
-        return f"Marco {self.task} - Projeto {self.project.name}"
-
-
+    
+    
 class Activity(models.Model):
     class Status(models.TextChoices):
         BACKLOG = "BACKLOG", "Backlog"
@@ -266,6 +266,22 @@ class Activity(models.Model):
 
     project = models.ForeignKey(
         Projects, on_delete=models.CASCADE, related_name="activities"
+    )
+    
+    milestone = models.ForeignKey(
+        'Milestones', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="activities"
+    )
+    
+    sprint = models.ForeignKey(
+        'Sprints', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name="activities"
     )
 
     title = models.CharField(max_length=100)
@@ -300,43 +316,50 @@ class Activity(models.Model):
         return f"[{self.project.name}] {self.title}"
 
 
-class StatusReport(models.Model):
-    STATUS_CHOICES = [
-        ("OK", "OK (Verde)"),
-        ("WARNING", "Atenção (Amarelo)"),
-        ("CRITICAL", "Risco (Vermelho)"),
-    ]
-
-    TREND_CHOICES = [
-        ("IMPROVING", "Melhorando"),
-        ("STABLE", "Estável"),
-        ("WORSENING", "Piorando"),
-    ]
-
-    project = models.ForeignKey(
-        Projects, on_delete=models.CASCADE, related_name="reports"
-    )
+class Milestones(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name="milestones")
+    task = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    
+    @property
+    def percentage_plan(self):
+        hoje = date.today()
+        if hoje < self.start_date:
+            return 0
+        if hoje > self.end_date:
+            return 100
+        
+        total_dias = (self.end_date - self.start_date).days
+        dias_passados = (hoje - self.start_date).days
+        return round((dias_passados / total_dias) * 100, 2)
 
-    previous_status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, verbose_name="Status Anterior"
-    )
-    current_status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, verbose_name="Status Atual"
-    )
-
-    trend = models.CharField(
-        max_length=10, choices=TREND_CHOICES, verbose_name="Tendência"
-    )
-    trend_description = models.TextField(verbose_name="Descrição da Tendência")
-
-    ongoing_activities = models.TextField(verbose_name="Atividades em Andamento")
-    next_activities = models.TextField(verbose_name="Próximas Atividades")
-    pending_activities = models.TextField(verbose_name="Pendências")
-    attention_points = models.TextField(verbose_name="Pontos de Atenção")
-    observations = models.TextField(
-        verbose_name="Observações Gerais", blank=True, null=True
-    )
+    @property
+    def percentage_real(self):
+        total_tasks = self.activities.count()
+        if total_tasks == 0:
+            return 0
+        concluidas = self.activities.filter(status="DONE").count()
+        return round((concluidas / total_tasks) * 100, 2)
 
     def __str__(self):
-        return f"Report {self.create_date.strftime('%d/%m/%Y')} - {self.project.name}"
+        return f"Marco: {self.task} ({self.progress}%)"
+
+    class Meta:
+        verbose_name = "Milestone"
+        verbose_name_plural = "Milestones"
+
+    def __str__(self):
+        return f"Marco {self.task} - Projeto {self.project.name}"
+
+
+class Sprints(models.Model):
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name="sprints")
+    name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} - {self.project.name}"

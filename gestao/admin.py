@@ -9,7 +9,8 @@ from .models import (
     Communications,
     Risks,
     Milestones,
-    StatusReport
+    Activity,
+    Sprints,
 )
 
 # -------------------------------------------------------------------------
@@ -19,13 +20,24 @@ from .models import (
 
 class CanvasInline(admin.StackedInline):
     model = Canvas
-    extra = 0  # Não mostra formulários vazios extras
-    can_delete = False  # Evita deletar o canvas sem querer
+    extra = 0
+    can_delete = False
 
 
 class ProjectMembersInline(admin.TabularInline):
     model = ProjectMembers
-    extra = 1  # Mostra 1 linha vazia para adicionar novo membro
+    extra = 1
+
+
+class MilestonesInline(admin.TabularInline):
+    model = Milestones
+    extra = 0
+    readonly_fields = ("percentage_plan", "percentage_real")
+
+
+class SprintsInline(admin.TabularInline):
+    model = Sprints
+    extra = 0
 
 
 # -------------------------------------------------------------------------
@@ -52,7 +64,6 @@ class CategoriesAdmin(admin.ModelAdmin):
 
 @admin.register(Projects)
 class ProjectsAdmin(admin.ModelAdmin):
-    # Colunas que aparecem na lista
     list_display = (
         "id",
         "name",
@@ -60,25 +71,26 @@ class ProjectsAdmin(admin.ModelAdmin):
         "project_status",
         "pmo",
         "leader",
-        "percentage_real",
+        "total_percentage_real",
     )
 
-    # Filtros na barra lateral direita (CRUCIAL para gestão)
     list_filter = ("project_status", "project_type", "area", "category")
 
     # Barra de pesquisa (Busca por nome do projeto ou nome do líder)
     search_fields = ("name", "pmo__username", "leader__username")
 
     # Campos que são apenas leitura (automáticos)
-    readonly_fields = ("create_date",)
+    readonly_fields = ("create_date", "total_percentage_real", "total_percentage_plan")
 
     # Aqui ativamos os Inlines que criamos lá em cima
-    inlines = [CanvasInline, ProjectMembersInline]
+    inlines = [CanvasInline, ProjectMembersInline, MilestonesInline, SprintsInline]
 
     # Paginação (se tiver muitos projetos)
     list_per_page = 20
 
+
 admin.site.register(Canvas)
+
 
 @admin.register(Communications)
 class CommunicationsAdmin(admin.ModelAdmin):
@@ -130,24 +142,33 @@ class MilestonesAdmin(admin.ModelAdmin):
         "project",
         "start_date",
         "end_date",
-        "task_percentage_real",
+        "percentage_plan",
+        "percentage_real",
     )
     list_filter = ("project",)
     search_fields = ("task", "project__name")
+    readonly_fields = ("percentage_plan", "percentage_real")
 
-@admin.register(StatusReport)
-class StatusReportAdmin(admin.ModelAdmin):
+
+@admin.register(Activity)
+class ActivityAdmin(admin.ModelAdmin):
     list_display = (
         "id",
+        "title",
         "project",
-        "previous_status",
-        "current_status",
-        "trend",
-        "trend_description",
-        "ongoing_activities",
-        "next_activities",
-        "pending_activities",
-        "attention_points",
-        "observations",
+        "milestone",
+        "sprint",
+        "status",
+        "priority",
+        "assigned_to",
     )
-    list_filter = ("project",)
+    list_filter = ("status", "priority", "project", "sprint")
+    search_fields = ("title", "project__name")
+    readonly_fields = ("create_date",)
+
+
+@admin.register(Sprints)
+class SprintsAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "project", "start_date", "end_date", "is_active")
+    list_filter = ("is_active", "project")
+    search_fields = ("name", "project__name")

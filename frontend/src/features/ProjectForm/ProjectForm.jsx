@@ -126,6 +126,8 @@ export function ProjectForm() {
                             <select id="project_type" name="project_type" value={formData.project_type} onChange={handleChange}>
                                 <option value="CORP">Corporativo</option>
                                 <option value="DEP">Departamental</option>
+                                <option value="PES">Pessoal</option>
+                                <option value="ACAD">Acadêmico</option>
                             </select>
                         </div>
                         <div className={styles.formGroup}>

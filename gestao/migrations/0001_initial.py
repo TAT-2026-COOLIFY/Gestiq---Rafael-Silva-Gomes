@@ -15,198 +15,629 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Areas',
+            name="Areas",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
             options={
-                'verbose_name': 'Area',
-                'verbose_name_plural': 'Areas',
-                'ordering': ['id'],
+                "verbose_name": "Area",
+                "verbose_name_plural": "Areas",
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='Categories',
+            name="Categories",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
             options={
-                'verbose_name': 'Category',
-                'verbose_name_plural': 'Categories',
-                'ordering': ['id'],
+                "verbose_name": "Category",
+                "verbose_name_plural": "Categories",
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='ProjectMembers',
+            name="ProjectMembers",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('function', models.CharField(max_length=100)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("function", models.CharField(max_length=100)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Projects',
+            name="Projects",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('name', models.CharField(max_length=250)),
-                ('objective', models.TextField()),
-                ('justification', models.TextField()),
-                ('scope', models.TextField()),
-                ('results', models.TextField()),
-                ('project_type', models.CharField(choices=[('CORP', 'Corporativo'), ('DEP', 'Departamental')], db_index=True, default='CORP', max_length=4)),
-                ('project_status', models.CharField(choices=[('PLAN', 'A Iniciar'), ('ACTIVE', 'Em Andamento'), ('CONC', 'Concluído'), ('CANC', 'Cancelado')], db_index=True, default='PLAN', max_length=10)),
-                ('start_date', models.DateField(blank=True, null=True)),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('percentage_plan', models.DecimalField(decimal_places=2, default=0.0, max_digits=5)),
-                ('percentage_real', models.DecimalField(decimal_places=2, default=0.0, max_digits=5)),
-                ('cancel_justification', models.TextField(blank=True)),
-                ('area', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='projects', to='gestao.areas')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='projects', to='gestao.categories')),
-                ('leader', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='project_leader', to=settings.AUTH_USER_MODEL)),
-                ('members', models.ManyToManyField(through='gestao.ProjectMembers', to=settings.AUTH_USER_MODEL)),
-                ('pmo', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='project_pmo', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                ("name", models.CharField(max_length=250)),
+                ("objective", models.TextField()),
+                ("justification", models.TextField()),
+                ("scope", models.TextField()),
+                ("results", models.TextField()),
+                (
+                    "project_type",
+                    models.CharField(
+                        choices=[("CORP", "Corporativo"), ("DEP", "Departamental")],
+                        db_index=True,
+                        default="CORP",
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "project_status",
+                    models.CharField(
+                        choices=[
+                            ("PLAN", "A Iniciar"),
+                            ("ACTIVE", "Em Andamento"),
+                            ("CONC", "Concluído"),
+                            ("CANC", "Cancelado"),
+                        ],
+                        db_index=True,
+                        default="PLAN",
+                        max_length=10,
+                    ),
+                ),
+                ("start_date", models.DateField(blank=True, null=True)),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "percentage_plan",
+                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                ),
+                (
+                    "percentage_real",
+                    models.DecimalField(decimal_places=2, default=0.0, max_digits=5),
+                ),
+                ("cancel_justification", models.TextField(blank=True)),
+                (
+                    "area",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="projects",
+                        to="gestao.areas",
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="projects",
+                        to="gestao.categories",
+                    ),
+                ),
+                (
+                    "leader",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="project_leader",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "members",
+                    models.ManyToManyField(
+                        through="gestao.ProjectMembers", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+                (
+                    "pmo",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="project_pmo",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Project',
-                'verbose_name_plural': 'Projects',
+                "verbose_name": "Project",
+                "verbose_name_plural": "Projects",
             },
         ),
         migrations.AddField(
-            model_name='projectmembers',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='project_members', to='gestao.projects'),
+            model_name="projectmembers",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="project_members",
+                to="gestao.projects",
+            ),
         ),
         migrations.CreateModel(
-            name='Milestones',
+            name="Milestones",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('task', models.CharField(max_length=100)),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField()),
-                ('task_percentage_plan', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('task_percentage_real', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='gestao.projects')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                ("task", models.CharField(max_length=100)),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField()),
+                (
+                    "task_percentage_plan",
+                    models.DecimalField(decimal_places=2, max_digits=5),
+                ),
+                (
+                    "task_percentage_real",
+                    models.DecimalField(decimal_places=2, max_digits=5),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gestao.projects",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Milestone',
-                'verbose_name_plural': 'Milestones',
+                "verbose_name": "Milestone",
+                "verbose_name_plural": "Milestones",
             },
         ),
         migrations.CreateModel(
-            name='Communications',
+            name="Communications",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('description', models.TextField()),
-                ('objective', models.TextField()),
-                ('sender', models.TextField()),
-                ('recipient', models.TextField()),
-                ('channel', models.CharField(choices=[('EMAIL', 'E-mail'), ('TEAMS', 'Teams'), ('WHATS', 'WhatsApp'), ('PHONE', 'Telefone'), ('MEET', 'Reunião Presencial'), ('OL_MEET', 'Reunião Online')], default='EMAIL', max_length=10)),
-                ('frequency', models.CharField(choices=[('ONCE', 'Uma única vez'), ('DAILY', 'Diária'), ('WEEKLY', 'Semanal'), ('MONTHLY', 'Mensal'), ('MEETING', 'Após cada reunião'), ('NEEDED', 'Conforme Necessário')], default='ONCE', max_length=7)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='gestao.projects')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                ("description", models.TextField()),
+                ("objective", models.TextField()),
+                ("sender", models.TextField()),
+                ("recipient", models.TextField()),
+                (
+                    "channel",
+                    models.CharField(
+                        choices=[
+                            ("EMAIL", "E-mail"),
+                            ("TEAMS", "Teams"),
+                            ("WHATS", "WhatsApp"),
+                            ("PHONE", "Telefone"),
+                            ("MEET", "Reunião Presencial"),
+                            ("OL_MEET", "Reunião Online"),
+                        ],
+                        default="EMAIL",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "frequency",
+                    models.CharField(
+                        choices=[
+                            ("ONCE", "Uma única vez"),
+                            ("DAILY", "Diária"),
+                            ("WEEKLY", "Semanal"),
+                            ("MONTHLY", "Mensal"),
+                            ("MEETING", "Após cada reunião"),
+                            ("NEEDED", "Conforme Necessário"),
+                        ],
+                        default="ONCE",
+                        max_length=7,
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gestao.projects",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Communication',
-                'verbose_name_plural': 'Communications',
+                "verbose_name": "Communication",
+                "verbose_name_plural": "Communications",
             },
         ),
         migrations.CreateModel(
-            name='Canvas',
+            name="Canvas",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('benefits', models.TextField()),
-                ('product', models.TextField()),
-                ('requirements', models.TextField()),
-                ('stakeholders', models.TextField()),
-                ('team', models.TextField()),
-                ('systems', models.TextField()),
-                ('assumptions', models.TextField()),
-                ('deliverables', models.TextField()),
-                ('constraints', models.TextField()),
-                ('risks', models.TextField()),
-                ('timeline', models.TextField()),
-                ('costs', models.TextField()),
-                ('project', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='gestao.projects')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                ("benefits", models.TextField()),
+                ("product", models.TextField()),
+                ("requirements", models.TextField()),
+                ("stakeholders", models.TextField()),
+                ("team", models.TextField()),
+                ("systems", models.TextField()),
+                ("assumptions", models.TextField()),
+                ("deliverables", models.TextField()),
+                ("constraints", models.TextField()),
+                ("risks", models.TextField()),
+                ("timeline", models.TextField()),
+                ("costs", models.TextField()),
+                (
+                    "project",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gestao.projects",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Activity',
+            name="Activity",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('start_date', models.DateField(blank=True, null=True)),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('status', models.CharField(choices=[('BACKLOG', 'Backlog'), ('PLAN', 'A Iniciar'), ('DOING', 'Em Andamento'), ('DONE', 'Concluído')], default='PLAN', max_length=20)),
-                ('priority', models.CharField(choices=[('LOW', 'Baixa'), ('MEDIUM', 'Média'), ('HIGH', 'Alta'), ('CRITICAL', 'Crítica')], default='MEDIUM', max_length=20)),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('assigned_to', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='assigned_activities', to=settings.AUTH_USER_MODEL)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='activities', to='gestao.projects')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("start_date", models.DateField(blank=True, null=True)),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("BACKLOG", "Backlog"),
+                            ("PLAN", "A Iniciar"),
+                            ("DOING", "Em Andamento"),
+                            ("DONE", "Concluído"),
+                        ],
+                        default="PLAN",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "priority",
+                    models.CharField(
+                        choices=[
+                            ("LOW", "Baixa"),
+                            ("MEDIUM", "Média"),
+                            ("HIGH", "Alta"),
+                            ("CRITICAL", "Crítica"),
+                        ],
+                        default="MEDIUM",
+                        max_length=20,
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "assigned_to",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="assigned_activities",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="activities",
+                        to="gestao.projects",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Activity',
-                'verbose_name_plural': 'Activities',
-                'ordering': ['end_date', 'priority'],
+                "verbose_name": "Activity",
+                "verbose_name_plural": "Activities",
+                "ordering": ["end_date", "priority"],
             },
         ),
         migrations.CreateModel(
-            name='Risks',
+            name="Risks",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('description', models.TextField()),
-                ('category', models.CharField(choices=[('TEC', 'Técnico'), ('EXT', 'Externo'), ('ORG', 'Organizacional'), ('GP', 'Gestão de Projetos')], max_length=3)),
-                ('cost', models.CharField(choices=[('0.10', 'Muito Baixo'), ('0.30', 'Baixo'), ('0.50', 'Médio'), ('0.70', 'Alto'), ('0.90', 'Muito Alto')], max_length=4)),
-                ('timeline', models.CharField(choices=[('0.10', 'Muito Baixo'), ('0.30', 'Baixo'), ('0.50', 'Médio'), ('0.70', 'Alto'), ('0.90', 'Muito Alto')], max_length=4)),
-                ('scope', models.CharField(choices=[('0.10', 'Muito Baixo'), ('0.30', 'Baixo'), ('0.50', 'Médio'), ('0.70', 'Alto'), ('0.90', 'Muito Alto')], max_length=4)),
-                ('quality', models.CharField(choices=[('0.10', 'Muito Baixo'), ('0.30', 'Baixo'), ('0.50', 'Médio'), ('0.70', 'Alto'), ('0.90', 'Muito Alto')], max_length=4)),
-                ('probability', models.CharField(choices=[('0.10', 'Muito Baixo'), ('0.30', 'Baixo'), ('0.50', 'Médio'), ('0.70', 'Alto'), ('0.90', 'Muito Alto')], max_length=4)),
-                ('score', models.DecimalField(blank=True, decimal_places=2, max_digits=5, null=True)),
-                ('action_plan', models.TextField(blank=True, null=True)),
-                ('action', models.CharField(choices=[('ACEITAR', 'Aceitar'), ('TRANSFERIR', 'Transferir'), ('MITIGAR', 'Mitigar'), ('ELIMINAR', 'Eliminar')], default='MITIGAR', max_length=10)),
-                ('status', models.CharField(choices=[('INICIAR', 'A Iniciar'), ('ANDAMENTO', 'Em Andamento'), ('CONCLUIDO', 'Concluído')], default='INICIAR', max_length=9)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='gestao.projects')),
-                ('responsavel', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                ("description", models.TextField()),
+                (
+                    "category",
+                    models.CharField(
+                        choices=[
+                            ("TEC", "Técnico"),
+                            ("EXT", "Externo"),
+                            ("ORG", "Organizacional"),
+                            ("GP", "Gestão de Projetos"),
+                        ],
+                        max_length=3,
+                    ),
+                ),
+                (
+                    "cost",
+                    models.CharField(
+                        choices=[
+                            ("0.10", "Muito Baixo"),
+                            ("0.30", "Baixo"),
+                            ("0.50", "Médio"),
+                            ("0.70", "Alto"),
+                            ("0.90", "Muito Alto"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "timeline",
+                    models.CharField(
+                        choices=[
+                            ("0.10", "Muito Baixo"),
+                            ("0.30", "Baixo"),
+                            ("0.50", "Médio"),
+                            ("0.70", "Alto"),
+                            ("0.90", "Muito Alto"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "scope",
+                    models.CharField(
+                        choices=[
+                            ("0.10", "Muito Baixo"),
+                            ("0.30", "Baixo"),
+                            ("0.50", "Médio"),
+                            ("0.70", "Alto"),
+                            ("0.90", "Muito Alto"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "quality",
+                    models.CharField(
+                        choices=[
+                            ("0.10", "Muito Baixo"),
+                            ("0.30", "Baixo"),
+                            ("0.50", "Médio"),
+                            ("0.70", "Alto"),
+                            ("0.90", "Muito Alto"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "probability",
+                    models.CharField(
+                        choices=[
+                            ("0.10", "Muito Baixo"),
+                            ("0.30", "Baixo"),
+                            ("0.50", "Médio"),
+                            ("0.70", "Alto"),
+                            ("0.90", "Muito Alto"),
+                        ],
+                        max_length=4,
+                    ),
+                ),
+                (
+                    "score",
+                    models.DecimalField(
+                        blank=True, decimal_places=2, max_digits=5, null=True
+                    ),
+                ),
+                ("action_plan", models.TextField(blank=True, null=True)),
+                (
+                    "action",
+                    models.CharField(
+                        choices=[
+                            ("ACEITAR", "Aceitar"),
+                            ("TRANSFERIR", "Transferir"),
+                            ("MITIGAR", "Mitigar"),
+                            ("ELIMINAR", "Eliminar"),
+                        ],
+                        default="MITIGAR",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("INICIAR", "A Iniciar"),
+                            ("ANDAMENTO", "Em Andamento"),
+                            ("CONCLUIDO", "Concluído"),
+                        ],
+                        default="INICIAR",
+                        max_length=9,
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="gestao.projects",
+                    ),
+                ),
+                (
+                    "responsavel",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Risk',
-                'verbose_name_plural': 'Risks',
+                "verbose_name": "Risk",
+                "verbose_name_plural": "Risks",
             },
         ),
         migrations.CreateModel(
-            name='StatusReport',
+            name="StatusReport",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('create_date', models.DateTimeField(auto_now_add=True)),
-                ('previous_status', models.CharField(choices=[('OK', 'OK (Verde)'), ('WARNING', 'Atenção (Amarelo)'), ('CRITICAL', 'Risco (Vermelho)')], max_length=10, verbose_name='Status Anterior')),
-                ('current_status', models.CharField(choices=[('OK', 'OK (Verde)'), ('WARNING', 'Atenção (Amarelo)'), ('CRITICAL', 'Risco (Vermelho)')], max_length=10, verbose_name='Status Atual')),
-                ('trend', models.CharField(choices=[('IMPROVING', 'Melhorando'), ('STABLE', 'Estável'), ('WORSENING', 'Piorando')], max_length=10, verbose_name='Tendência')),
-                ('trend_description', models.TextField(verbose_name='Descrição da Tendência')),
-                ('ongoing_activities', models.TextField(verbose_name='Atividades em Andamento')),
-                ('next_activities', models.TextField(verbose_name='Próximas Atividades')),
-                ('pending_activities', models.TextField(verbose_name='Pendências')),
-                ('attention_points', models.TextField(verbose_name='Pontos de Atenção')),
-                ('observations', models.TextField(blank=True, null=True, verbose_name='Observações Gerais')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reports', to='gestao.projects')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("create_date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "previous_status",
+                    models.CharField(
+                        choices=[
+                            ("OK", "OK (Verde)"),
+                            ("WARNING", "Atenção (Amarelo)"),
+                            ("CRITICAL", "Risco (Vermelho)"),
+                        ],
+                        max_length=10,
+                        verbose_name="Status Anterior",
+                    ),
+                ),
+                (
+                    "current_status",
+                    models.CharField(
+                        choices=[
+                            ("OK", "OK (Verde)"),
+                            ("WARNING", "Atenção (Amarelo)"),
+                            ("CRITICAL", "Risco (Vermelho)"),
+                        ],
+                        max_length=10,
+                        verbose_name="Status Atual",
+                    ),
+                ),
+                (
+                    "trend",
+                    models.CharField(
+                        choices=[
+                            ("IMPROVING", "Melhorando"),
+                            ("STABLE", "Estável"),
+                            ("WORSENING", "Piorando"),
+                        ],
+                        max_length=10,
+                        verbose_name="Tendência",
+                    ),
+                ),
+                (
+                    "trend_description",
+                    models.TextField(verbose_name="Descrição da Tendência"),
+                ),
+                (
+                    "ongoing_activities",
+                    models.TextField(verbose_name="Atividades em Andamento"),
+                ),
+                (
+                    "next_activities",
+                    models.TextField(verbose_name="Próximas Atividades"),
+                ),
+                ("pending_activities", models.TextField(verbose_name="Pendências")),
+                (
+                    "attention_points",
+                    models.TextField(verbose_name="Pontos de Atenção"),
+                ),
+                (
+                    "observations",
+                    models.TextField(
+                        blank=True, null=True, verbose_name="Observações Gerais"
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reports",
+                        to="gestao.projects",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='UsersProfile',
+            name="UsersProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('job_title', models.CharField(max_length=100)),
-                ('department', models.CharField(max_length=100)),
-                ('photo', models.ImageField(blank=True, null=True, upload_to='pictures/%Y/%m/')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("job_title", models.CharField(max_length=100)),
+                ("department", models.CharField(max_length=100)),
+                (
+                    "photo",
+                    models.ImageField(
+                        blank=True, null=True, upload_to="pictures/%Y/%m/"
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="profile",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'User Profile',
-                'verbose_name_plural': 'Users Profile',
+                "verbose_name": "User Profile",
+                "verbose_name_plural": "Users Profile",
             },
         ),
     ]

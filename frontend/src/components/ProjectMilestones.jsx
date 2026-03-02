@@ -154,8 +154,6 @@ function ProjectMilestone({ projectId }) {
       task: newMilestone.task,
       start_date: newMilestone.start_date,
       end_date: newMilestone.end_date,
-      task_percentage_plan: 0,
-      task_percentage_real: 0
     })
     .then((res) => {
       setMilestones([...milestones, res.data]);

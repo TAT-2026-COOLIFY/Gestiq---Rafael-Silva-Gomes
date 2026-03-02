@@ -11,7 +11,7 @@ from .models import (
     Communications,
     Activity,
     Milestones,
-    StatusReport,
+    Sprints,
 )
 
 
@@ -136,15 +136,23 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    pmo_first_name = serializers.CharField(source="pmo.first_name", read_only=True)
-    pmo_last_name = serializers.CharField(source="pmo.last_name", read_only=True)
-    leader_first_name = serializers.CharField(
-        source="leader.first_name", read_only=True
+    pmo_first_name = serializers.CharField(
+        source="pmo.first_name", read_only=True, default=""
     )
-    leader_last_name = serializers.CharField(source="leader.last_name", read_only=True)
+    pmo_last_name = serializers.CharField(
+        source="pmo.last_name", read_only=True, default=""
+    )
+    leader_first_name = serializers.CharField(
+        source="leader.first_name", read_only=True, default=""
+    )
+    leader_last_name = serializers.CharField(
+        source="leader.last_name", read_only=True, default=""
+    )
 
     area_name = serializers.CharField(source="area.name", read_only=True)
     category_name = serializers.CharField(source="category.name", read_only=True)
+    total_percentage_real = serializers.FloatField(read_only=True)
+    total_percentage_plan = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Projects
@@ -163,7 +171,8 @@ class ProjectsSerializer(serializers.ModelSerializer):
             "area_name",
             "category",
             "category_name",
-            "percentage_real",
+            "total_percentage_real",
+            "total_percentage_plan",
             "start_date",
             "end_date",
             "create_date",
@@ -245,6 +254,12 @@ class ActivitiesSerializer(serializers.ModelSerializer):
         source="assigned_to.username", read_only=True
     )
     assigned_to_photo = serializers.SerializerMethodField()
+    milestone_name = serializers.CharField(
+        source="milestone.task", read_only=True, default=""
+    )
+    sprint_name = serializers.CharField(
+        source="sprint.name", read_only=True, default=""
+    )
 
     class Meta:
         model = Activity
@@ -271,11 +286,18 @@ class ActivitiesSerializer(serializers.ModelSerializer):
         ):
             try:
                 return obj.assigned_to.profile.photo.url
-            except:
+            except Exception:
                 return None
-            return None
+        return None
+
 
 class MilestonesSerializer(serializers.ModelSerializer):
+    percentage_real = serializers.FloatField(read_only=True)
+    percentage_plan = serializers.FloatField(read_only=True)
+    activities_count = serializers.IntegerField(
+        source="activities.count", read_only=True
+    )
+
     class Meta:
         model = Milestones
         fields = [
@@ -284,17 +306,25 @@ class MilestonesSerializer(serializers.ModelSerializer):
             "task",
             "start_date",
             "end_date",
-            "task_percentage_plan",
-            "task_percentage_real",
+            "percentage_plan",
+            "percentage_real",
+            "activities_count",
         ]
 
-class StatusReportSerializer(serializers.ModelSerializer):
-    create_date_formatted = serializers.SerializerMethodField()
+
+class SprintsSerializer(serializers.ModelSerializer):
+    activities_count = serializers.IntegerField(
+        source="activities.count", read_only=True
+    )
 
     class Meta:
-        model = StatusReport
-        fields = '__all__'
-    
-    def get_create_date_formatted(self, obj):
-        return obj.create_date.strftime('%d/%m/%Y às %H:%M')
-        
+        model = Sprints
+        fields = [
+            "id",
+            "project",
+            "name",
+            "start_date",
+            "end_date",
+            "is_active",
+            "activities_count",
+        ]

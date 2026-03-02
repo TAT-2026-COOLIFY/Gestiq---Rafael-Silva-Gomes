@@ -8,7 +8,6 @@ import ProjectTeam from "../components/ProjectTeam";
 import ProjectCommunications from "../components/ProjectCommunications";
 import "./ProjectDetails.css";
 import ProjectMilestones from "../components/ProjectMilestones";
-import ProjectStatusReport from "../components/ProjectStatusReport";
 
 function ProjectDetails() {
   const { id } = useParams(); // Pega o número que está na URL
@@ -88,12 +87,6 @@ function ProjectDetails() {
         >
           Linha do Tempo
         </button>
-        <button
-          className={activeTab === 'statusreport' ? 'active' : ''}
-          onClick={() => setActiveTab('statusreport')}
-        >
-          Status Report
-        </button>
       </div>
 
       {/* 3. Área de Conteúdo (Muda conforme a aba) */}
@@ -129,11 +122,6 @@ function ProjectDetails() {
         {activeTab === 'milestones' && (
           <div className="milestones-area">
             <ProjectMilestones projectId={id} />
-          </div>
-        )}   
-        {activeTab === 'statusreport' && (
-          <div className="statusreport-area">
-            <ProjectStatusReport projectId={id} />
           </div>
         )}  
       </div>

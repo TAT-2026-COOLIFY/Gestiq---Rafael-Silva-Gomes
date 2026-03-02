@@ -9,6 +9,8 @@ import styles from "./Dashboard.module.css";
 const TABS = [
     { key: "CORP", label: "Corporativos" },
     { key: "DEP",  label: "Departamentais" },
+    { key: "PES",  label: "Pessoais" },
+    { key: "ACAD", label: "Acadêmicos" },
 ];
 
 export function Dashboard() {
@@ -21,9 +23,20 @@ export function Dashboard() {
         setToast({ message, type });
     }, []);
 
+    const visibleTabs = TABS.filter((tab) => 
+        projects.some((p) => p.project_type === tab.key)
+    );
+
     useEffect(() => {
         dashboardService.getProjects()
-            .then(setProjects)
+            .then((data) => {
+                setProjects(data);
+
+                const fisrtAvailable = TABS.find((tab) =>
+                    data.some((p) => p.project_type === tab.key)
+                );
+                if (fisrtAvailable) setActiveTab(fisrtAvailable.key);
+            })
             .catch(() => showToast("Erro ao carregar projetos. Tente novamente."))
             .finally(() => setLoading(false));
     }, [showToast]);
@@ -52,7 +65,7 @@ export function Dashboard() {
             </div>
 
             <div className={styles.tabs}>
-                {TABS.map((tab) => {
+                {visibleTabs.map((tab) => {
                     const count = projects.filter((p) => p.project_type === tab.key).length;
                     return (
                         <button
@@ -69,7 +82,9 @@ export function Dashboard() {
 
             {filtered.length === 0 ? (
                 <div className={styles.emptyState}>
-                    <p>Nenhum projeto {activeTab === "CORP" ? "corporativo" : "departamental"} encontrado.</p>
+                    <p>Nenhum projeto {
+                        { CORP: "corporativo", DEP: "departamental", PES: "pessoal", ACAD: "acadêmico" }[activeTab]
+                    } encontrado.</p>
                     <Link to="/projeto/novo" className={styles.newBtn}>
                         <Plus size={18} />
                         Criar projeto

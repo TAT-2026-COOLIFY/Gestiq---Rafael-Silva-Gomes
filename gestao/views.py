@@ -18,7 +18,7 @@ from .models import (
     ProjectMembers,
     Activity,
     Milestones,
-    StatusReport,
+    Sprints,
 )
 from .serializers import (
     UsersSerializer,
@@ -33,7 +33,7 @@ from .serializers import (
     ProjectMembersSerializer,
     ActivitiesSerializer,
     MilestonesSerializer,
-    StatusReportSerializer,
+    SprintsSerializer,
 )
 
 
@@ -88,11 +88,11 @@ class ProjectsViewSet(viewsets.ModelViewSet):
             return Projects.objects.all()
 
         return Projects.objects.filter(
-            Q(pmo=user) | Q(project_members__user=user)
+            Q(pmo=user) | Q(leader=user) | Q(project_members__user=user)
         ).distinct()
 
     def perform_create(self, serializer):
-        serializer.save(pmo=self.request.user)
+        serializer.save()
 
 
 class CanvasViewSet(viewsets.ModelViewSet):
@@ -172,7 +172,7 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitiesSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["project"]
+    filterset_fields = ["project", "milestone", "sprint", "status"]
 
 
 class MilestonesViewSet(viewsets.ModelViewSet):
@@ -183,25 +183,9 @@ class MilestonesViewSet(viewsets.ModelViewSet):
     filterset_fields = ["project"]
 
 
-class StatusReportViewSet(viewsets.ModelViewSet):
-    queryset = StatusReport.objects.all()
-    serializer_class = StatusReportSerializer
-
-    def get_queryset(self):
-        project_id = self.request.query_params.get('project')
-
-        if not project_id:
-            return StatusReport.objects.none()
-        
-        report, _ = StatusReport.objects.get_or_create(
-            project_id=project_id,
-            defaults={
-                'previous_status': 'OK',
-                'current_status': 'OK',
-                'trend': 'STABLE',
-            }
-        )
-
-        return StatusReport.objects.filter(project_id=project_id)
-
-
+class SprintsViewSet(viewsets.ModelViewSet):
+    queryset = Sprints.objects.all()
+    serializer_class = SprintsSerializer
+    
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["project", "is_active"]

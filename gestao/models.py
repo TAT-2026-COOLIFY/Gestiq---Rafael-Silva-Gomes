@@ -46,6 +46,8 @@ class Projects(models.Model):
     class TypeProject(models.TextChoices):
         CORPORATIVO = "CORP", ("Corporativo")
         DEPARTAMENTAL = "DEP", ("Departamental")
+        PESSOAL = "PES", ("Pessoal")
+        ACADEMICO = "ACAD", ("Acadêmico")
 
     class StatusProject(models.TextChoices):
         PLANEJAMENTO = "PLAN", "A Iniciar"
@@ -55,14 +57,18 @@ class Projects(models.Model):
 
     create_date = models.DateTimeField(auto_now_add=True)
     pmo = models.ForeignKey(
-        User, on_delete=models.PROTECT, 
+        User,
+        on_delete=models.PROTECT,
         related_name="project_pmo",
-        null=True, blank=True 
+        null=True,
+        blank=True,
     )
     leader = models.ForeignKey(
-        User, on_delete=models.PROTECT, 
+        User,
+        on_delete=models.PROTECT,
         related_name="project_leader",
-        null=True, blank=True
+        null=True,
+        blank=True,
     )
     name = models.CharField(max_length=250)
     objective = models.TextField()
@@ -87,7 +93,7 @@ class Projects(models.Model):
     )
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
-    
+
     @property
     def total_percentage_real(self):
         marcos = self.milestones_set.all()
@@ -102,9 +108,10 @@ class Projects(models.Model):
         marcos = self.milestones.all()
         if not marcos.exists():
             return 0
-        
+
         soma_planejado = sum(marco.percentage_plan for marco in marcos)
         return round(soma_planejado / marcos.count(), 2)
+
     cancel_justification = models.TextField(blank=True)
     members = models.ManyToManyField(User, through="ProjectMembers")
 
@@ -249,8 +256,8 @@ class Risks(models.Model):
 
     def __str__(self):
         return f"{self.description} (Score: {self.score})"
-    
-    
+
+
 class Activity(models.Model):
     class Status(models.TextChoices):
         BACKLOG = "BACKLOG", "Backlog"
@@ -267,21 +274,21 @@ class Activity(models.Model):
     project = models.ForeignKey(
         Projects, on_delete=models.CASCADE, related_name="activities"
     )
-    
+
     milestone = models.ForeignKey(
-        'Milestones', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
-        related_name="activities"
+        "Milestones",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="activities",
     )
-    
+
     sprint = models.ForeignKey(
-        'Sprints', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        blank=True, 
-        related_name="activities"
+        "Sprints",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="activities",
     )
 
     title = models.CharField(max_length=100)
@@ -318,19 +325,26 @@ class Activity(models.Model):
 
 class Milestones(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name="milestones")
+    project = models.ForeignKey(
+        Projects, on_delete=models.CASCADE, related_name="milestones"
+    )
     task = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()
-    
+
     @property
     def percentage_plan(self):
         hoje = date.today()
+
+        if not self.start_date or not self.end_date:
+            return 0
+
         if hoje < self.start_date:
             return 0
+
         if hoje > self.end_date:
             return 100
-        
+
         total_dias = (self.end_date - self.start_date).days
         dias_passados = (hoje - self.start_date).days
         return round((dias_passados / total_dias) * 100, 2)
@@ -355,7 +369,9 @@ class Milestones(models.Model):
 
 
 class Sprints(models.Model):
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name="sprints")
+    project = models.ForeignKey(
+        Projects, on_delete=models.CASCADE, related_name="sprints"
+    )
     name = models.CharField(max_length=100)
     start_date = models.DateField()
     end_date = models.DateField()

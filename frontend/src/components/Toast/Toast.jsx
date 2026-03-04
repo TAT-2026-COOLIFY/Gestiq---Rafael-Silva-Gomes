@@ -1,30 +1,50 @@
-import { useEffect, useState } from "react";
-import { CheckCircle, XCircle, X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Toast.module.css";
 
-export function Toast({ message, type = "success", onClose }) {
-    const [leaving, setLeaving] = useState(false);
+const ICONS = {
+    success: CheckCircle,
+    error:   AlertCircle,
+    info:    Info,
+};
 
-    function handleClose() {
+export function Toast({ message, type = "error", onClose, action }) {
+    const [leaving, setLeaving] = useState(false);
+    const navigate = useNavigate();
+
+    const handleClose = useCallback(() => {
         setLeaving(true);
         setTimeout(onClose, 300);
-    }
+    }, [onClose]);
 
     useEffect(() => {
+        if (action) return;
         const timer = setTimeout(handleClose, 3500);
         return () => clearTimeout(timer);
-    }, [onClose]);
+    }, [handleClose, action]);
+
+    const Icon = ICONS[type] ?? AlertCircle;
+
+    function handleAction() {
+        handleClose();
+        setTimeout(() => navigate(action.href), 300);
+    }
 
     return (
         <div className={`${styles.toast} ${styles[type]} ${leaving ? styles.leaving : ""}`}>
-            {type === "success" 
-                ? <CheckCircle size={18} /> 
-                : <XCircle size={18} />
-            }
-            <span>{message}</span>
-            <button className={styles.closeBtn} onClick={handleClose}>
-                <X size={16} />
-            </button>
+            <Icon size={18} className={styles.icon} />
+            <span className={styles.message}>{message}</span>
+            <div className={styles.actions}>
+                {action && (
+                    <button className={styles.actionBtn} onClick={handleAction}>
+                        {action.label}
+                    </button>
+                )}
+                <button className={styles.closeBtn} onClick={handleClose}>
+                    <X size={16} />
+                </button>
+            </div>
         </div>
     );
 }

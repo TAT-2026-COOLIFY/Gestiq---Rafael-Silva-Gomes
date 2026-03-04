@@ -134,7 +134,7 @@ function ProjectRisks({ projectId }) {
             <option value="TEC">Técnico</option>
             <option value="EXT">Externo</option>
             <option value="ORG">Organizacional</option>
-            <option value="GP">Gestão de Proj.</option>
+            <option value="GP">Gestão de Projetos</option>
           </select>
 
           {/* SELECT AÇÃO (Values = Chaves do Model) */}

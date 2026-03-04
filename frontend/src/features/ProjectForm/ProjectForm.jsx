@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { projectFormService } from "./services/projectFormService";
+import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
 import styles from "./ProjectForm.module.css";
 
@@ -61,13 +62,7 @@ export function ProjectForm() {
         }
     }
 
-    if (loading) {
-        return (
-            <div className={styles.loadingWrapper}>
-                <div className={styles.spinner} />
-            </div>
-        );
-    }
+    if (loading) return <Loading />;
 
     return (
         <div className={styles.container}>

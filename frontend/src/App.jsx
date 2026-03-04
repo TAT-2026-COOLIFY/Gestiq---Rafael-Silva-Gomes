@@ -3,7 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Dashboard } from "./features/Dashboard";
-import ProjectDetails from "./pages/ProjectDetails";
+import { ProjectDetails } from "./features/ProjectDetails";
 import { Layout } from "./components/Layout";
 import { ProjectForm } from "./features/ProjectForm";
 import { Settings } from "./features/Settings";

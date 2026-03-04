@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   background-color: #f8fafc;
-  padding: 20px; /* Previne que o card toque nas bordas em telemóveis */
+  padding: 20px;
 }
 
 .registerBox {
@@ -13,15 +13,30 @@
   border-radius: 12px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px; /* Um pouco mais largo que o register para os campos respirarem */
+  max-width: 480px; /* ← um pouco mais largo por ter 2 colunas */
   box-sizing: border-box;
 }
 
-.registerBox h2 {
-  color: #1e293b;
-  font-size: 1.5rem;
+.header {
   text-align: center;
   margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.header p {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
 }
 
 .inputGroup {
@@ -44,6 +59,7 @@
   background-color: #fcfcfc;
   font-size: 0.95rem;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
 .inputGroup input:focus {
@@ -51,6 +67,23 @@
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
+
+.submitBtn {
+  width: 100%;
+  padding: 0.625rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 0.5rem;
+}
+
+.submitBtn:hover:not(:disabled) { opacity: 0.88; }
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .footerText {
   margin-top: 1.5rem;
@@ -61,10 +94,11 @@
 
 .footerText a {
   color: #2563eb;
-  text-decoration: none;
   font-weight: 600;
 }
 
-.footerText a:hover {
-  text-decoration: underline;
+.footerText a:hover { text-decoration: underline; }
+
+@media (max-width: 480px) {
+  .row { grid-template-columns: 1fr; }
 }

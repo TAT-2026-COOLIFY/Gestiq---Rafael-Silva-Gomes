@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { dashboardService } from "./services/dashboardService";
 import { ProjectCard } from "./components/ProjectCard";
+import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
 import styles from "./Dashboard.module.css";
 
@@ -17,6 +19,7 @@ export function Dashboard() {
     const [projects, setProjects] = useState([]);
     const [activeTab, setActiveTab] = useState("CORP");
     const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
     const [toast, setToast] = useState(null);
 
     const showToast = useCallback((message, type = "error") => {
@@ -26,6 +29,22 @@ export function Dashboard() {
     const visibleTabs = TABS.filter((tab) => 
         projects.some((p) => p.project_type === tab.key)
     );
+
+    useEffect(() => {
+        if (!user) return;
+
+        const flag = `profile_setup_${user.id}`;
+        const jaViu = localStorage.getItem(flag);
+
+        if (!jaViu) {
+            setToast({
+                message: "Complete seu perfil nas Configurações",
+                type: "info",
+                action: { label: "Configurar", href: "/settings" },
+            });
+            localStorage.setItem(flag, "true");
+        }
+    }, [user]);
 
     useEffect(() => {
         dashboardService.getProjects()
@@ -43,13 +62,7 @@ export function Dashboard() {
 
     const filtered = projects.filter((p) => p.project_type === activeTab);
 
-    if (loading) {
-        return (
-            <div className={styles.loadingWrapper}>
-                <div className={styles.spinner} />
-            </div>
-        );
-    }
+    if (loading) return <Loading />;
 
     return (
         <div className={styles.container}>
@@ -103,6 +116,7 @@ export function Dashboard() {
                     message={toast.message}
                     type={toast.type}
                     onClose={() => setToast(null)}
+                    action={toast.action}
                 />
             )}
         </div>

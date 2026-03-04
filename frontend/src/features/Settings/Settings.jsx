@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { settingsService } from "./services/settingsService";
+import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
 import styles from "./Settings.module.css";
 
@@ -67,13 +68,7 @@ export function Settings() {
         }
     }
     
-    if (loading) {
-        return (
-            <div className={styles.loadingWrapper}>
-                <div className={styles.spinner} />
-            </div>
-        );
-    }
+    if (loading) return <Loading />;
 
     return (
         <div className={styles.container}>
@@ -85,7 +80,6 @@ export function Settings() {
             <div className={styles.card}>
                 <form onSubmit={handleSubmit}>
 
-                    {/* Foto */}
                     <div className={styles.photoSection}>
                         <div className={styles.avatarBox}>
                             {photoPreview ? (

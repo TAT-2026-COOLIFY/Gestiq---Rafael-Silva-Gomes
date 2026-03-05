@@ -80,6 +80,10 @@
   font-weight: 600;
 }
 
+.sidebar.collapsed .settingsLink, .settingsLink {
+  margin-top: auto;
+}
+
 .footer {
   padding: 1.5rem;
   border-top: 1px solid var(--border);

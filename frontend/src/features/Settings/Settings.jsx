@@ -107,28 +107,28 @@ export function Settings() {
                     {/* Campos */}
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                            <label>Nome</label>
-                            <input name="first_name" value={formData.first_name} onChange={handleChange} required />
+                            <label htmlFor="first_name">Nome</label>
+                            <input id="first_name" name="first_name" value={formData.first_name} onChange={handleChange} required />
                         </div>
                         <div className={styles.formGroup}>
-                            <label>Sobrenome</label>
-                            <input name="last_name" value={formData.last_name} onChange={handleChange} />
+                            <label htmlFor="last_name">Sobrenome</label>
+                            <input id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} />
                         </div>
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label>E-mail</label>
-                        <input name="email" type="email" value={formData.email} onChange={handleChange} required />
+                        <label htmlFor="email">E-mail</label>
+                        <input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
                     </div>
 
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
-                            <label>Cargo</label>
-                            <input name="job_title" value={formData.job_title} onChange={handleChange} placeholder="Ex: Gerente de Projetos" />
+                            <label htmlFor="job_title">Cargo</label>
+                            <input id="job_title" name="job_title" value={formData.job_title} onChange={handleChange} placeholder="Ex: Gerente de Projetos" />
                         </div>
                         <div className={styles.formGroup}>
-                            <label>Departamento</label>
-                            <input name="department" value={formData.department} onChange={handleChange} placeholder="Ex: TI" />
+                            <label htmlFor="department">Departamento</label>
+                            <input id="department" name="department" value={formData.department} onChange={handleChange} placeholder="Ex: TI" />
                         </div>
                     </div>
 

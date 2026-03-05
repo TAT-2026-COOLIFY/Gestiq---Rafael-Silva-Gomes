@@ -54,9 +54,9 @@ export function Sidebar({isCollapsed, onToggleCollapse }) {
                         {!isCollapsed && <span>Novo Projeto</span>}
                     </NavLink>
 
-                    <NavLink to="/settings" className={({ isActive }) => isActive ? styles.activeLink : styles.link} >
+                    <NavLink to="/settings" className={({ isActive }) => `${isActive ? styles.activeLink : styles.link} ${styles.settingsLink}`} >
                         <Settings size={20} />
-                        {!isCollapsed && <span>Configurações</span>}
+                        {!collapsed && <span>Configurações</span>}
                     </NavLink>
                 </nav>
 

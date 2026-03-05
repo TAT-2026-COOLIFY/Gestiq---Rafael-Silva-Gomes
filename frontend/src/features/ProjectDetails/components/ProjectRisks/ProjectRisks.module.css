@@ -135,4 +135,19 @@
   border-radius: 12px;
 }
 
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.status_INICIAR   { background: #fffbeb; color: #b45309; }
+.status_ANDAMENTO { background: #eff6ff; color: #1d4ed8; }
+.status_CONCLUIDO { background: #f0fdf4; color: #15803d; }
+
 @keyframes spin { to { transform: rotate(360deg); } }

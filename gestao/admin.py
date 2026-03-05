@@ -88,6 +88,8 @@ class ProjectsAdmin(admin.ModelAdmin):
     # Paginação (se tiver muitos projetos)
     list_per_page = 20
 
+    actions = ["delete_selected"]
+
 
 admin.site.register(Canvas)
 

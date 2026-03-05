@@ -57,8 +57,7 @@ export function ProjectForm() {
                 ? Object.values(error.response.data).flat().join(" ")
                 : "Erro ao criar projeto. Tente novamente.";
             showToast(msg);
-        } finally {
-            setSaving(false);
+            setSaving(false)
         }
     }
 

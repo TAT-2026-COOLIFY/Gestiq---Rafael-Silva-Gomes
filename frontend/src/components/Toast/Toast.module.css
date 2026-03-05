@@ -19,7 +19,6 @@
   animation: slideOut 0.3s ease forwards;
 }
 
-/* Tipos */
 .success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
 .error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 .info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }

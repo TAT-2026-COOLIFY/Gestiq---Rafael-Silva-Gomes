@@ -187,7 +187,11 @@ export function ProjectRisks({ projectId }) {
                                         </td>
                                         <td>{ACTION_MAP[risk.action] ?? risk.action}</td>
                                         <td>{risk.action_plan ?? "—"}</td>
-                                        <td>{STATUS_MAP[risk.status] ?? risk.status}</td>
+                                        <td>
+                                            <span className={`${styles.statusBadge} ${styles[`status_${risk.status}`]}`}>
+                                                {STATUS_MAP[risk.status] ?? risk.status}
+                                            </span>
+                                        </td>
                                         <td>
                                             <button
                                                 className={styles.deleteBtn}

@@ -3,12 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
 import { ProjectRisks } from "./components/ProjectRisks/ProjectRisks";
-
+import { ProjectCommunications } from "./components/ProjectCommunications/ProjectCommunications";
 //TODO: TROCAR OS CAMINHOS CONFORME REFATORAR AS OUTRAS SESSÕES
 import ProjectCanvas from "@/components/ProjectCanvas";
 import ProjectKanban from "@/components/ProjectKanban";
 import ProjectTeam from "@/components/ProjectTeam";
-import ProjectCommunications from "@/components/ProjectCommunications";
+
 import ProjectMilestones from "@/components/ProjectMilestones";
 
 import { Loading } from "@/components/Loading/Loading";

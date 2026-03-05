@@ -71,10 +71,12 @@ export function Dashboard() {
                     <h1>Meus Projetos</h1>
                     <p>{projects.length} projeto{projects.length !== 1 ? "s" : ""} encontrado{projects.length !== 1 ? "s" : ""}</p>
                 </div>
-                <Link to="/projeto/novo" className={styles.newBtn}>
-                    <Plus size={18} />
-                    Novo Projeto
-                </Link>
+                {filtered.length > 0 && (
+                    <Link to="/projeto/novo" className={styles.newBtn}>
+                        <Plus size={18} />
+                        Novo Projeto
+                    </Link>
+                )}
             </div>
 
             <div className={styles.tabs}>
@@ -95,9 +97,7 @@ export function Dashboard() {
 
             {filtered.length === 0 ? (
                 <div className={styles.emptyState}>
-                    <p>Nenhum projeto {
-                        { CORP: "corporativo", DEP: "departamental", PES: "pessoal", ACAD: "acadêmico" }[activeTab]
-                    } encontrado.</p>
+                    <p>Nenhum projeto encontrado.</p>
                     <Link to="/projeto/novo" className={styles.newBtn}>
                         <Plus size={18} />
                         Criar projeto

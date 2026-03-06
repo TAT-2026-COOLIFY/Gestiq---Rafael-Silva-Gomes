@@ -26,6 +26,10 @@ export function ProjectForm() {
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState(null);
 
+    useEffect(() => {
+        document.title = "Novo Projeto | Gestiq"
+    })
+
     const showToast = useCallback((message, type = "error") => {
         setToast({ message, type });
     }, []);

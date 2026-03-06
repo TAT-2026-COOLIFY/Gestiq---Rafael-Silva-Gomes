@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { Toast } from "@/components/Toast";
+import { Popup } from "@/components/Popup";
 import { RiskModal } from "./RiskModal";
 import { RiskDrawer } from "./RiskDrawer";
 import api from "@/services/api";
@@ -54,9 +55,14 @@ export function ProjectRisks({ projectId }) {
     const [selectedRisk, setSelectedRisk] = useState(null);
     const [editSaving, setEditSaving] = useState(false);
     const [toast, setToast] = useState(null);
+    const [popup, setPopup] = useState(null);
 
     const showToast = useCallback((message, type = "error") => {
         setToast({ message, type });
+    }, []);
+
+    const showPopup = useCallback((message, id) => {
+        setPopup({ message, id });
     }, []);
 
     const fetchRisks = useCallback(() => {
@@ -100,8 +106,11 @@ export function ProjectRisks({ projectId }) {
         }
     }
 
+    async function handleOpenPopup(id) {
+        showPopup("Tem certeza que deseja excluir este risco?", id)
+    }
+
     async function handleDelete(id) {
-        if (!window.confirm("Tem certeza que deseja excluir este risco?")) return;
         try {
             await api.delete(`risks/${id}/`);
             setRisks((prev) => prev.filter((r) => r.id !== id));
@@ -197,11 +206,11 @@ export function ProjectRisks({ projectId }) {
                                                 className={styles.deleteBtn}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDelete(risk.id);
+                                                    handleOpenPopup(risk.id);
                                                 }}
                                                 title="Excluir risco"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={20} />
                                             </button>
                                         </td>
                                     </tr>
@@ -233,6 +242,17 @@ export function ProjectRisks({ projectId }) {
 
             {toast && (
                 <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+            )}
+
+            {popup && (
+                <Popup 
+                    message={popup.message} 
+                    onClose={() => setPopup(null)} 
+                    action={() => {
+                        handleDelete(popup.id);
+                        setPopup(null);
+                    }} 
+                />
             )}
         </div>
     );

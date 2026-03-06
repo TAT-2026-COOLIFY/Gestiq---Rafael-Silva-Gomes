@@ -68,6 +68,8 @@ export function Register() {
         }
     }
 
+    if (loading) return <Loading />;
+
     return (
         <div className={styles.registerContainer}>
             <div className={styles.registerBox}>
@@ -161,9 +163,9 @@ export function Register() {
                         </div>
                     </div>
 
-                    <button type="submit" className={styles.submitBtn} disabled={loading}>
+                    <Button type="submit">
                         {loading ? "Criando conta..." : "Criar Conta"}
-                    </button>
+                    </Button>
 
                     <p className={styles.footerText}>
                         Já tem conta? <Link to="/login">Faça Login</Link>

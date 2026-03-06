@@ -72,7 +72,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
                             <option value="TEC">Técnico</option>
                             <option value="EXT">Externo</option>
                             <option value="ORG">Organizacional</option>
-                            <option value="GP">Gestão de Proj.</option>
+                            <option value="GP">Gestão de Projetos</option>
                         </select>
                     </div>
                     <div className={styles.formGroup}>

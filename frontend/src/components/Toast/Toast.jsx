@@ -11,7 +11,6 @@ const ICONS = {
 
 export function Toast({ message, type = "error", onClose, action }) {
     const [leaving, setLeaving] = useState(false);
-    const navigate = useNavigate();
 
     const handleClose = useCallback(() => {
         setLeaving(true);
@@ -28,7 +27,7 @@ export function Toast({ message, type = "error", onClose, action }) {
 
     function handleAction() {
         handleClose();
-        setTimeout(() => navigate(action.href), 300);
+        if (action?.onClick) action.onClick();
     }
 
     return (

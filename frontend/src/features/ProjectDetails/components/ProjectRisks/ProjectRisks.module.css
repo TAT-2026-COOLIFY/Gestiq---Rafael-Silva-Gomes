@@ -14,7 +14,7 @@
 .sectionTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -62,22 +62,50 @@
 .table td:nth-child(1) { width: 25%; }
 
 .table th:nth-child(2),
-.table td:nth-child(2) { width: 12%; }
+.table td:nth-child(2) { 
+  text-align: center;
+  width: 12%; 
+}
 
 .table th:nth-child(3),
-.table td:nth-child(3) { width: 8%;  } 
+.table td:nth-child(3) { 
+  width: 8%;  
+  text-align: center;
+} 
 
 .table th:nth-child(4),
-.table td:nth-child(4) { width: 12%; } 
+.table td:nth-child(4) { 
+  text-align: center;
+  width: 12%; 
+} 
 
 .table th:nth-child(5),
-.table td:nth-child(5) { width: 28%; } 
+.table td:nth-child(5) { width: 25%; } 
 
 .table th:nth-child(6),
-.table td:nth-child(6) { width: 10%; } 
+.table td:nth-child(6) { 
+  text-align: center;
+  width: 13%;
+} 
 
 .table th:nth-child(7),
-.table td:nth-child(7) { width: 5%;  }
+.table td:nth-child(7) { 
+  text-align: center;
+  width: 5%;  
+}
+
+
+@media (max-width: 1600px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) { 
+    width: 22%;
+  }
+
+  .table th:nth-child(2),
+  .table td:nth-child(2) { 
+    width: 15%;
+  }
+}
 
 .table th {
   font-size: 0.78rem;
@@ -106,9 +134,9 @@
   min-width: 52px;
 }
 
-.low    { background: #f0fdf4; color: #15803d; }
-.medium { background: #fffbeb; color: #b45309; }
-.high   { background: #fef2f2; color: #b91c1c; }
+.low    { background: rgba(21,  128, 61,  0.15); color: #4ade80; }
+.medium { background: rgba(180, 83,  9,   0.15); color: #fbaf3c; }
+.high   { background: rgba(185, 28,  28,  0.15); color: #f87171; }
 
 .deleteBtn {
   background: none;
@@ -146,8 +174,8 @@
   min-width: 90px;
 }
 
-.status_INICIAR   { background: #fffbeb; color: #b45309; }
-.status_ANDAMENTO { background: #eff6ff; color: #1d4ed8; }
-.status_CONCLUIDO { background: #f0fdf4; color: #15803d; }
+.status_INICIAR   { background: rgba(180, 83,  9,   0.15); color: #fbaf3c; }
+.status_ANDAMENTO { background: rgba(29,  78,  186, 0.15); color: #73c6fd; }
+.status_CONCLUIDO { background: rgba(21,  128, 61,  0.15); color: #4ade80; }
 
 @keyframes spin { to { transform: rotate(360deg); } }

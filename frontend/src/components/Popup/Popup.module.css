@@ -1,0 +1,142 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.overlay.leaving {
+  animation: fadeOut 0.25s ease forwards;
+}
+
+.popup {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 32px 28px;
+  width: min(420px, 90vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.popup.leaving {
+  animation: slideDown 0.25s ease-in forwards;
+}
+
+.icon {
+  color: #ef4444;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.35));
+}
+
+.alert {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #ef4444;
+  text-transform: uppercase;
+}
+
+.message {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  color: #374151;
+  text-align: center;
+  line-height: 1.5;
+  margin: 4px 0 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.actionBtn,
+.closeBtn {
+  flex: 1;
+  padding: 11px 0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.actionBtn {
+  background: #ef4444;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.actionBtn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+.actionBtn:active {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}
+
+.closeBtn {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.closeBtn:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.closeBtn:active {
+  transform: translateY(0);
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}

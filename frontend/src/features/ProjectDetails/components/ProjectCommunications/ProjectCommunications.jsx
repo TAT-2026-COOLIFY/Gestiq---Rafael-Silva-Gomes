@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Trash2, Plus } from "lucide-react";
 import { Toast } from "@/components/Toast";
+import { Popup } from "@/components/Popup";
 import { CommunicationModal } from "./CommunicationModal"
 import { CommunicationDrawer } from "./CommunicationDrawer";
 import api from "@/services/api";
@@ -43,9 +44,14 @@ export function ProjectCommunications({ projectId }) {
     const [selectedCommunication, setSelectedCommunication] = useState(null);
     const [editSaving, setEditSaving] = useState(false);
     const [toast, setToast] = useState(null);
+    const [popup, setPopup] = useState(null);
 
     const showToast = useCallback((message, type = "error") => {
         setToast({ message, type });
+    }, []);
+
+    const showPopup = useCallback((message, id) => {
+        setPopup({ message, id });
     }, []);
 
     const fetchCommunications = useCallback(() => {
@@ -85,9 +91,11 @@ export function ProjectCommunications({ projectId }) {
         }
     }
 
+    async function handleOpenPopup(id) {
+        showPopup("Tem certeza que deseja excluir esta comunicação?", id)
+    }
+
     async function handleDelete(id) {
-        if (!window.confirm("Ten certeza que deseja excluir essa comunicação?"))
-        return;
         try {
             await api.delete(`communications/${id}/`);
             setCommunications((prev) => prev.filter((r) => r.id !== id));
@@ -168,11 +176,11 @@ export function ProjectCommunications({ projectId }) {
                                                 className={styles.deleteBtn}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleDelete(communication.id);
+                                                    handleOpenPopup(communication.id);
                                                 }}
                                                 title="Excluir Comunicação"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={20} />
                                             </button>
                                         </td>
                                     </tr>
@@ -204,6 +212,17 @@ export function ProjectCommunications({ projectId }) {
 
             {toast && (
                 <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+            )}
+
+            {popup && (
+                <Popup 
+                    message={popup.message} 
+                    onClose={() => setPopup(null)} 
+                    action={() => {
+                        handleDelete(popup.id);
+                        setPopup(null);
+                    }} 
+                />
             )}
         </div>
     )

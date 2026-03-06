@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { settingsService } from "./services/settingsService";
 import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
+import { useTheme } from "@/hooks/useTheme";
+import { Sun, Moon } from "lucide-react";
 import styles from "./Settings.module.css";
 
 const INITIAL_FORM = {
@@ -18,7 +20,12 @@ export function Settings() {
     const [photoPreview, setPhotoPreview] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [toast, setToast] = useState(null); // { message, type }
+    const [toast, setToast] = useState(null);
+    const { theme, toggleTheme } = useTheme();
+
+    useEffect(() => {
+        document.title = "Configurações | Gestiq"
+    })
 
     const showToast = useCallback((message, type = "success") => {
         setToast({ message, type });
@@ -100,6 +107,9 @@ export function Settings() {
                             onChange={handlePhotoChange}
                             style={{ display: "none" }}
                         />
+                        <button type="button" className={styles.themeBtn} onClick={toggleTheme}>
+                            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
                     </div>
 
                     <hr className={styles.divider} />

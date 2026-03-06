@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/useTheme";
 import {
+    Sun,
+    Moon,
     LayoutDashboard,
     Folder,
     Settings,
@@ -16,6 +19,7 @@ import styles from './Sidebar.module.css';
 export function Sidebar({isCollapsed, onToggleCollapse }) {
     const [isOpen, setIsOpen] = useState(false);
     const { signOut } = useAuth();
+    const { theme, toggleTheme } = useTheme();
 
     const toggleSideBar = () => setIsOpen(!isOpen);
 
@@ -24,9 +28,11 @@ export function Sidebar({isCollapsed, onToggleCollapse }) {
 
     return (
         <>
-            <button className={styles.mobileBtn} onClick={toggleSideBar}>
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {!isOpen && (
+                <button className={styles.mobileBtn} onClick={toggleSideBar}>
+                    <Menu size={24} />
+                </button>
+            )}
 
             {isOpen && <div className={styles.overlay} onClick={toggleSideBar} />}
 
@@ -36,7 +42,7 @@ export function Sidebar({isCollapsed, onToggleCollapse }) {
                     ${collapsed ? styles.collapsed : ''}
                 `}>
                 <div className={styles.header}>
-                    {!isCollapsed && <span className={styles.logo}>GP Projects</span>}
+                    {!isCollapsed && <span className={styles.logo}>Gestiq</span>}
 
                     <button className={styles.collapseBtn} onClick={onToggleCollapse}>
                         {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
@@ -44,20 +50,27 @@ export function Sidebar({isCollapsed, onToggleCollapse }) {
                 </div>
 
                 <nav className={styles.nav}>
-                    <NavLink to="/" className={({ isActive }) => isActive ? styles.activeLink : styles.link}> 
+                    <NavLink to="/" className={({ isActive }) => isActive ? styles.activeLink : styles.link}>
                         <LayoutDashboard size={20} />
-                        {!isCollapsed && <span>Dashboard</span>}
+                        {!collapsed && <span>Dashboard</span>}
                     </NavLink>
 
                     <NavLink to="/projeto/novo" className={({ isActive }) => isActive ? styles.activeLink : styles.link}>
                         <Folder size={20} />
-                        {!isCollapsed && <span>Novo Projeto</span>}
+                        {!collapsed && <span>Novo Projeto</span>}
                     </NavLink>
 
-                    <NavLink to="/settings" className={({ isActive }) => `${isActive ? styles.activeLink : styles.link} ${styles.settingsLink}`} >
-                        <Settings size={20} />
-                        {!collapsed && <span>Configurações</span>}
-                    </NavLink>
+                    <div className={styles.navBottom}>
+                        <button className={styles.themeBtn} onClick={toggleTheme}>
+                            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                            {!collapsed && <span>{theme === "light" ? "Modo Escuro" : "Modo Claro"}</span>}
+                        </button>
+
+                        <NavLink to="/settings" className={({ isActive }) => isActive ? styles.activeLink : styles.link}>
+                            <Settings size={20} />
+                            {!collapsed && <span>Configurações</span>}
+                        </NavLink>
+                    </div>
                 </nav>
 
                 <div className={styles.footer}>

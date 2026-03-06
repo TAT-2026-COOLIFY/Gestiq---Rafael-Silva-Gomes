@@ -11,7 +11,7 @@
 
 .cancelBtn:hover {
   border-color: var(--text-muted);
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .saveBtn {

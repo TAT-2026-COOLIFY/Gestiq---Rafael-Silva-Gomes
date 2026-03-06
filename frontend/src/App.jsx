@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { Login } from "./features/Auth/Login/Login";
+import { Register } from "./features/Auth/Register/Register";
 import { Dashboard } from "./features/Dashboard";
 import { ProjectDetails } from "./features/ProjectDetails";
 import { Layout } from "./components/Layout";

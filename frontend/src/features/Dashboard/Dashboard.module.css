@@ -15,7 +15,7 @@
 .pageHeader h1 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0 0 0.25rem;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .tab:hover {
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .tabActive {
@@ -93,7 +93,7 @@
 }
 
 .tabActive .tabCount {
-  background: #eff6ff;
+  background: #d8dde2;
   color: var(--primary);
 }
 

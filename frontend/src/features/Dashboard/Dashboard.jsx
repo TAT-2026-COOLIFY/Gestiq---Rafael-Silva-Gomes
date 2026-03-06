@@ -31,6 +31,10 @@ export function Dashboard() {
     );
 
     useEffect(() => {
+        document.title = "Dashboard | Gestiq";
+    }, []);
+
+    useEffect(() => {
         if (!user) return;
 
         const flag = `profile_setup_${user.id}`;
@@ -40,7 +44,10 @@ export function Dashboard() {
             setToast({
                 message: "Complete seu perfil nas Configurações",
                 type: "info",
-                action: { label: "Configurar", href: "/settings" },
+                action: {
+                    label: "Configurar",
+                    onClick: () => navigate("/settings"),
+                },
             });
             localStorage.setItem(flag, "true");
         }

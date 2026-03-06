@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { Toast } from "@/components/Toast";
 import { Button } from "@/components/Button";
 import styles from "./Login.module.css"
 
 export function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate()
+
+  const showToast = useCallback((message, type = "error") => {
+      setToast({ message, type });
+  }, []);
 
   const { signIn } = useAuth()
 
@@ -19,7 +25,7 @@ export function Login() {
 
       navigate('/')
     } catch (error) {
-      alert("Usuário ou senha incorretos!")
+      showToast("Usuário ou senha incorretos!")
       console.error(error)
     }
   }
@@ -61,6 +67,9 @@ export function Login() {
           Não tem uma conta? <Link to="/register">Cadastre-se</Link>
         </p>
       </form>
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
     </div>
   )
 }

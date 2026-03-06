@@ -17,7 +17,7 @@
 .pageHeader h1 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0 0 0.25rem;
 }
 
@@ -43,11 +43,13 @@
 
 .cancelBtn:hover {
   border-color: var(--text-muted);
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .card {
-  background: var(--white);
+  background-color: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
@@ -69,7 +71,7 @@
 .formGroup label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .formGroup input,
@@ -78,8 +80,9 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.9rem;
-  color: var(--text);
-  background: var(--white);
+  color: var(--text-main);
+  background-color: var(--surface);
+  border-color: var(--border);
   transition: border-color 0.2s;
   outline: none;
 }

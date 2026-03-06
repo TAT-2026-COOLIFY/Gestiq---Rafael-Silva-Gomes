@@ -14,7 +14,7 @@
 .sectionTitle {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -71,13 +71,54 @@
 .table td:nth-child(4) { width: 15%; } 
 
 .table th:nth-child(5),
-.table td:nth-child(5) { width: 15%; } 
+.table td:nth-child(5) { 
+  text-align: center;
+  width: 12%; 
+} 
 
 .table th:nth-child(6),
-.table td:nth-child(6) { width: 15%; } 
+.table td:nth-child(6) { 
+  text-align: center;
+  width: 12%; 
+} 
 
 .table th:nth-child(7),
-.table td:nth-child(7) { width: 5%;  }
+.table td:nth-child(7) { 
+  text-align: center;
+  width: 5%;  
+}
+
+@media (max-width: 1600px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) { width: 15%; }
+
+  .table th:nth-child(2),
+  .table td:nth-child(2) { width: 15%; }
+
+  .table th:nth-child(3),
+  .table td:nth-child(3) { width: 15%;  } 
+
+  .table th:nth-child(4),
+  .table td:nth-child(4) { width: 15%; } 
+
+  .table th:nth-child(5),
+  .table td:nth-child(5) { 
+    text-align: center;
+    width: 15%; 
+  } 
+
+  .table th:nth-child(6),
+  .table td:nth-child(6) { 
+      text-align: center;
+      width: 15%; 
+  } 
+
+  .table th:nth-child(7),
+  .table td:nth-child(7) { 
+    text-align: center;
+    width: 5%;  
+  }
+}
 
 .table th {
   font-size: 0.78rem;

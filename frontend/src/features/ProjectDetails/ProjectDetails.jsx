@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, use } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
@@ -26,8 +26,7 @@ const TABS = [
     { key: "riscos", label: "Riscos "},
     { key: "comunicacoes", label: "Comunicações" },
     { key: "membros", label: "Equipe" },
-    { key: "milestone", label: "Linha do Tempo" },
-    //Talvez a sessão de scrum venha antes do kanban
+    { key: "milestones", label: "Linha do Tempo" },
     { key: "kanban", label: "Kanban" },
 ];
 
@@ -36,6 +35,25 @@ export function ProjectDetails() {
     const [project, setProject] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("canvas");
+    const [animating, setAnimating] = useState(false);
+    const [direction, setDirection] = useState("right");
+
+    useEffect(() => {
+        if (project) document.title = `${project.name} | Gestiq`;
+    }, [project]);
+
+    function handleTabChange(newTab) {
+        const currentIndex = TABS.findIndex((t) => t.key === activeTab);
+        const newIndex = TABS.findIndex((t) => t.key === newTab);
+
+        setDirection(newIndex > currentIndex ? "right" : "left");
+        setAnimating(true);
+
+        setTimeout(() => {
+            setActiveTab(newTab);
+            setAnimating(false);
+        }, 150);
+    }
 
     const fetchProject = useCallback(() => {
         api.get(`projects/${id}/`)
@@ -83,14 +101,17 @@ export function ProjectDetails() {
                     <button
                         key={tab.key}
                         className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ""}`}
-                        onClick={() => setActiveTab(tab.key)}
+                        onClick={() => handleTabChange(tab.key)}
                     >
                         {tab.label}                        
                     </button>
                 ))}
             </div>
 
-            <div className={styles.content}>
+            <div className={`
+                ${styles.content}
+                ${animating ? "" : direction === "right" ? styles.contentAnimateRight : styles.contentAnimateLeft}    
+            `}>
                 {activeTab === "canvas"       && <ProjectCanvas projectId={id} />}
                 {activeTab === "riscos"       && <ProjectRisks projectId={id} />}
                 {activeTab === "comunicacoes" && <ProjectCommunications projectId={id} />}

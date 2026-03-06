@@ -12,13 +12,15 @@
   right: 0;
   height: 100vh;
   width: 420px;
-  background: var(--white);
+  background-color: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
   z-index: 1001;
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease;
-  overflow: hidden; /* ← impede qualquer vazamento */
+  overflow: hidden;
 }
 
 .header {
@@ -39,7 +41,7 @@
 .headerInfo h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -62,7 +64,7 @@
 }
 
 .closeBtn:hover {
-  color: var(--text);
+  color: var(--text-main);
   background: var(--background);
 }
 

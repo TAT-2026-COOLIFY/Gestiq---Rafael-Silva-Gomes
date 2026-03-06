@@ -26,8 +26,9 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.875rem;
-  color: var(--text);
-  background: var(--white);
+  color: var(--text-main);
+  background-color: var(--surface);
+  border-color: var(--border);
   outline: none;
   transition: border-color 0.2s;
   font-family: inherit;
@@ -49,6 +50,6 @@
   font-weight: 700;
 }
 
-.low    { background: #f0fdf4; color: #15803d; }
-.medium { background: #fffbeb; color: #b45309; }
-.high   { background: #fef2f2; color: #b91c1c; }
+.low    { background: rgba(21,  128, 61,  0.15); color: #4ade80; }
+.medium { background: rgba(180, 83,  9,   0.15); color: #fbaf3c; }
+.high   { background: rgba(185, 28,  28,  0.15); color: #f87171; }

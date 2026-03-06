@@ -11,7 +11,7 @@
 .pageHeader h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text-main);
   margin: 0 0 0.25rem;
 }
 
@@ -22,7 +22,9 @@
 }
 
 .card {
-  background: var(--white);
+  background-color: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
@@ -66,9 +68,10 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  color: var(--text);
+  color: var(--text-main);
   transition: all 0.2s;
-  background: var(--white);
+  background-color: var(--surface);
+  border-color: var(--border);
 }
 
 .uploadBtn:hover {
@@ -100,7 +103,7 @@
 .formGroup label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text);
+  color: var(--text-main);
 }
 
 .formGroup input {
@@ -108,8 +111,9 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 0.9rem;
-  color: var(--text);
-  background: var(--white);
+  color: var(--text-main);
+  background-color: var(--surface);
+  border-color: var(--border);
   transition: border-color 0.2s;
   outline: none;
 }
@@ -138,6 +142,25 @@
 .saveBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.themeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.themeBtn:hover {
+  color: var(--text-main);
+  border-color: var(--text-muted);
 }
 
 @keyframes spin {

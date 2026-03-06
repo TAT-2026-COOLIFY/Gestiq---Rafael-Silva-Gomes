@@ -1,0 +1,218 @@
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { Toast } from "@/components/Toast";
+import { Popup } from "@/components/Popup";
+import { Loading } from "@/components/Loading/Loading";
+import { TeamModal } from "./TeamModal";
+import api from "@/services/api";
+import styles from "./ProjectTeam.module.css"
+
+function MemberCard({ member, onRemove, onUpdateFunction }) {
+    const [editing, setEditing] = useState(false);
+    const [funcValue, setFuncValue] = useState(member.function || "");
+
+    function handleBlur() {
+        setEditing(false);
+        if (funcValue !== member.function) {
+            onUpdateFunction(member.id, funcValue);
+        }
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === "Enter") handleBlur();
+        if (e.key === "Escape") {
+            setFuncValue(member.function || "");
+            setEditing(false);
+        }
+    }
+
+    return (
+        <div className={styles.card}>
+            <button
+                className={styles.removeBtn}
+                onClick={() => onRemove(member.id)}
+                title="Remover membro"
+            >
+                    <Trash2 size={14} />
+
+            </button>
+
+            <div className={styles.avatar}>
+                        {member.photo ? (
+                            <img src={member.photo} alt="Foto" className={styles.avatarImg} />
+                        ) : (
+                            <span className={styles.avatarInitial}>
+                                {(member.nome_completo || member.username || "?")[0].toUpperCase()}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className={styles.info}>
+                        <h4 className={styles.name}>
+                            {member.nome_completo || member.username}
+                        </h4>
+
+                        {editing ? (
+                            <input
+                                className={styles.roleInput}
+                                value={funcValue}
+                                onChange={(e) => setFuncValue(e.target.value)}
+                                onBlur={handleBlur}
+                                onKeyDown={handleKeyDown}
+                                autoFocus
+                                placeholder="Digite a função..."
+                            />
+                        ) : (
+                            <span
+                                className={styles.role}
+                                onClick={() => setEditing(true)}
+                                title="Clique para editar a função"
+                            >
+                                {funcValue || "Definir função..."}
+                            </span>
+                        )}
+
+                        {member.job_title && (
+                            <span className={styles.detail}>{member.job_title}</span>
+                        )}
+                        {member.department && (
+                            <span className={styles.detail}>{member.department}</span>
+                        )}
+                        <span className={styles.email}>{member.email}</span>
+                    </div>
+                </div>
+            );
+        }
+
+export function ProjectTeam({ projectId }) {
+    const [members, setMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [toast, setToast] = useState(null);
+    const [popup, setPopup] = useState(null);
+
+    const showToast = useCallback((message, type = "error") => {
+        setToast({ message, type });
+    }, []);
+
+    const showPopup = useCallback((message, id) => {
+        setPopup({ message, id });
+    }, []);
+
+    const fetchMembers = useCallback(() => {
+        api.get(`members/?project=${projectId}`)
+            .then((res) => setMembers(res.data.result ?? res.data))
+            .catch(() => showToast("Erro ao carregar membros."))
+            .finally(() => setLoading(false));
+    }, [projectId, showToast]);
+
+    useEffect(() => {
+        fetchMembers();
+    }, [fetchMembers]);
+
+    async function handleSave(form) {
+        setSaving(true);
+        try {
+            await api.post("members/", {
+                project: projectId,
+                email: form.email,
+                function: form.function,
+            });
+            fetchMembers();
+            setModalOpen(false);
+            showToast("Membro adicionado com sucesso!", "success");
+        } catch (error) {
+            const msg = error.response?.data?.detail
+                ?? Object.values(error.response?.data ?? {}).flat().join(" ")
+                ?? "Erro ao adicionar membro.";
+            showToast(msg);
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function handleOpenPopup(id) {
+        showPopup("Tem certeza que deseja remover este membro da equipe?", id)
+    }
+
+    async function handleRemove(id) {
+        try {
+            await api.delete(`members/${id}/`);
+            setMembers((prev) => prev.filter((m) => m.id !== id));
+            showToast("Membro removido.", "success");
+        } catch {
+            showToast("Erro ao remover membro.");
+        }
+    }
+
+async function handleUpdateFunction(id, newFunction) {
+        try {
+            const res = await api.patch(`members/${id}/`, {
+                function: newFunction,
+            });
+            setMembers((prev) =>
+                prev.map((m) => m.id === id ? { ...m, function: res.data.function } : m)
+            );
+            showToast("Função atualizada!", "success");
+        } catch {
+            showToast("Erro ao atualizar função.");
+        }
+    }
+
+    if (loading) return <Loading />;
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.toolbar}>
+                <h3 className={styles.sectionTitle}>Equipe do Projeto</h3>
+                <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
+                    <Plus size={16} />
+                    Convidar Membro
+                </button>
+            </div>
+
+            {members.length === 0 ? (
+                <div className={styles.emptyState}>
+                    <p>Nenhum membro na equipe ainda.</p>
+                </div>
+            ) : (
+                <div className={styles.grid}>
+                    {members.map((member) => (
+                        <MemberCard
+                            key={member.id}
+                            member={member}
+                            onRemove={handleOpenPopup}
+                            onUpdateFunction={handleUpdateFunction}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {modalOpen && (
+                <TeamModal
+                    onClose={() => setModalOpen(false)}
+                    onSave={handleSave}
+                    saving={saving}
+                />
+            )}
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast(null)}
+                />
+            )}
+            {popup && (
+                <Popup
+                    message={popup.message}
+                    onClose={() => setPopup(null)}
+                    action={() => handleRemove(popup.id)}
+                />
+            )}
+        </div>
+    );
+}
+
+            

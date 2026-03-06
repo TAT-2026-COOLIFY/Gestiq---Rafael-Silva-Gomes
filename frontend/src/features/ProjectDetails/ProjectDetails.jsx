@@ -4,10 +4,11 @@ import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
 import { ProjectRisks } from "./components/ProjectRisks/ProjectRisks";
 import { ProjectCommunications } from "./components/ProjectCommunications/ProjectCommunications";
+import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
+
 //TODO: TROCAR OS CAMINHOS CONFORME REFATORAR AS OUTRAS SESSÕES
 import ProjectCanvas from "@/components/ProjectCanvas";
 import ProjectKanban from "@/components/ProjectKanban";
-import ProjectTeam from "@/components/ProjectTeam";
 
 import ProjectMilestones from "@/components/ProjectMilestones";
 

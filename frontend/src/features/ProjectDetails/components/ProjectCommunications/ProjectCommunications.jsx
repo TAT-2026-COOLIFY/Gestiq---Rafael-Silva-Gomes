@@ -215,13 +215,10 @@ export function ProjectCommunications({ projectId }) {
             )}
 
             {popup && (
-                <Popup 
-                    message={popup.message} 
-                    onClose={() => setPopup(null)} 
-                    action={() => {
-                        handleDelete(popup.id);
-                        setPopup(null);
-                    }} 
+                <Popup
+                    message={popup.message}
+                    onClose={() => setPopup(null)}
+                    action={() => handleDelete(popup.id)}
                 />
             )}
         </div>

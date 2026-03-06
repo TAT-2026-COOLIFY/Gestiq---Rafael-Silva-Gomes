@@ -4,8 +4,8 @@ import { Toast } from "@/components/Toast";
 import { Popup } from "@/components/Popup";
 import { RiskModal } from "./RiskModal";
 import { RiskDrawer } from "./RiskDrawer";
-import api from "@/services/api";
 import { Loading } from "@/components/Loading/Loading";
+import api from "@/services/api";
 import styles from "./ProjectRisks.module.css";
 
 const INITIAL_RISK = {
@@ -245,13 +245,10 @@ export function ProjectRisks({ projectId }) {
             )}
 
             {popup && (
-                <Popup 
-                    message={popup.message} 
-                    onClose={() => setPopup(null)} 
-                    action={() => {
-                        handleDelete(popup.id);
-                        setPopup(null);
-                    }} 
+                <Popup
+                    message={popup.message}
+                    onClose={() => setPopup(null)}
+                    action={() => handleDelete(popup.id)}
                 />
             )}
         </div>

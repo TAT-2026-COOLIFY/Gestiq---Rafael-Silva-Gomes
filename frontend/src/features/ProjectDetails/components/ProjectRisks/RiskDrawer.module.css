@@ -50,6 +50,10 @@
   font-weight: 700;
 }
 
-.low    { background: rgba(21,  128, 61,  0.15); color: #4ade80; }
-.medium { background: rgba(180, 83,  9,   0.15); color: #fbaf3c; }
-.high   { background: rgba(185, 28,  28,  0.15); color: #f87171; }
+.low    { background: rgba(21,  128, 61,  0.12); color: #15803d; }
+.medium { background: rgba(180, 83,  9,   0.12); color: #b45309; }
+.high   { background: rgba(185, 28,  28,  0.12); color: #b91c1c; }
+
+[data-theme="dark"] .low    { color: #4ade80; }
+[data-theme="dark"] .medium { color: #fb923c; }
+[data-theme="dark"] .high   { color: #f87171; }

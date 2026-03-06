@@ -1,18 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { TriangleAlert } from "lucide-react";
-import styles from "./Popup.module.css"
+import styles from "./Popup.module.css";
 
-export function Popup({ message, onClose, action}) {
-    const [leaving, setLeaving] = useState(false)
-    
+export function Popup({ message, onClose, action }) {
+    const [leaving, setLeaving] = useState(false);
+
     const handleClose = useCallback(() => {
         setLeaving(true);
         setTimeout(() => onClose(), 300);
     }, [onClose]);
 
-    useEffect(() => {
-        if(action) return;
-    }, [handleClose, action]);
+    function handleConfirm() {
+        action();
+        handleClose();
+    }
 
     return (
         <div className={`${styles.overlay} ${leaving ? styles.leaving : ""}`}>
@@ -21,7 +22,7 @@ export function Popup({ message, onClose, action}) {
                 <span className={styles.alert}>ATENÇÃO</span>
                 <span className={styles.message}>{message}</span>
                 <div className={styles.actions}>
-                    <button className={styles.actionBtn} onClick={action}>
+                    <button className={styles.actionBtn} onClick={handleConfirm}>
                         Sim
                     </button>
                     <button className={styles.closeBtn} onClick={handleClose}>
@@ -30,6 +31,5 @@ export function Popup({ message, onClose, action}) {
                 </div>
             </div>
         </div>
-        
     );
 }

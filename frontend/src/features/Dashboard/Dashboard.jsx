@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { dashboardService } from "./services/dashboardService";
 import { ProjectCard } from "./components/ProjectCard";
@@ -34,6 +34,8 @@ export function Dashboard() {
         document.title = "Dashboard | Gestiq";
     }, []);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (!user) return;
 
@@ -44,10 +46,7 @@ export function Dashboard() {
             setToast({
                 message: "Complete seu perfil nas Configurações",
                 type: "info",
-                action: {
-                    label: "Configurar",
-                    onClick: () => navigate("/settings"),
-                },
+                action: { label: "Configurar", onClick: () => navigate("/settings") },
             });
             localStorage.setItem(flag, "true");
         }

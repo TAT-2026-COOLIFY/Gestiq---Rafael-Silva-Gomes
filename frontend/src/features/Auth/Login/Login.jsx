@@ -33,7 +33,7 @@ export function Login() {
   return (
     <div className={styles.loginContainer}>
       <form onSubmit={handleLogin} className={styles.loginForm}>
-        <h1>Gestão de Projetos</h1>
+        <h1>Gestiq</h1>
         <h2>Acesso ao Sistema</h2>
 
         <div className={styles.inputGroup}>

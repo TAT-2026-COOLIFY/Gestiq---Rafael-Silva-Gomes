@@ -107,9 +107,6 @@ export function Settings() {
                             onChange={handlePhotoChange}
                             style={{ display: "none" }}
                         />
-                        <button type="button" className={styles.themeBtn} onClick={toggleTheme}>
-                            {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-                        </button>
                     </div>
 
                     <hr className={styles.divider} />

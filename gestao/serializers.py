@@ -137,11 +137,11 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    pmo_first_name = serializers.CharField(
-        source="pmo.first_name", read_only=True, default=""
+    po_first_name = serializers.CharField(
+        source="po.first_name", read_only=True, default=""
     )
-    pmo_last_name = serializers.CharField(
-        source="pmo.last_name", read_only=True, default=""
+    po_last_name = serializers.CharField(
+        source="po.last_name", read_only=True, default=""
     )
     leader_first_name = serializers.CharField(
         source="leader.first_name", read_only=True, default=""
@@ -162,9 +162,9 @@ class ProjectsSerializer(serializers.ModelSerializer):
             "name",
             "project_type",
             "project_status",
-            "pmo",
-            "pmo_first_name",
-            "pmo_last_name",
+            "po",
+            "po_first_name",
+            "po_last_name",
             "leader",
             "leader_first_name",
             "leader_last_name",

@@ -111,7 +111,6 @@ export function Settings() {
 
                     <hr className={styles.divider} />
 
-                    {/* Campos */}
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
                             <label htmlFor="first_name">Nome</label>

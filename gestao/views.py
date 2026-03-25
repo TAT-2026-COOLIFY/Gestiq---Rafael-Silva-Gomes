@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -88,11 +89,17 @@ class ProjectsViewSet(viewsets.ModelViewSet):
             return Projects.objects.all()
 
         return Projects.objects.filter(
-            Q(pmo=user) | Q(leader=user) | Q(project_members__user=user)
+            Q(po=user) | Q(leader=user) | Q(project_members__user=user)
         ).distinct()
 
     def perform_create(self, serializer):
-        serializer.save()
+        project = serializer.save(po=self.request.user)
+
+        ProjectMembers.objects.create(
+            project=project,
+            user=self.request.user,
+            function="PO"
+        )
 
 
 class CanvasViewSet(viewsets.ModelViewSet):
@@ -114,49 +121,62 @@ class RisksViewSet(viewsets.ModelViewSet):
 class ProjectMembersViewSet(viewsets.ModelViewSet):
     queryset = ProjectMembers.objects.all()
     serializer_class = ProjectMembersSerializer
-
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        project = instance.project
+
+        if project.po != request.user:
+            raise PermissionDenied("Apenas o PMO pode remover membros da equipe.")
+        
+        return super().destroy(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         project_id = request.data.get("project")
+        
+        if not project_id:
+            return Response({"detail": "ID do projeto é obrigatório."}, status=400)
+
+        try:
+            project = Projects.objects.get(id=project_id)
+        except Projects.DoesNotExist:
+            return Response({"detail": "Projeto não encontrado."}, status=404)
+
+        if project.po != request.user:
+            return Response(
+                {"detail": "Você não tem permissão para adicionar membros a este projeto."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         email_recebido = request.data.get("email")
         function = request.data.get("function", "Colaborador")
 
         if not email_recebido:
-            return Response(
-                {"detail": "O e-mail é obrigatório."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": "O e-mail é obrigatório."}, status=400)
 
         user_to_add = User.objects.filter(email=email_recebido).first()
 
         if not user_to_add:
             return Response(
                 {"detail": "Usuário não encontrado. Peça para ele se cadastrar."},
-                status=status.HTTP_404_NOT_FOUND,
+                status=404
             )
 
-        if ProjectMembers.objects.filter(
-            project_id=project_id, user=user_to_add
-        ).exists():
-            return Response(
-                {"detail": "Usuário já está na equipe."},
-                status=status.HTTP_409_CONFLICT,
-            )
+        if ProjectMembers.objects.filter(project=project, user=user_to_add).exists():
+            return Response({"detail": "Usuário já está na equipe."}, status=409)
 
         try:
             member = ProjectMembers.objects.create(
-                project_id=project_id, user=user_to_add, function=function
+                project=project, 
+                user=user_to_add, 
+                function=function
             )
             serializer = self.get_serializer(member)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
         except Exception as e:
-            return Response(
-                {"detail": f"Erro Técnico: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": f"Erro Técnico: {str(e)}"}, status=400)
 
 
 class CommunicationViewSet(viewsets.ModelViewSet):

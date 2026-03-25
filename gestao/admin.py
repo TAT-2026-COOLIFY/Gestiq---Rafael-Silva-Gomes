@@ -69,7 +69,7 @@ class ProjectsAdmin(admin.ModelAdmin):
         "name",
         "project_type",
         "project_status",
-        "pmo",
+        "po",
         "leader",
         "total_percentage_real",
     )
@@ -77,7 +77,7 @@ class ProjectsAdmin(admin.ModelAdmin):
     list_filter = ("project_status", "project_type", "area", "category")
 
     # Barra de pesquisa (Busca por nome do projeto ou nome do líder)
-    search_fields = ("name", "pmo__username", "leader__username")
+    search_fields = ("name", "po__username", "leader__username")
 
     # Campos que são apenas leitura (automáticos)
     readonly_fields = ("create_date", "total_percentage_real", "total_percentage_plan")

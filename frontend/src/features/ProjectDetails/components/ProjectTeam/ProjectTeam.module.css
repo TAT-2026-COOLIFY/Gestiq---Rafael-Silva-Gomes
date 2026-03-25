@@ -128,6 +128,24 @@
   border-radius: 999px;
 }
 
+.roleStatic {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+}
+
+.rolePO {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #d88c1a;
+  background: rgba(179, 110, 8, 0.1);
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+}
+
 .detail {
   font-size: 0.78rem;
   color: var(--text-muted);

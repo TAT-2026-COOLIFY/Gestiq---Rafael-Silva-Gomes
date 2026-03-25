@@ -4,12 +4,20 @@ import { Toast } from "@/components/Toast";
 import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
 import { TeamModal } from "./TeamModal";
+import { useAuth } from "@/hooks/useAuth";
 import api from "@/services/api";
 import styles from "./ProjectTeam.module.css"
 
-function MemberCard({ member, onRemove, onUpdateFunction }) {
+function MemberCard({ member, onRemove, onUpdateFunction, isCurrentUserPO }) {
+    const { user } = useAuth();
     const [editing, setEditing] = useState(false);
     const [funcValue, setFuncValue] = useState(member.function || "");
+
+    const canEditingPO = isCurrentUserPO && (member.username !== user?.username);
+
+    useEffect(() => {
+        setFuncValue(member.function || "");
+    }, [member.function]);
 
     function handleBlur() {
         setEditing(false);
@@ -28,69 +36,83 @@ function MemberCard({ member, onRemove, onUpdateFunction }) {
 
     return (
         <div className={styles.card}>
-            <button
-                className={styles.removeBtn}
-                onClick={() => onRemove(member.id)}
-                title="Remover membro"
-            >
-                    <Trash2 size={14} />
+            {canEditingPO && (
+                <button
+                    className={styles.removeBtn}
+                    onClick={() => onRemove(member.id)}
+                    title="Remover membro"
+                >
+                        <Trash2 size={14} />
 
-            </button>
-
+                </button>
+            )}
+        
             <div className={styles.avatar}>
-                        {member.photo ? (
-                            <img src={member.photo} alt="Foto" className={styles.avatarImg} />
-                        ) : (
-                            <span className={styles.avatarInitial}>
-                                {(member.nome_completo || member.username || "?")[0].toUpperCase()}
-                            </span>
-                        )}
-                    </div>
+                {member.photo ? (
+                    <img src={member.photo} alt="Foto" className={styles.avatarImg} />
+                ) : (
+                    <span className={styles.avatarInitial}>
+                        {(member.nome_completo || member.username || "?")[0].toUpperCase()}
+                    </span>
+                )}
+            </div>
 
-                    <div className={styles.info}>
-                        <h4 className={styles.name}>
-                            {member.nome_completo || member.username}
-                        </h4>
+            <div className={styles.info}>
+                <h4 className={styles.name}>
+                    {member.nome_completo || member.username}
+                </h4>
 
-                        {editing ? (
-                            <input
-                                className={styles.roleInput}
-                                value={funcValue}
-                                onChange={(e) => setFuncValue(e.target.value)}
-                                onBlur={handleBlur}
-                                onKeyDown={handleKeyDown}
-                                autoFocus
-                                placeholder="Digite a função..."
-                            />
-                        ) : (
-                            <span
-                                className={styles.role}
-                                onClick={() => setEditing(true)}
-                                title="Clique para editar a função"
-                            >
-                                {funcValue || "Definir função..."}
-                            </span>
-                        )}
+                {canEditingPO ? (
+                    editing ? (
+                        <input
+                            className={styles.roleInput}
+                            value={funcValue}
+                            onChange={(e) => setFuncValue(e.target.value)}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
+                            autoFocus
+                            placeholder="Digite a função..."
+                        />
+                    ) : (
+                        <span
+                            className={styles.role}
+                            onClick={() => setEditing(true)}
+                            title="Clique para editar a função"
+                        >
+                            {funcValue || "Definir função..."}
+                        </span>
+                    )
+                ) : (
+                    <span className={member.function === "PO" ? styles.rolePO : styles.roleStatic}>
+                        {funcValue || "Sem função definida"}
+                    </span>
+                )}
 
-                        {member.job_title && (
-                            <span className={styles.detail}>{member.job_title}</span>
-                        )}
-                        {member.department && (
-                            <span className={styles.detail}>{member.department}</span>
-                        )}
-                        <span className={styles.email}>{member.email}</span>
-                    </div>
-                </div>
-            );
-        }
+                {member.job_title && (
+                    <span className={styles.detail}>{member.job_title}</span>
+                )}
+                
+                {member.department && (
+                    <span className={styles.detail}>{member.department}</span>
+                )}
+                <span className={styles.email}>{member.email}</span>
+            </div>
+        </div>
+    );
+}
 
 export function ProjectTeam({ projectId }) {
+    const { user } = useAuth();
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [toast, setToast] = useState(null);
     const [popup, setPopup] = useState(null);
+
+    const isCurrentUserPO = members.find(
+        (m) => m.username === user?.username && m.function === "PO"
+    ) !== undefined;
 
     const showToast = useCallback((message, type = "error") => {
         setToast({ message, type });
@@ -141,12 +163,13 @@ export function ProjectTeam({ projectId }) {
             await api.delete(`members/${id}/`);
             setMembers((prev) => prev.filter((m) => m.id !== id));
             showToast("Membro removido.", "success");
-        } catch {
-            showToast("Erro ao remover membro.");
+        } catch (error) {
+            const errorMsg = error.response?.data?.detail || "Erro ao remover membro.";
+            showToast(errorMsg, "error");
         }
     }
 
-async function handleUpdateFunction(id, newFunction) {
+    async function handleUpdateFunction(id, newFunction) {
         try {
             const res = await api.patch(`members/${id}/`, {
                 function: newFunction,
@@ -166,10 +189,12 @@ async function handleUpdateFunction(id, newFunction) {
         <div className={styles.container}>
             <div className={styles.toolbar}>
                 <h3 className={styles.sectionTitle}>Equipe do Projeto</h3>
-                <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
-                    <Plus size={16} />
-                    Convidar Membro
-                </button>
+                {isCurrentUserPO && (
+                    <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
+                        <Plus size={16} />
+                        Convidar Membro
+                    </button>
+                )}
             </div>
 
             {members.length === 0 ? (
@@ -182,6 +207,7 @@ async function handleUpdateFunction(id, newFunction) {
                         <MemberCard
                             key={member.id}
                             member={member}
+                            isCurrentUserPO={isCurrentUserPO} 
                             onRemove={handleOpenPopup}
                             onUpdateFunction={handleUpdateFunction}
                         />

@@ -56,10 +56,10 @@ class Projects(models.Model):
         CANCELADO = "CANC", "Cancelado"
 
     create_date = models.DateTimeField(auto_now_add=True)
-    pmo = models.ForeignKey(
+    po = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name="project_pmo",
+        related_name="project_po",
         null=True,
         blank=True,
     )

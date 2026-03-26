@@ -114,7 +114,7 @@ export function CommunicationModal({ form, onFormChange, onClose, onSave, saving
           </div>
         </div>
         
-        <button type="submit" style={{ display: "none" }} aria-hidden="true" />
+        <button type="submit" style={{ display: "none" }} />
       </form>
     </Modal>
   );

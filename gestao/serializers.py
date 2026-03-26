@@ -188,6 +188,8 @@ class CanvasSerializer(serializers.ModelSerializer):
         fields = [
             "project",
             "project_name",
+            "justification",
+            "objective",
             "benefits",
             "product",
             "requirements",

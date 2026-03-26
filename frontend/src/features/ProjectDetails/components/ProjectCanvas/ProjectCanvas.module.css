@@ -1,63 +1,108 @@
-.canvas-container {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 3 Colunas */
-    gap: 15px;
-    margin-bottom: 60px; /* Espaço para o botão flutuante */
+.container {
+  padding: 20px;
+  background-color: var(--background); /* Use as variáveis do seu tema */
+  min-height: 100%;
 }
 
-.canvas-box {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 15px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
+.canvasGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 colunas iguais */
+  gap: 12px;
+  min-height: 75vh; /* Garante uma altura mínima visual */
 }
 
-.canvas-box h3 {
-    margin-top: 0;
-    font-size: 0.9rem;
-    color: #555;
-    text-transform: uppercase;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
+/* Colunas em modo Flex vertical para esticar os itens */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.canvas-box textarea {
-    flex: 1;
-    min-height: 100px;
-    border: 1px solid #eee;
-    padding: 8px;
-    border-radius: 4px;
-    resize: vertical; /* Permite esticar a altura */
-    font-family: inherit;
+.box {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Faz os boxes dividirem o espaço da coluna igualmente */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.canvas-box textarea:focus {
-    border-color: #3498db;
-    outline: none;
+/* O Requisitos e Entregas podem ser maiores se desejar */
+.box.large {
+  flex: 2; 
 }
 
-/* Barra de Ação Flutuante ou Fixa */
-.actions-bar {
-    grid-column: 1 / -1; /* Ocupa a largura toda */
-    text-align: right;
-    margin-top: 10px;
+.box label {
+  padding: 10px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: white;
+  text-transform: uppercase;
 }
 
-.btn-save {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.box textarea {
+  flex: 1;
+  width: 100%;
+  border: none;
+  padding: 12px;
+  font-size: 0.85rem;
+  resize: none; /* Em canvas, é melhor desabilitar o resize manual */
+  background-color: #fcfcfc;
+  color: #333;
+  outline: none;
 }
 
-.btn-save:hover {
-    background-color: #219150;
+/* Cores baseadas na imagem */
+.green label  { background-color: #27ae60; }
+.green textarea { background-color: #e8f5e9; }
+
+.purple label { background-color: #8e44ad; }
+.purple textarea { background-color: #f3e5f5; }
+
+.orange label { background-color: #d35400; }
+.orange textarea { background-color: #fff3e0; }
+
+.blue label   { background-color: #2980b9; }
+.blue textarea   { background-color: #e3f2fd; }
+
+.yellow label { background-color: #f1c40f; }
+.yellow textarea { background-color: #fffde7; }
+
+/* Barra de ações */
+.actions {
+  margin-top: 25px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--primary);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: filter 0.2s;
+}
+
+.saveBtn:hover {
+  filter: brightness(1.2);
+}
+
+/* Responsividade: vira uma lista em telas pequenas */
+@media (max-width: 1200px) {
+  .canvasGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .canvasGrid {
+    grid-template-columns: 1fr;
+  }
 }

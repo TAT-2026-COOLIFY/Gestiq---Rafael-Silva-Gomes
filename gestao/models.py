@@ -137,6 +137,8 @@ class ProjectMembers(models.Model):
 class Canvas(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     project = models.OneToOneField(Projects, on_delete=models.CASCADE)
+    justification = models.TextField()
+    objective = models.TextField()
     benefits = models.TextField()
     product = models.TextField()
     requirements = models.TextField()

@@ -5,13 +5,13 @@ import api from "@/services/api";
 import { ProjectRisks } from "./components/ProjectRisks/ProjectRisks";
 import { ProjectCommunications } from "./components/ProjectCommunications/ProjectCommunications";
 import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
+import { ProjectCanvas } from "./components/ProjectCanvas/ProjectCanvas";
 
 //TODO: TROCAR OS CAMINHOS CONFORME REFATORAR AS OUTRAS SESSÕES
-import ProjectCanvas from "@/components/ProjectCanvas";
 import ProjectKanban from "@/components/ProjectKanban";
-
 import ProjectMilestones from "@/components/ProjectMilestones";
 
+import { motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";
 import styles from "./ProjectDetails.module.css";
 
@@ -23,12 +23,12 @@ const STATUS_MAP = {
 };
 
 const TABS = [
-    { key: "canvas", label: "Project Canvas" },
-    { key: "riscos", label: "Riscos "},
-    { key: "comunicacoes", label: "Comunicações" },
-    { key: "membros", label: "Equipe" },
-    { key: "milestones", label: "Linha do Tempo" },
-    { key: "kanban", label: "Kanban" },
+  { key: "canvas", label: "Project Canvas", component: ProjectCanvas },
+  { key: "riscos", label: "Riscos", component: ProjectRisks },
+  { key: "comunicacoes", label: "Comunicações", component: ProjectCommunications },
+  { key: "membros", label: "Equipe", component: ProjectTeam },
+  //{ key: "milestones", label: "Linha do Tempo", component: ProjectMilestones },
+  { key: "kanban", label: "Kanban", component: ProjectKanban },
 ];
 
 export function ProjectDetails() {
@@ -39,11 +39,30 @@ export function ProjectDetails() {
     const [animating, setAnimating] = useState(false);
     const [direction, setDirection] = useState("right");
 
+    const fetchProject = useCallback(async () => {
+        try {
+        setLoading(true);
+        const response = await api.get(`projects/${id}/`);
+        setProject(response.data);
+        } catch (error) {
+        console.error("Erro ao carregar projeto:", error);
+        setProject(null);
+        } finally {
+        setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        fetchProject();
+    }, [fetchProject]);
+
     useEffect(() => {
         if (project) document.title = `${project.name} | Gestiq`;
     }, [project]);
 
-    function handleTabChange(newTab) {
+    const handleTabChange = (newTab) => {
+        if (newTab === activeTab) return;
+
         const currentIndex = TABS.findIndex((t) => t.key === activeTab);
         const newIndex = TABS.findIndex((t) => t.key === newTab);
 
@@ -51,21 +70,10 @@ export function ProjectDetails() {
         setAnimating(true);
 
         setTimeout(() => {
-            setActiveTab(newTab);
-            setAnimating(false);
+        setActiveTab(newTab);
+        setAnimating(false);
         }, 150);
-    }
-
-    const fetchProject = useCallback(() => {
-        api.get(`projects/${id}/`)
-            .then((res) => setProject(res.data))
-            .catch(() => setProject(null))
-            .finally(() => setLoading(false));
-    }, [id]);
-
-    useEffect(() => {
-        fetchProject();
-    }, [fetchProject]);
+    };
 
     if (loading) return <Loading />;
 
@@ -82,6 +90,8 @@ export function ProjectDetails() {
 
     const status = STATUS_MAP[project.project_status] ?? { label: project.project_status, color: "" };
 
+    const ActiveTabComponent = TABS.find(tab => tab.key === activeTab)?.component;
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -91,35 +101,49 @@ export function ProjectDetails() {
                         {status.label}
                     </span>
                 </div>
-                <Link to="/" className={styles.backBtn}>
+                <Link to="/" className={styles.backBtn} aria-label="Voltar para início">
                     <ArrowLeft size={16} />
                     Voltar
                 </Link>
             </div>
 
-            <div className={styles.tabs}>
+            <nav className={styles.tabs} role="tablist">
                 {TABS.map((tab) => (
-                    <button
-                        key={tab.key}
-                        className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ""}`}
-                        onClick={() => handleTabChange(tab.key)}
-                    >
-                        {tab.label}                        
-                    </button>
+                <button
+                    key={tab.key}
+                    role="tab"
+                    aria-selected={activeTab === tab.key}
+                    className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ""}`}
+                    onClick={() => handleTabChange(tab.key)}
+                >
+                    {tab.label}
+                </button>
                 ))}
-            </div>
+            </nav>
 
-            <div className={`
-                ${styles.content}
-                ${animating ? "" : direction === "right" ? styles.contentAnimateRight : styles.contentAnimateLeft}    
-            `}>
-                {activeTab === "canvas"       && <ProjectCanvas projectId={id} />}
-                {activeTab === "riscos"       && <ProjectRisks projectId={id} />}
-                {activeTab === "comunicacoes" && <ProjectCommunications projectId={id} />}
-                {activeTab === "membros"      && <ProjectTeam projectId={id} />}
-                {activeTab === "kanban"       && <ProjectKanban projectId={id} />}
-                {activeTab === "milestones"   && <ProjectMilestones projectId={id} />}
-            </div>
+            <main className={styles.content}>
+                <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                        key={activeTab}
+
+                        initial={{ opacity: 0, x: direction === "right" ? 40 : -40 }}
+
+                        animate={{ opacity: 1, x: 0 }}
+
+                        exit={{ opacity: 0, x: direction === "right" ? -40 : 20 }}
+
+                        transition={{ duration: 0.15, ease: "easeInOut" }}
+
+                        style={{ overflow: "hidden" }}
+                    >
+                        {ActiveTabComponent ? (
+                            <ActiveTabComponent projectId={id} />
+                        ) : (
+                            <p>Selecione uma aba válida.</p>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
+            </main>
         </div>
     );
 }

@@ -6,6 +6,7 @@ import { CommunicationModal } from "./CommunicationModal"
 import { CommunicationDrawer } from "./CommunicationDrawer";
 import api from "@/services/api";
 import { Loading } from "@/components/Loading/Loading";
+import { motion, AnimatePresence } from "framer-motion";
 import styles from "./ProjectCommunications.module.css"
 
 const INITIAL_COMMUNICATION = {
@@ -47,18 +48,27 @@ export function ProjectCommunications({ projectId }) {
     const [popup, setPopup] = useState(null);
 
     const showToast = useCallback((message, type = "error") => {
-        setToast({ message, type });
+        setToast({ id: Math.random(), message, type });
+    }, []);
+
+    const handleCloseToast = useCallback(() => {
+        setToast(null);
     }, []);
 
     const showPopup = useCallback((message, id) => {
         setPopup({ message, id });
     }, []);
 
-    const fetchCommunications = useCallback(() => {
-        api.get(`communications/?project=${projectId}`)
-            .then((res) => setCommunications(res.data.results ?? res.data))
-            .catch(() => showToast("Erro ao carregar comunicações;"))
-            .finally(() => setLoading(false));
+    const fetchCommunications = useCallback(async () => {
+        try {
+            setLoading(true);
+            const res = await api.get(`communications/?project=${projectId}`);
+            setCommunications(res.data.results ?? res.data);
+        } catch (error) {
+            showToast("Erro ao carregar comunicações");
+        } finally {
+            setLoading(false);
+        }
     }, [projectId, showToast]);
 
     useEffect(() => {
@@ -99,6 +109,7 @@ export function ProjectCommunications({ projectId }) {
         try {
             await api.delete(`communications/${id}/`);
             setCommunications((prev) => prev.filter((r) => r.id !== id));
+            setSelectedCommunication(null);
             showToast("Comunicação excluída.", "success");
         } catch {
             showToast("Erro ao excluir comunicação.")
@@ -158,12 +169,20 @@ export function ProjectCommunications({ projectId }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {communications.map((communication) => {
-                                return (
-                                    <tr
+                            <AnimatePresence>
+                                {communications.map((communication, index) => (
+                                    <motion.tr
                                         key={communication.id}
                                         className={styles.tableRow}
                                         onClick={() => setSelectedCommunication(communication)}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        transition={{ 
+                                            delay: index * 0.05,
+                                            ease: "easeOut",
+                                            duration: 0.2
+                                        }}
                                     >
                                         <td>{communication.description}</td>
                                         <td>{communication.objective}</td>
@@ -178,49 +197,55 @@ export function ProjectCommunications({ projectId }) {
                                                     e.stopPropagation();
                                                     handleOpenPopup(communication.id);
                                                 }}
-                                                title="Excluir Comunicação"
                                             >
                                                 <Trash2 size={20} />
                                             </button>
                                         </td>
-                                    </tr>
-                                );
-                            })}
+                                    </motion.tr>
+                                ))}
+                            </AnimatePresence>
                         </tbody>
                     </table>
                 </div>
             )}
 
-            {modalOpen && (
-                <CommunicationModal
-                    form={form}
-                    onFormChange={setForm}
-                    onClose={() => setModalOpen(false)}
-                    onSave={handleSave}
-                    saving={saving}
-                />
-            )}
+            <AnimatePresence>
+                {modalOpen && (
+                    <CommunicationModal
+                        form={form}
+                        onFormChange={setForm}
+                        onClose={() => setModalOpen(false)}
+                        onSave={handleSave}
+                        saving={saving}
+                    />
+                )}
 
-            {selectedCommunication && (
-                <CommunicationDrawer
-                    communication={selectedCommunication}
-                    onClose={() => setSelectedCommunication(null)}
-                    onSave={handleEdit}
-                    saving={editSaving}
-                />
-            )}
+                {selectedCommunication && (
+                    <CommunicationDrawer
+                        communication={selectedCommunication}
+                        onClose={() => setSelectedCommunication(null)}
+                        onSave={handleEdit}
+                        saving={editSaving}
+                    />
+                )}
 
-            {toast && (
-                <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
-            )}
+                {popup && (
+                    <Popup
+                        message={popup.message}
+                        onClose={() => setPopup(null)}
+                        action={() => handleDelete(popup.id)}
+                    />
+                )}
 
-            {popup && (
-                <Popup
-                    message={popup.message}
-                    onClose={() => setPopup(null)}
-                    action={() => handleDelete(popup.id)}
-                />
-            )}
+                {toast && (
+                    <Toast 
+                        key={toast.id}
+                        message={toast.message} 
+                        type={toast.type} 
+                        onClose={handleCloseToast} 
+                    />
+                )}
+            </AnimatePresence>
         </div>
     )
 }

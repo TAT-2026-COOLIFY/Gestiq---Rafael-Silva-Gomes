@@ -3,6 +3,8 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
 }
 
 .toolbar {
@@ -39,6 +41,7 @@
   overflow-x: auto;
   border: 1px solid var(--border);
   border-radius: 12px;
+  overflow: hidden;
 }
 
 .table {

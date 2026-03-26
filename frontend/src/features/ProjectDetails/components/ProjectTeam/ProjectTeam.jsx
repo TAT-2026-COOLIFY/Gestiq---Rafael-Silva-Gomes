@@ -5,10 +5,11 @@ import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
 import { TeamModal } from "./TeamModal";
 import { useAuth } from "@/hooks/useAuth";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectTeam.module.css"
 
-function MemberCard({ member, onRemove, onUpdateFunction, isCurrentUserPO }) {
+function MemberCard({ member, onRemove, onUpdateFunction, isCurrentUserPO, ...props }) {
     const { user } = useAuth();
     const [editing, setEditing] = useState(false);
     const [funcValue, setFuncValue] = useState(member.function || "");
@@ -35,7 +36,11 @@ function MemberCard({ member, onRemove, onUpdateFunction, isCurrentUserPO }) {
     }
 
     return (
-        <div className={styles.card}>
+        <motion.div 
+            layout 
+            className={styles.card}
+            {...props} 
+        >
             {canEditingPO && (
                 <button
                     className={styles.removeBtn}
@@ -97,7 +102,7 @@ function MemberCard({ member, onRemove, onUpdateFunction, isCurrentUserPO }) {
                 )}
                 <span className={styles.email}>{member.email}</span>
             </div>
-        </div>
+        </motion.div>
     );
 }
 
@@ -115,18 +120,27 @@ export function ProjectTeam({ projectId }) {
     ) !== undefined;
 
     const showToast = useCallback((message, type = "error") => {
-        setToast({ message, type });
+        setToast({ id: Math.random(), message, type });
+    }, []);
+
+    const handleCloseToast = useCallback(() => {
+        setToast(null);
     }, []);
 
     const showPopup = useCallback((message, id) => {
         setPopup({ message, id });
     }, []);
 
-    const fetchMembers = useCallback(() => {
-        api.get(`members/?project=${projectId}`)
-            .then((res) => setMembers(res.data.result ?? res.data))
-            .catch(() => showToast("Erro ao carregar membros."))
-            .finally(() => setLoading(false));
+    const fetchMembers = useCallback(async () => {
+        try {
+            setLoading(true);
+            const res = await api.get(`members/?project=${projectId}`)
+            setMembers(res.data.results ?? res.data)
+        } catch (error) {
+            showToast("Erro ao carregar membros");
+        } finally {
+            setLoading(false);
+        }
     }, [projectId, showToast]);
 
     useEffect(() => {
@@ -202,41 +216,55 @@ export function ProjectTeam({ projectId }) {
                     <p>Nenhum membro na equipe ainda.</p>
                 </div>
             ) : (
-                <div className={styles.grid}>
-                    {members.map((member) => (
-                        <MemberCard
-                            key={member.id}
-                            member={member}
-                            isCurrentUserPO={isCurrentUserPO} 
-                            onRemove={handleOpenPopup}
-                            onUpdateFunction={handleUpdateFunction}
-                        />
-                    ))}
-                </div>
+                <AnimatePresence>
+                    <div className={styles.grid}>
+                        {members.map((member, index) => (
+                            <MemberCard
+                                key={member.id}
+                                member={member}
+                                isCurrentUserPO={isCurrentUserPO} 
+                                onRemove={handleOpenPopup}
+                                onUpdateFunction={handleUpdateFunction}
+                                initial={{ opacity: 0, x: 50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -50 }}
+                                transition={{ 
+                                    delay: index * 0.05, 
+                                    ease: "easeOut", 
+                                    duration: 0.3 
+                                }}
+                            />
+                        ))}   
+                    </div>
+                </AnimatePresence>
+                
             )}
 
-            {modalOpen && (
-                <TeamModal
-                    onClose={() => setModalOpen(false)}
-                    onSave={handleSave}
-                    saving={saving}
-                />
-            )}
+            <AnimatePresence>
+                {modalOpen && (
+                    <TeamModal
+                        onClose={() => setModalOpen(false)}
+                        onSave={handleSave}
+                        saving={saving}
+                    />
+                )}
 
-            {toast && (
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast(null)}
-                />
-            )}
-            {popup && (
-                <Popup
-                    message={popup.message}
-                    onClose={() => setPopup(null)}
-                    action={() => handleRemove(popup.id)}
-                />
-            )}
+                {toast && (
+                    <Toast
+                        key={toast.id}
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={handleCloseToast}
+                    />
+                )}
+                {popup && (
+                    <Popup
+                        message={popup.message}
+                        onClose={() => setPopup(null)}
+                        action={() => handleRemove(popup.id)}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

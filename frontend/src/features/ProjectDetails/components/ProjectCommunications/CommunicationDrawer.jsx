@@ -27,18 +27,19 @@ export function CommunicationDrawer({ communication, onClose, onSave, saving }) 
     return (
         <Drawer
             title="Editar Comunicação"
-            subtitle={null}
+            subtitle={`ID: ${communication.id}`}
             onClose={onClose}
             footer={
-            <FormActions
-                onCancel={onClose}
-                saving={saving}
-                isDirty={isDirty}
-                formId="communication-drawer-form"
-            />
+                <FormActions
+                    onCancel={onClose}
+                    saving={saving}
+                    isDirty={isDirty}
+                    saveLabel="Salvar Alterações"
+                    formId="communication-drawer-form"
+                />
             }
         >
-            <form onSubmit={handleSubmit} id="communication-drawer-form">
+            <form onSubmit={handleSubmit} id="communication-drawer-form" className={styles.formContainer}>
                 <div className={styles.formGroup}>
                     <label htmlFor="description">Descrição</label>
                     <textarea 
@@ -48,6 +49,7 @@ export function CommunicationDrawer({ communication, onClose, onSave, saving }) 
                         onChange={handleChange} 
                         rows={3} 
                         required 
+                        placeholder="Descreva a atividade de comunicação..."
                     />
                 </div>
                 <div className={styles.formGroup}>
@@ -59,6 +61,7 @@ export function CommunicationDrawer({ communication, onClose, onSave, saving }) 
                         onChange={handleChange} 
                         rows={3} 
                         required 
+                        placeholder="Qual o resultado esperado?"
                     />
                 </div>
                 <div className={styles.row}>
@@ -118,6 +121,7 @@ export function CommunicationDrawer({ communication, onClose, onSave, saving }) 
                         </select>
                     </div>
                 </div>
+                <button type="submit" style={{ display: "none" }} aria-hidden="true" />
             </form>
         </Drawer>
     );

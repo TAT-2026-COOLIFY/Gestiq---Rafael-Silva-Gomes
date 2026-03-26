@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
-import "./ProjectCanvas.css";
+import api from "@/services/api";
+import styles from "./ProjectCanvas.module.css"
 
-function ProjectCanvas({ projectId }) {
+export function ProjectCanvas({ projectId }) {
     const [canvasId, setCanvasId] = useState(null)
     const [loading, setLoading] = useState(true)
 
@@ -31,8 +31,6 @@ function ProjectCanvas({ projectId }) {
             
             setCanvasId(canvasExistente.id);
             setFormData(canvasExistente);
-            } else {
-                console.log("Nenhum canvas encontrado para este projeto.");
             }
             setLoading(false);
         })
@@ -139,5 +137,3 @@ function ProjectCanvas({ projectId }) {
     </div>
   );
 }
-
-export default ProjectCanvas;

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 // Importa a biblioteca nova e os tipos
-import { Gantt, ViewMode } from "gantt-task-react";
-import "gantt-task-react/dist/index.css"; // <--- IMPORTANTE: O CSS PADRÃO
 import api from "../services/api";
 import "./ProjectMilestones.css";
 

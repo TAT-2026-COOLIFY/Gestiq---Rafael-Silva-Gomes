@@ -56,6 +56,8 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
                         onCancel={onClose}
                         saving={saving}
                         isDirty={isDirty}
+                        saveLabel="Salvar Alterações"
+                        formId="risk-drawer-form"
                     />
                 </form>
             }

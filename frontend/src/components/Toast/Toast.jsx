@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import styles from "./Toast.module.css";
 
 const ICONS = {
@@ -10,28 +10,27 @@ const ICONS = {
 };
 
 export function Toast({ message, type = "error", onClose, action }) {
-    const [leaving, setLeaving] = useState(false);
-
-    const handleClose = useCallback(() => {
-        setLeaving(true);
-        setTimeout(onClose, 300);
-    }, [onClose]);
-
     useEffect(() => {
         if (action) return;
-        const timer = setTimeout(handleClose, 3500);
+        const timer = setTimeout(onClose, 3500);
         return () => clearTimeout(timer);
-    }, [handleClose, action]);
+    }, [onClose, action]);
 
     const Icon = ICONS[type] ?? AlertCircle;
 
     function handleAction() {
-        handleClose();
         if (action?.onClick) action.onClick();
+        onClose();
     }
 
     return (
-        <div className={`${styles.toast} ${styles[type]} ${leaving ? styles.leaving : ""}`}>
+        <motion.div 
+            className={`${styles.toast} ${styles[type]}`}
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+            layout
+        >
             <Icon size={18} className={styles.icon} />
             <span className={styles.message}>{message}</span>
             <div className={styles.actions}>
@@ -40,10 +39,10 @@ export function Toast({ message, type = "error", onClose, action }) {
                         {action.label}
                     </button>
                 )}
-                <button className={styles.closeBtn} onClick={handleClose}>
+                <button className={styles.closeBtn} onClick={onClose}>
                     <X size={16} />
                 </button>
             </div>
-        </div>
+        </motion.div>
     );
 }

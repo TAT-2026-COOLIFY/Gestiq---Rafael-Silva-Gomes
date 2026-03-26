@@ -1,4 +1,3 @@
-import { Plus } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { FormActions } from "@/components/FormActions";
 import styles from "./RiskModal.module.css";
@@ -12,14 +11,14 @@ const SCORE_OPTIONS = [
 ];
 
 export function RiskModal({ form, onFormChange, onClose, onSave, saving }) {
-    function handleChange(e) {
-        const { name, value } = e.target;
-        onFormChange((prev) => ({ ...prev, [name]: value }));
-    }
-
     function handleSubmit(e) {
         e.preventDefault();
         onSave(form);
+    }
+    
+    function handleChange(e) {
+        const { name, value } = e.target;
+        onFormChange((prev) => ({ ...prev, [name]: value }));
     }
 
     return (
@@ -46,6 +45,7 @@ export function RiskModal({ form, onFormChange, onClose, onSave, saving }) {
                             onChange={handleChange}
                             placeholder="Descreva o risco..."
                             required
+                            autoFocus
                         />
                     </div>
                     <div className={styles.formGroup}>

@@ -5,6 +5,7 @@ import { Popup } from "@/components/Popup";
 import { RiskModal } from "./RiskModal";
 import { RiskDrawer } from "./RiskDrawer";
 import { Loading } from "@/components/Loading/Loading";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectRisks.module.css";
 
@@ -58,18 +59,27 @@ export function ProjectRisks({ projectId }) {
     const [popup, setPopup] = useState(null);
 
     const showToast = useCallback((message, type = "error") => {
-        setToast({ message, type });
+        setToast({ id: Math.random(), message, type });
+    }, []);
+
+    const handleCloseToast = useCallback(() => {
+        setToast(null);
     }, []);
 
     const showPopup = useCallback((message, id) => {
         setPopup({ message, id });
     }, []);
 
-    const fetchRisks = useCallback(() => {
-        api.get(`risks/?project=${projectId}`)
-            .then((res) => setRisks(res.data.results ?? res.data))
-            .catch(() => showToast("Erro ao carregar riscos."))
-            .finally(() => setLoading(false));
+    const fetchRisks = useCallback(async () => {
+        try {
+            setLoading(true)
+            const res = await api.get(`risks/?project=${projectId}`)
+            setRisks(res.data.results ?? res.data);
+        } catch (error) {
+            showToast("Erro ao carregar riscos");
+        } finally {
+            setLoading(false);
+        }
     }, [projectId, showToast]);
 
     useEffect(() => {
@@ -150,7 +160,6 @@ export function ProjectRisks({ projectId }) {
     
     return (
         <div className={styles.container}>
-
             <div className={styles.toolbar}>
                 <h3 className={styles.sectionTitle}>Riscos do Projeto</h3>
                 <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
@@ -178,79 +187,97 @@ export function ProjectRisks({ projectId }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {risks.map((risk) => {
-                                const score = parseFloat(risk.score ?? 0);
-                                const level = getScoreLevel(score);
-                                return (
-                                    <tr 
-                                        key={risk.id}
-                                        className={styles.tableRow}
-                                        onClick={() => setSelectedRisk(risk)}
-                                    >
-                                        <td>{risk.description}</td>
-                                        <td>{CATEGORY_MAP[risk.category] ?? risk.category}</td>
-                                        <td>
-                                            <span className={`${styles.scoreBadge} ${styles[level]}`}>
+                            <AnimatePresence>
+                                {risks.map((risk, index) => {
+                                    const score = parseFloat(risk.score ?? 0);
+                                    const level = getScoreLevel(score);
+
+                                    return (
+                                        <motion.tr
+                                            key={risk.id}
+                                            className={styles.tableRow}
+                                            onClick={() => setSelectedRisk(risk)}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            transition={{ 
+                                                delay: index * 0.05,
+                                                ease: "easeOut",
+                                                duration: 0.2
+                                            }}
+                                        >
+                                            <td>{risk.description}</td>
+                                            <td>{CATEGORY_MAP[risk.category] ?? risk.category}</td>
+                                            <td>
+                                                <span className={`${styles.scoreBadge} ${styles[level]}`}>
                                                 {score.toFixed(2)}
-                                            </span>
-                                        </td>
-                                        <td>{ACTION_MAP[risk.action] ?? risk.action}</td>
-                                        <td>{risk.action_plan ?? "—"}</td>
-                                        <td>
-                                            <span className={`${styles.statusBadge} ${styles[`status_${risk.status}`]}`}>
+                                                </span>
+                                            </td>
+                                            <td>{ACTION_MAP[risk.action] ?? risk.action}</td>
+                                            <td>{risk.action_plan ?? "—"}</td>
+                                            <td>
+                                                <span className={`${styles.statusBadge} ${styles[`status_${risk.status}`]}`}>
                                                 {STATUS_MAP[risk.status] ?? risk.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button
                                                 className={styles.deleteBtn}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     handleOpenPopup(risk.id);
                                                 }}
                                                 title="Excluir risco"
-                                            >
+                                                >
                                                 <Trash2 size={20} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                                                </button>
+                                            </td>
+                                        </motion.tr>
+                                    );
+                                })}
+                            </AnimatePresence>
                         </tbody>
                     </table>
                 </div>
             )}
 
-            {modalOpen && (
-                <RiskModal
-                    form={form}
-                    onFormChange={setForm}
-                    onClose={() => setModalOpen(false)}
-                    onSave={handleSave}
-                    saving={saving}
-                />
-            )}
+            <AnimatePresence>
+                {modalOpen && (
+                    <RiskModal
+                        form={form}
+                        onFormChange={setForm}
+                        onClose={() => setModalOpen(false)}
+                        onSave={handleSave}
+                        saving={saving}
+                    />
+                )}
 
-            {selectedRisk && (
-                <RiskDrawer
-                    risk={selectedRisk}
-                    onClose={() => setSelectedRisk(null)}
-                    onSave={handleEdit}
-                    saving={editSaving}
-                />
-            )}
+                {selectedRisk && (
+                    <RiskDrawer
+                        risk={selectedRisk}
+                        onClose={() => setSelectedRisk(null)}
+                        onSave={handleEdit}
+                        saving={editSaving}
+                    />
+                )}
 
-            {toast && (
-                <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
-            )}
+                {popup && (
+                    <Popup
+                        message={popup.message}
+                        onClose={() => setPopup(null)}
+                        action={() => handleDelete(popup.id)}
+                    />
+                )}
 
-            {popup && (
-                <Popup
-                    message={popup.message}
-                    onClose={() => setPopup(null)}
-                    action={() => handleDelete(popup.id)}
-                />
-            )}
+                {toast && (
+                    <Toast 
+                        key={toast.id}
+                        message={toast.message} 
+                        type={toast.type} 
+                        onClose={handleCloseToast} 
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }

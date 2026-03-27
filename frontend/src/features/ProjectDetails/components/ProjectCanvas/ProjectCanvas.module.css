@@ -69,29 +69,44 @@
 .yellow label { background-color: #f1c40f; }
 .yellow textarea { background-color: #fffde7; }
 
-/* Barra de ações */
 .actions {
-  margin-top: 25px;
-  display: flex;
-  justify-content: flex-end;
+  position: fixed;
+  bottom: 15px;
+  right: 50px;
+  z-index: 100;
 }
 
-.saveBtn {
+.saveIndicator {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--primary);
-  color: white;
-  padding: 12px 30px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  transition: filter 0.2s;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  user-select: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-.saveBtn:hover {
-  filter: brightness(1.2);
+.saveIndicator.salvo {
+  background-color: #e8f5e9;
+  color: #27ae60;
+}
+
+.saveIndicator.salvando {
+  background-color: #fff3e0;
+  color: #d35400;
+}
+
+.saveIndicator.pendente {
+  background-color: #f1f1f1;
+  color: #7f8c8d;
+}
+
+.saveIndicator.erro {
+  background-color: #ffebee;
+  color: #c0392b;
 }
 
 /* Responsividade: vira uma lista em telas pequenas */

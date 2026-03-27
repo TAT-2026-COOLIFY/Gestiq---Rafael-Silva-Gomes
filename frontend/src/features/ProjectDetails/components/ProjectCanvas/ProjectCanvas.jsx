@@ -2,20 +2,21 @@ import { useEffect, useState, useCallback } from "react";
 import api from "@/services/api";
 import styles from "./ProjectCanvas.module.css";
 import { Loading } from "@/components/Loading/Loading";
-import { Save } from "lucide-react";
+import { Save, CheckCircle, Clock } from "lucide-react";
 
 export function ProjectCanvas({ projectId }) {
   const [canvasId, setCanvasId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [isDirty, setIsDirty] = useState(true);
+  const [saveStatus, setSaveStatus] = useState("Salvo");
 
   const [formData, setFormData] = useState({
-    justification: "", // Adicionado conforme imagem
-    objective: "",      // Adicionado conforme imagem
+    justification: "",
+    objective: "",
     benefits: "",
     product: "",
     requirements: "",
-    stakeholders: "",   // Áreas Envolvidas
+    stakeholders: "",
     team: "",
     systems: "",
     assumptions: "",
@@ -30,7 +31,16 @@ export function ProjectCanvas({ projectId }) {
     async function loadCanvas() {
       try {
         const res = await api.get(`canvas/?project=${projectId}`);
-        const data = res.data.results ? res.data.results[0] : res.data[0];
+
+        let data = null;
+        if (res.data?.results && res.data.results.length > 0) {
+          data = res.data.results[0]; 
+        } else if (Array.isArray(res.data) && res.data.length > 0) {
+          data = res.data[0]; 
+        } else if (res.data && res.data.id) {
+          data = res.data; 
+        }
+
         if (data) {
           setCanvasId(data.id);
           setFormData(data);
@@ -47,59 +57,67 @@ export function ProjectCanvas({ projectId }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setIsDirty(true);
+    setSaveStatus("Pendente");
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      if (canvasId) {
-        await api.patch(`canvas/${canvasId}/`, formData);
-      } else {
-        const res = await api.post("canvas/", { ...formData, project: projectId });
-        setCanvasId(res.data.id);
+  useEffect(() => {
+    if (!isDirty) return;
+
+    setSaveStatus("Salvando...");
+
+    const timer = setTimeout(async () => {
+      try {
+        if (canvasId) {
+          await api.patch(`canvas/${canvasId}/`, formData);
+          setSaveStatus("Salvo");
+          setIsDirty(false);
+        } else {
+          const res = await api.post("canvas/", { ...formData, project: Number(projectId) });
+          setCanvasId(res.data.id);
+          setSaveStatus("Salvo");
+          setIsDirty(false);
+        }
+      } catch (err) {
+        console.error("Erro ao salvar canvas:", err);
+        setSaveStatus("Erro");
       }
-      alert("Canvas salvo com sucesso!");
-    } catch (err) {
-      alert("Erro ao salvar canvas.");
-    } finally {
-      setSaving(false);
-    }
-  };
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [formData, isDirty, canvasId, projectId]);
 
   if (loading) return <Loading />;
+
+  const statusClass = saveStatus.replace("...", "").toLowerCase();
 
   return (
     <div className={styles.container}>
       <div className={styles.canvasGrid}>
-        
-        {/* COLUNA 1: VERDE */}
+
         <div className={`${styles.column} ${styles.green}`}>
           <CanvasBox title="Justificativa" name="justification" value={formData.justification} onChange={handleChange} />
           <CanvasBox title="Objetivo" name="objective" value={formData.objective} onChange={handleChange} />
           <CanvasBox title="Benefícios" name="benefits" value={formData.benefits} onChange={handleChange} />
         </div>
 
-        {/* COLUNA 2: ROXO */}
         <div className={`${styles.column} ${styles.purple}`}>
           <CanvasBox title="Produto" name="product" value={formData.product} onChange={handleChange} />
           <CanvasBox title="Requisitos" name="requirements" value={formData.requirements} onChange={handleChange} isLarge />
         </div>
 
-        {/* COLUNA 3: LARANJA */}
         <div className={`${styles.column} ${styles.orange}`}>
           <CanvasBox title="Áreas Envolvidas" name="stakeholders" value={formData.stakeholders} onChange={handleChange} />
           <CanvasBox title="Equipe" name="team" value={formData.team} onChange={handleChange} />
           <CanvasBox title="Sistemas" name="systems" value={formData.systems} onChange={handleChange} />
         </div>
 
-        {/* COLUNA 4: AZUL */}
         <div className={`${styles.column} ${styles.blue}`}>
           <CanvasBox title="Premissas" name="assumptions" value={formData.assumptions} onChange={handleChange} />
           <CanvasBox title="Entregas" name="deliverables" value={formData.deliverables} onChange={handleChange} isLarge />
           <CanvasBox title="Restrições" name="constraints" value={formData.constraints} onChange={handleChange} />
         </div>
 
-        {/* COLUNA 5: AMARELO */}
         <div className={`${styles.column} ${styles.yellow}`}>
           <CanvasBox title="Riscos" name="risks" value={formData.risks} onChange={handleChange} />
           <CanvasBox title="Cronograma" name="timeline" value={formData.timeline} onChange={handleChange} />
@@ -109,16 +127,18 @@ export function ProjectCanvas({ projectId }) {
       </div>
 
       <div className={styles.actions}>
-        <button onClick={handleSave} disabled={saving} className={styles.saveBtn}>
-          <Save size={20} />
-          {saving ? "Salvando..." : "Salvar Canvas"}
-        </button>
+        <div className={`${styles.saveIndicator} ${styles[statusClass]}`}>
+          {saveStatus === "Salvando..." && <Clock size={18} />}
+          {saveStatus === "Salvo" && <CheckCircle size={18} />}
+          {saveStatus === "Pendente" && <Save size={18} />}
+          {saveStatus === "Erro" && <Save size={18} />}
+          <span>{saveStatus}</span>
+        </div>
       </div>
     </div>
   );
 }
 
-// Sub-componente para evitar repetição de código
 function CanvasBox({ title, name, value, onChange, isLarge }) {
   return (
     <div className={`${styles.box} ${isLarge ? styles.large : ""}`}>

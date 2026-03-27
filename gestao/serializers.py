@@ -186,6 +186,7 @@ class CanvasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Canvas
         fields = [
+            "id",
             "project",
             "project_name",
             "justification",

@@ -25,7 +25,7 @@ export function TimelineModal({ form, onFormChange, onClose, onSave, saving }) {
         <div className={styles.formGrid}>
           
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-            <label htFmlFor="task">Nome do Marco</label>
+            <label htmlFor="task">Nome do Marco</label>
             <input
               id="task"
               name="task"

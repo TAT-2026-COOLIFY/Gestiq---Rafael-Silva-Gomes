@@ -1,0 +1,189 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.addBtn:hover {
+  opacity: 0.88;
+}
+
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* --- Gráfico da Timeline --- */
+.timelineWrapper {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--surface);
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.sidebarHeader {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.sidebarItem {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chartArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.monthsHeader {
+  height: 40px;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.monthTick {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-right: 1px solid var(--border);
+}
+
+.monthTick:last-child {
+  border-right: none;
+}
+
+.chartContent {
+  position: relative;
+  flex: 1;
+}
+
+.gridBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+.gridLine {
+  flex: 1;
+  border-right: 1px dashed var(--border);
+  opacity: 0.6;
+}
+
+.taskRow {
+  height: 45px;
+  position: relative;
+  border-bottom: 1px solid transparent;
+}
+
+.taskBar {
+  position: absolute;
+  top: 8px;
+  height: 28px;
+  background-color: var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s,
+    filter 0.2s;
+}
+
+.taskBar:hover {
+  transform: translateY(-2px);
+  filter: brightness(0.95);
+}
+
+.taskProgress {
+  height: 100%;
+  background-color: #27ae60;
+  border-radius: 20px;
+  transition: width 0.4s ease-out;
+}
+
+.taskLabel {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}

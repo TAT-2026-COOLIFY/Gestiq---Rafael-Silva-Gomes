@@ -24,12 +24,12 @@
   flex: 1; /* Faz os boxes dividirem o espaço da coluna igualmente */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* O Requisitos e Entregas podem ser maiores se desejar */
 .box.large {
-  flex: 2; 
+  flex: 2;
 }
 
 .box label {
@@ -54,20 +54,40 @@
 }
 
 /* Cores baseadas na imagem */
-.green label  { background-color: #27ae60; }
-.green textarea { background-color: #e8f5e9; }
+.green label {
+  background-color: #27ae60;
+}
+.green textarea {
+  background-color: #e8f5e9;
+}
 
-.purple label { background-color: #8e44ad; }
-.purple textarea { background-color: #f3e5f5; }
+.purple label {
+  background-color: #8e44ad;
+}
+.purple textarea {
+  background-color: #f3e5f5;
+}
 
-.orange label { background-color: #d35400; }
-.orange textarea { background-color: #fff3e0; }
+.orange label {
+  background-color: #d35400;
+}
+.orange textarea {
+  background-color: #fff3e0;
+}
 
-.blue label   { background-color: #2980b9; }
-.blue textarea   { background-color: #e3f2fd; }
+.blue label {
+  background-color: #2980b9;
+}
+.blue textarea {
+  background-color: #e3f2fd;
+}
 
-.yellow label { background-color: #f1c40f; }
-.yellow textarea { background-color: #fffde7; }
+.yellow label {
+  background-color: #f1c40f;
+}
+.yellow textarea {
+  background-color: #fffde7;
+}
 
 .actions {
   position: fixed;

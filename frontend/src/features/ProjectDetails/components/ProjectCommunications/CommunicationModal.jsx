@@ -2,8 +2,13 @@ import { Modal } from "@/components/Modal";
 import { FormActions } from "@/components/FormActions";
 import styles from "./CommunicationModal.module.css";
 
-export function CommunicationModal({ form, onFormChange, onClose, onSave, saving }) {
-    
+export function CommunicationModal({
+  form,
+  onFormChange,
+  onClose,
+  onSave,
+  saving,
+}) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     onFormChange((prev) => ({ ...prev, [name]: value }));
@@ -29,7 +34,6 @@ export function CommunicationModal({ form, onFormChange, onClose, onSave, saving
     >
       <form id="communication-modal-form" onSubmit={handleSubmit}>
         <div className={styles.formGrid}>
-          
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label htmlFor="description">Descrição</label>
             <input
@@ -81,10 +85,10 @@ export function CommunicationModal({ form, onFormChange, onClose, onSave, saving
 
           <div className={styles.formGroup}>
             <label htmlFor="channel">Meio</label>
-            <select 
-              id="channel" 
-              name="channel" 
-              value={form.channel} 
+            <select
+              id="channel"
+              name="channel"
+              value={form.channel}
               onChange={handleChange}
             >
               <option value="EMAIL">E-mail</option>
@@ -98,10 +102,10 @@ export function CommunicationModal({ form, onFormChange, onClose, onSave, saving
 
           <div className={styles.formGroup}>
             <label htmlFor="frequency">Frequência</label>
-            <select 
-              id="frequency" 
-              name="frequency" 
-              value={form.frequency} 
+            <select
+              id="frequency"
+              name="frequency"
+              value={form.frequency}
               onChange={handleChange}
             >
               <option value="ONCE">Uma única vez</option>
@@ -113,7 +117,7 @@ export function CommunicationModal({ form, onFormChange, onClose, onSave, saving
             </select>
           </div>
         </div>
-        
+
         <button type="submit" style={{ display: "none" }} />
       </form>
     </Modal>

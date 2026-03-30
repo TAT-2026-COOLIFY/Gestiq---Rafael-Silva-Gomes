@@ -8,7 +8,9 @@
   position: fixed;
   left: 0;
   top: 0;
-  transition: width 0.3s ease, transform 0.3s ease;
+  transition:
+    width 0.3s ease,
+    transform 0.3s ease;
   z-index: 1000;
 }
 
@@ -48,7 +50,8 @@
   gap: 0.5rem;
 }
 
-.link, .activeLink {
+.link,
+.activeLink {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -65,7 +68,7 @@
   color: var(--primary);
 }
 
-.sidebar.collapsed .link, 
+.sidebar.collapsed .link,
 .sidebar.collapsed .activeLink,
 .sidebar.collapsed .logoutBtn {
   justify-content: center;
@@ -80,7 +83,8 @@
   font-weight: 600;
 }
 
-.sidebar.collapsed .settingsLink, .settingsLink {
+.sidebar.collapsed .settingsLink,
+.settingsLink {
   margin-top: auto;
 }
 
@@ -175,9 +179,13 @@
 }
 
 @media (max-width: 768px) {
-  .collapseBtn { display: none; }
+  .collapseBtn {
+    display: none;
+  }
 
-  .mobileBtn { display: flex; }
+  .mobileBtn {
+    display: flex;
+  }
 
   .sidebar {
     transform: translateX(-100%);
@@ -211,7 +219,11 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }

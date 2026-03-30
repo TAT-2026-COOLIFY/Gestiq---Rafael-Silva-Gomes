@@ -18,13 +18,29 @@
   animation: slideOut 0.3s ease forwards;
 }
 
-.success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-.error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-.info    { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.success {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+.info {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
 
-.icon { flex-shrink: 0; }
+.icon {
+  flex-shrink: 0;
+}
 
-.message { flex: 1; }
+.message {
+  flex: 1;
+}
 
 .actions {
   display: flex;
@@ -45,7 +61,9 @@
   transition: opacity 0.2s;
 }
 
-.actionBtn:hover { opacity: 0.88; }
+.actionBtn:hover {
+  opacity: 0.88;
+}
 
 .closeBtn {
   background: none;
@@ -60,14 +78,28 @@
   transition: opacity 0.2s;
 }
 
-.closeBtn:hover { opacity: 1; }
+.closeBtn:hover {
+  opacity: 1;
+}
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(1rem); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideOut {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(1rem); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
 }

@@ -7,7 +7,7 @@
   --border: #e2e8f0;
   --white: #ffffff;
   --surface: #ffffff;
-  --font-family: 'Inter', sans-serif;
+  --font-family: "Inter", sans-serif;
 }
 
 [data-theme="dark"] {
@@ -28,7 +28,8 @@
   -webkit-font-smoothing: antialiased;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -44,6 +45,8 @@ a {
   color: inherit;
 }
 
-input, button, textarea {
+input,
+button,
+textarea {
   font-family: inherit;
 }

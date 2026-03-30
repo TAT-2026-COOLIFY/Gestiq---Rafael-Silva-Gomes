@@ -84,5 +84,7 @@
 }
 
 @media (max-width: 480px) {
-  .drawer { width: 100vw; }
+  .drawer {
+    width: 100vw;
+  }
 }

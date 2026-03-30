@@ -29,5 +29,10 @@
   transition: opacity 0.2s;
 }
 
-.saveBtn:hover:not(:disabled) { opacity: 0.88; }
-.saveBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.saveBtn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

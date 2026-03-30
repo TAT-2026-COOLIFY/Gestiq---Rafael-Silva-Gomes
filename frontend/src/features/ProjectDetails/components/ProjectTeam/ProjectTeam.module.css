@@ -33,7 +33,9 @@
   transition: opacity 0.2s;
 }
 
-.addBtn:hover { opacity: 0.88; }
+.addBtn:hover {
+  opacity: 0.88;
+}
 
 .grid {
   display: grid;

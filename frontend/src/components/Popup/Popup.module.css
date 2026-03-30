@@ -30,7 +30,7 @@
 }
 
 .alert {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -39,7 +39,7 @@
 }
 
 .message {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   font-size: 1rem;
   color: #374151;
   text-align: center;
@@ -61,10 +61,13 @@
   border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   cursor: pointer;
   border: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
 .actionBtn {

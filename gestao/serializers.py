@@ -280,6 +280,10 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "status",
             "priority",
             "create_date",
+            "milestone",
+            "milestone_name",
+            "sprint",
+            "sprint_name",
         ]
 
     def get_assigned_to_photo(self, obj):

@@ -7,9 +7,7 @@ import { ProjectCommunications } from "./components/ProjectCommunications/Projec
 import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
 import { ProjectCanvas } from "./components/ProjectCanvas/ProjectCanvas";
 import { ProjectTimeline } from "./components/ProjectTimeline/ProjectTimeline";
-
-//TODO: TROCAR OS CAMINHOS CONFORME REFATORAR AS OUTRAS SESSÕES
-import ProjectKanban from "@/components/ProjectKanban";
+import { ProjectKanban } from "./components/ProjectKanban/ProjectKanban";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";

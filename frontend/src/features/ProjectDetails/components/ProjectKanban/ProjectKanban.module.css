@@ -1,0 +1,238 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.addBtn:hover {
+  opacity: 0.88;
+}
+
+.boardWrapper {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+  overflow: hidden;
+  padding-bottom: 0.5rem;
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.columnBACKLOG {
+  border-top: 4px solid #94a3b8;
+  background-color: rgba(148, 163, 184, 0.03);
+}
+
+.columnBACKLOG .columnHeader {
+  background-color: rgba(148, 163, 184, 0.03);
+}
+
+.columnBACKLOG .taskCard {
+  border-left-color: #94a3b8;
+}
+
+.columnPLAN {
+  border-top: 4px solid #f59e0b;
+  background-color: rgba(245, 158, 11, 0.03);
+}
+.columnPLAN .columnHeader {
+  background-color: rgba(245, 158, 11, 0.03);
+}
+.columnPLAN .taskCard {
+  border-left-color: #f59e0b;
+}
+
+.columnDOING {
+  border-top: 4px solid #3b82f6;
+  background-color: rgba(59, 130, 246, 0.03);
+}
+.columnDOING .columnHeader {
+  background-color: rgba(59, 130, 246, 0.03);
+}
+.columnDOING .taskCard {
+  border-left-color: #3b82f6;
+}
+
+.columnREVIEW {
+  border-top: 4px solid #ef4444;
+  background-color: rgba(239, 68, 68, 0.03);
+}
+.columnREVIEW .columnHeader {
+  background-color: rgba(239, 68, 68, 0.03);
+}
+.columnREVIEW .taskCard {
+  border-left-color: #ef4444;
+}
+
+.columnDONE {
+  border-top: 4px solid #10b981;
+  background-color: rgba(16, 185, 129, 0.03);
+}
+.columnDONE .columnHeader {
+  background-color: rgba(16, 185, 129, 0.03);
+}
+.columnDONE .taskCard {
+  border-left-color: #10b981;
+}
+
+.columnHeader {
+  padding: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.taskCount {
+  background-color: var(--border);
+  color: var(--text-main);
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.columnBody {
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  overflow-y: auto;
+  transition: background-color 0.2s;
+  border-radius: 0 0 12px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.columnBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.columnBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.columnBody::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 10px;
+}
+
+.columnBody::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
+
+.columnBodyDragOver {
+  background-color: var(--border);
+  opacity: 0.5;
+}
+
+.taskCard {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+
+  /* A MÁGICA 1: Engrossamos a borda esquerda para receber a cor da coluna */
+  border-left-width: 4px;
+
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: grab;
+
+  /* Sombra em duas camadas (muito mais sofisticada e suave) */
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.02);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.taskCard:hover {
+  /* No hover, o card "levanta" em direção ao usuário */
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.taskCard:active {
+  cursor: grabbing;
+  /* Quando clicado e segurado, ele "afunda" um pouco */
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.taskTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+  word-wrap: break-word; /* Quebra palavras muito grandes para não estourar o card */
+}
+
+.taskMilestone {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
+.emptyColumn {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 2rem 0;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+}

@@ -265,6 +265,7 @@ class Activity(models.Model):
         BACKLOG = "BACKLOG", "Backlog"
         PLAN = "PLAN", "A Iniciar"
         DOING = "DOING", "Em Andamento"
+        REVIEW = "REVIEW", "Em Validação"
         DONE = "DONE", "Concluído"
 
     class Priority(models.TextChoices):

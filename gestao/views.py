@@ -208,4 +208,4 @@ class SprintsViewSet(viewsets.ModelViewSet):
     serializer_class = SprintsSerializer
     
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["project", "is_active"]
+    filterset_fields = ["project", "status"]

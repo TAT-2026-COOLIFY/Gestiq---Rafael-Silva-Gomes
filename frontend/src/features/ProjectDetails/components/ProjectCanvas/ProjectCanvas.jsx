@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import api from "@/services/api";
 import styles from "./ProjectCanvas.module.css";
 import { Loading } from "@/components/Loading/Loading";

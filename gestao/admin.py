@@ -171,6 +171,6 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(Sprints)
 class SprintsAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "project", "start_date", "end_date", "is_active")
-    list_filter = ("is_active", "project")
+    list_display = ('name', 'project', 'start_date', 'end_date', 'status')
+    list_filter = ('status', 'project')
     search_fields = ("name", "project__name")

@@ -8,6 +8,7 @@ import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
 import { ProjectCanvas } from "./components/ProjectCanvas/ProjectCanvas";
 import { ProjectTimeline } from "./components/ProjectTimeline/ProjectTimeline";
 import { ProjectKanban } from "./components/ProjectKanban/ProjectKanban";
+import { ProjectScrum } from "./components/ProjectBacklog/ProjectScrum";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";
@@ -31,6 +32,7 @@ const TABS = [
   { key: "membros", label: "Equipe", component: ProjectTeam },
   { key: "milestones", label: "Linha do Tempo", component: ProjectTimeline },
   { key: "kanban", label: "Kanban", component: ProjectKanban },
+  { key: "backlog", label: "Backlog", component: ProjectScrum },
 ];
 
 export function ProjectDetails() {

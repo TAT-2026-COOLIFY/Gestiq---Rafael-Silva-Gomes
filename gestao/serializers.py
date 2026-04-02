@@ -325,14 +325,20 @@ class SprintsSerializer(serializers.ModelSerializer):
         source="activities.count", read_only=True
     )
 
+    status_display = serializers.CharField(
+        source="get_status_display", read_only=True
+    )
+
     class Meta:
         model = Sprints
         fields = [
             "id",
             "project",
             "name",
+            "goal",           # <- Adicionado
             "start_date",
             "end_date",
-            "is_active",
+            "status",         # <- Novo campo no lugar do is_active
+            "status_display", # <- Bônus
             "activities_count",
         ]

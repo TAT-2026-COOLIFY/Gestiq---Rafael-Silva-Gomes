@@ -1,0 +1,278 @@
+.container {
+  padding: 20px;
+  background-color: var(--background);
+  min-height: 100%;
+}
+
+.boardVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Espaço entre Sprint e Backlog */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalhos estilo barra horizontal fina */
+.sectionHeader {
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px 6px 0 0;
+  color: white;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.grayHeader {
+  background-color: #5e6c84;
+} /* Cor padrão do Jira para Backlog */
+.blueHeader {
+  background-color: #0052cc;
+} /* Cor padrão do Jira para Sprint */
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f5f7;
+  padding: 5px;
+  border-radius: 0 0 6px 6px;
+  min-height: 50px;
+}
+
+.divider {
+  height: 2px;
+  background-color: #dfe1e6;
+  margin: 10px 0;
+  border-radius: 2px;
+}
+
+.emptyText {
+  text-align: center;
+  color: #6b778c;
+  font-style: italic;
+  padding: 15px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* NOVO: DESIGN INLINE (TIPO JIRA) */
+.taskInline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 8px 12px;
+  margin-bottom: 2px; /* Espaçamento mínimo para parecer uma lista compacta */
+  border-radius: 3px;
+  border-left: 3px solid transparent;
+  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.05);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.taskInline:hover {
+  background-color: #ebecf0;
+}
+
+.taskInline.selected {
+  background-color: #e6effc;
+  border-left-color: #0052cc;
+}
+
+.taskMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.checkbox {
+  transform: scale(1.1);
+  cursor: pointer;
+  margin: 0;
+}
+
+.taskKey {
+  font-size: 0.85rem;
+  color: #6b778c;
+  font-weight: 500;
+  min-width: 65px;
+}
+
+.taskTitle {
+  font-size: 0.95rem;
+  color: #172b4d;
+  font-weight: 400;
+}
+
+.taskMeta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.priorityTag {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.tagRed {
+  background-color: #ffebee;
+  color: #c0392b;
+}
+.tagYellow {
+  background-color: #fffde7;
+  color: #f39c12;
+}
+.tagGreen {
+  background-color: #e8f5e9;
+  color: #27ae60;
+}
+
+/* Avatar simulado (Bolhinha com a inicial do nome) */
+.assigneeAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #0052cc;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.assigneeUnassigned {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #dfe1e6;
+  color: #42526e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border: 1px dashed #b3bac5;
+}
+
+/* Botões do cabeçalho */
+.newSprintBtn,
+.createTaskBtn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.newSprintBtn:hover,
+.createTaskBtn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* BARRA FLUTUANTE INFERIOR (Mantida igual ao Canvas) */
+.actions {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+.saveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  user-select: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  background-color: #172b4d;
+  color: white;
+}
+
+.saveIndicator.salvo {
+  background-color: #e8f5e9;
+  color: #27ae60;
+}
+.saveIndicator.salvando {
+  background-color: #fff3e0;
+  color: #d35400;
+}
+.saveIndicator.erro {
+  background-color: #ffebee;
+  color: #c0392b;
+}
+
+.selectionCount {
+  padding-right: 15px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btnPrimary {
+  background-color: #27ae60;
+}
+.btnPrimary:hover {
+  background-color: #2ecc71;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

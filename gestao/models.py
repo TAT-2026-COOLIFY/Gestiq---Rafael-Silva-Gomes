@@ -372,13 +372,29 @@ class Milestones(models.Model):
 
 
 class Sprints(models.Model):
+    STATUS_CHOICES = [
+        ('PLANNED', 'Planejada'),
+        ('ACTIVE', 'Ativa'),
+        ('FINISHED', 'Finalizada'),
+    ]
+
     project = models.ForeignKey(
         Projects, on_delete=models.CASCADE, related_name="sprints"
     )
     name = models.CharField(max_length=100)
+    goal = models.TextField(blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    is_active = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=10, 
+        choices=STATUS_CHOICES, 
+        default='PLANNED'
+    )
+
+    class Meta:
+        verbose_name = "Sprint"
+        verbose_name_plural = "Sprints"
+        ordering = ['start_date']
 
     def __str__(self):
-        return f"{self.name} - {self.project.name}"
+        return f"{self.name} ({self.get_status_display()}) - {self.project.name}"

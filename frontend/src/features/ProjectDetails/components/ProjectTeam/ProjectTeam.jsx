@@ -13,14 +13,13 @@ function MemberCard({
   member,
   onRemove,
   onUpdateFunction,
-  isCurrentUserPO,
+  canManageTeam,
   ...props
 }) {
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [funcValue, setFuncValue] = useState(member.function || "");
-
-  const canEditingPO = isCurrentUserPO && member.username !== user?.username;
+  const canEditThisMember = canManageTeam && member.username !== user?.username;
 
   function handleBlur() {
     setEditing(false);
@@ -49,7 +48,7 @@ function MemberCard({
 
   return (
     <Motion.div layout className={styles.card} {...props}>
-      {canEditingPO && (
+      {canEditThisMember && (
         <button
           className={styles.removeBtn}
           onClick={() => onRemove(member.id)}
@@ -74,7 +73,7 @@ function MemberCard({
           {member.nome_completo || member.username}
         </h4>
 
-        {canEditingPO ? (
+        {canEditThisMember ? (
           editing ? (
             <input
               className={styles.roleInput}
@@ -120,8 +119,7 @@ function MemberCard({
   );
 }
 
-export function ProjectTeam({ projectId }) {
-  const { user } = useAuth();
+export function ProjectTeam({ projectId, permissions }) {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -129,10 +127,7 @@ export function ProjectTeam({ projectId }) {
   const [toast, setToast] = useState(null);
   const [popup, setPopup] = useState(null);
 
-  const isCurrentUserPO =
-    members.find(
-      (m) => m.username === user?.username && m.function === "PO",
-    ) !== undefined;
+  const canManageTeam = permissions?.canManageTeam || false;
 
   const showToast = useCallback((message, type = "error") => {
     setToast({ id: Math.random(), message, type });
@@ -163,6 +158,8 @@ export function ProjectTeam({ projectId }) {
   }, [fetchMembers]);
 
   async function handleSave(form) {
+    if (!canManageTeam) return;
+
     setSaving(true);
     try {
       await api.post("members/", {
@@ -187,10 +184,12 @@ export function ProjectTeam({ projectId }) {
   }
 
   async function handleOpenPopup(id) {
+    if (!canManageTeam) return;
     showPopup("Tem certeza que deseja remover este membro da equipe?", id);
   }
 
   async function handleRemove(id) {
+    if (!canManageTeam) return;
     try {
       await api.delete(`members/${id}/`);
       setMembers((prev) => prev.filter((m) => m.id !== id));
@@ -203,6 +202,7 @@ export function ProjectTeam({ projectId }) {
   }
 
   async function handleUpdateFunction(id, newFunction) {
+    if (!canManageTeam) return;
     try {
       const res = await api.patch(`members/${id}/`, {
         function: newFunction,
@@ -224,7 +224,8 @@ export function ProjectTeam({ projectId }) {
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <h3 className={styles.sectionTitle}>Equipe do Projeto</h3>
-        {isCurrentUserPO && (
+
+        {canManageTeam && (
           <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
             <Plus size={16} />
             Convidar Membro
@@ -243,7 +244,7 @@ export function ProjectTeam({ projectId }) {
               <MemberCard
                 key={member.id}
                 member={member}
-                isCurrentUserPO={isCurrentUserPO}
+                canManageTeam={canManageTeam}
                 onRemove={handleOpenPopup}
                 onUpdateFunction={handleUpdateFunction}
                 initial={{ opacity: 0, x: 50 }}

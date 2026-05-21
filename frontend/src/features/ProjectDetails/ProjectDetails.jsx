@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import { ProjectRisks } from "./components/ProjectRisks/ProjectRisks";
 import { ProjectCommunications } from "./components/ProjectCommunications/ProjectCommunications";
 import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
@@ -37,6 +40,8 @@ const TABS = [
 
 export function ProjectDetails() {
   const { id } = useParams();
+  const { user } = useAuth();
+  // console.log("DADOS DO USUÁRIO LOGADO:", user);
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("canvas");
@@ -46,6 +51,7 @@ export function ProjectDetails() {
     try {
       setLoading(true);
       const response = await api.get(`projects/${id}/`);
+      console.log("DADOS DO PROJETO:", response.data);
       setProject(response.data);
     } catch (error) {
       console.error("Erro ao carregar projeto:", error);
@@ -70,7 +76,6 @@ export function ProjectDetails() {
     const newIndex = TABS.findIndex((t) => t.key === newTab);
 
     setDirection(newIndex > currentIndex ? "right" : "left");
-
     setActiveTab(newTab);
   };
 
@@ -86,6 +91,18 @@ export function ProjectDetails() {
       </div>
     );
   }
+
+  const isPO = project.po === Number(user?.id);
+  const isLeader = project.leader === Number(user?.id);
+
+  const permissions = {
+    canEditCanvas: isPO || isLeader,
+    canEditRisks: isPO || isLeader,
+    canEditCommunications: isPO || isLeader,
+    canManageTeam: isPO,
+    canEditTimeline: isPO,
+    canManageKanban: true,
+  };
 
   const status = STATUS_MAP[project.project_status] ?? {
     label: project.project_status,
@@ -136,7 +153,7 @@ export function ProjectDetails() {
             style={{ overflow: "hidden" }}
           >
             {ActiveTabComponent ? (
-              <ActiveTabComponent projectId={id} />
+              <ActiveTabComponent projectId={id} permissions={permissions} />
             ) : (
               <p>Selecione uma aba válida.</p>
             )}

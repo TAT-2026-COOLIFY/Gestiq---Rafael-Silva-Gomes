@@ -15,7 +15,7 @@ const INITIAL_MILESTONE = {
   end_date: "",
 };
 
-export function ProjectTimeline({ projectId }) {
+export function ProjectTimeline({ projectId, permissions }) {
   // Estados de Dados e UX
   const [tasks, setTasks] = useState([]);
   const [timelineData, setTimelineData] = useState({
@@ -63,6 +63,8 @@ export function ProjectTimeline({ projectId }) {
       setLoading(false);
     }
   }, [projectId, showToast]);
+
+  const canEdit = permissions?.canEditTimeline || false;
 
   useEffect(() => {
     fetchMilestones();
@@ -126,6 +128,8 @@ export function ProjectTimeline({ projectId }) {
 
   // --- 3. CRUD ---
   async function handleSave(formData) {
+    if (!canEdit) return;
+
     setSaving(true);
     try {
       const res = await api.post("milestones/", {
@@ -147,6 +151,8 @@ export function ProjectTimeline({ projectId }) {
   }
 
   async function handleEdit(formData) {
+    if (!canEdit) return;
+
     setEditSaving(true);
     try {
       const res = await api.put(`milestones/${formData.id}/`, {
@@ -167,6 +173,8 @@ export function ProjectTimeline({ projectId }) {
   }
 
   async function handleDelete(id) {
+    if (!canEdit) return;
+
     try {
       await api.delete(`milestones/${id}/`);
       const newTasks = tasks.filter((t) => t.id !== id);
@@ -187,9 +195,11 @@ export function ProjectTimeline({ projectId }) {
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <h3 className={styles.sectionTitle}>Cronograma do Projeto</h3>
-        <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
-          <Plus size={18} /> Novo Marco
-        </button>
+        {canEdit && (
+          <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
+            <Plus size={18} /> Novo Marco
+          </button>
+        )}
       </div>
 
       {tasks.length === 0 ? (
@@ -273,7 +283,7 @@ export function ProjectTimeline({ projectId }) {
 
         {selectedTask && (
           <TimelineDrawer
-            key="milestone-drawer"
+            key={selectedTask.id}
             milestone={selectedTask}
             onClose={() => setSelectedTask(null)}
             onSave={handleEdit}
@@ -281,6 +291,7 @@ export function ProjectTimeline({ projectId }) {
               showPopup("Tem certeza que deseja excluir este marco?", id)
             }
             saving={editSaving}
+            canEdit={canEdit}
           />
         )}
 

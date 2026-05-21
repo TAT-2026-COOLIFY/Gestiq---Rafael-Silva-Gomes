@@ -17,11 +17,13 @@ function getScoreLevel(score) {
   return { label: "Baixo", color: styles.low };
 }
 
-export function RiskDrawer({ risk, onClose, onSave, saving }) {
+export function RiskDrawer({ risk, onClose, onSave, saving, canEdit }) {
   const [form, setForm] = useState(risk);
   const [isDirty, setIsDirty] = useState(false);
 
   function handleChange(e) {
+    if (!canEdit) return;
+
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setIsDirty(true);
@@ -29,6 +31,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!canEdit) return;
     onSave(form);
     setIsDirty(false);
   }
@@ -38,7 +41,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
 
   return (
     <Drawer
-      title="Editar Risco"
+      title={canEdit ? "Editar Risco" : "Detalhes do Risco"}
       subtitle={
         <span className={`${styles.scoreBadge} ${level.color}`}>
           Score {score.toFixed(2)} - {level.label}
@@ -46,7 +49,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
       }
       onClose={onClose}
       footer={
-        <form onSubmit={handleSubmit} style={{ display: "contents" }}>
+        canEdit ? (
           <FormActions
             onCancel={onClose}
             saving={saving}
@@ -54,7 +57,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
             saveLabel="Salvar Alterações"
             formId="risk-drawer-form"
           />
-        </form>
+        ) : null
       }
     >
       <form onSubmit={handleSubmit} id="risk-drawer-form">
@@ -67,6 +70,8 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
             onChange={handleChange}
             rows={3}
             required
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
         <div className={styles.row}>
@@ -77,6 +82,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="category"
               value={form.category}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               <option value="TEC">Técnico</option>
               <option value="EXT">Externo</option>
@@ -91,6 +97,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="action"
               value={form.action}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               <option value="MITIGAR">Mitigar</option>
               <option value="ACEITAR">Aceitar</option>
@@ -107,6 +114,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="cost"
               value={form.cost}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               {SCORE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -122,6 +130,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="timeline"
               value={form.timeline}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               {SCORE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -139,6 +148,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="scope"
               value={form.scope}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               {SCORE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -154,6 +164,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="quality"
               value={form.quality}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               {SCORE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -171,6 +182,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="probability"
               value={form.probability}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               {SCORE_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -186,6 +198,7 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
               name="status"
               value={form.status}
               onChange={handleChange}
+              disabled={!canEdit}
             >
               <option value="INICIAR">A Iniciar</option>
               <option value="ANDAMENTO">Em Andamento</option>
@@ -202,6 +215,8 @@ export function RiskDrawer({ risk, onClose, onSave, saving }) {
             onChange={handleChange}
             rows={4}
             placeholder="Descreva o plano de ação..."
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
       </form>

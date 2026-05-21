@@ -4,7 +4,7 @@ import styles from "./ProjectCanvas.module.css";
 import { Loading } from "@/components/Loading/Loading";
 import { Save, CheckCircle, Clock } from "lucide-react";
 
-export function ProjectCanvas({ projectId }) {
+export function ProjectCanvas({ projectId, permissions }) {
   const [canvasId, setCanvasId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDirty, setIsDirty] = useState(true);
@@ -26,6 +26,8 @@ export function ProjectCanvas({ projectId }) {
     timeline: "",
     costs: "",
   });
+
+  const canEdit = permissions?.canEditCanvas || false;
 
   useEffect(() => {
     async function loadCanvas() {
@@ -55,6 +57,8 @@ export function ProjectCanvas({ projectId }) {
   }, [projectId]);
 
   const handleChange = (e) => {
+    if (!canEdit) return;
+
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setIsDirty(true);
@@ -62,7 +66,7 @@ export function ProjectCanvas({ projectId }) {
   };
 
   useEffect(() => {
-    if (!isDirty) return;
+    if (!isDirty || !canEdit) return;
 
     setSaveStatus("Salvando...");
 
@@ -88,7 +92,7 @@ export function ProjectCanvas({ projectId }) {
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [formData, isDirty, canvasId, projectId]);
+  }, [formData, isDirty, canvasId, projectId, canEdit]);
 
   if (loading) return <Loading />;
 
@@ -103,18 +107,21 @@ export function ProjectCanvas({ projectId }) {
             name="justification"
             value={formData.justification}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Objetivo"
             name="objective"
             value={formData.objective}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Benefícios"
             name="benefits"
             value={formData.benefits}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
         </div>
 
@@ -124,6 +131,7 @@ export function ProjectCanvas({ projectId }) {
             name="product"
             value={formData.product}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Requisitos"
@@ -131,6 +139,7 @@ export function ProjectCanvas({ projectId }) {
             value={formData.requirements}
             onChange={handleChange}
             isLarge
+            readOnly={!canEdit}
           />
         </div>
 
@@ -140,18 +149,21 @@ export function ProjectCanvas({ projectId }) {
             name="stakeholders"
             value={formData.stakeholders}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Equipe"
             name="team"
             value={formData.team}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Sistemas"
             name="systems"
             value={formData.systems}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
         </div>
 
@@ -161,6 +173,7 @@ export function ProjectCanvas({ projectId }) {
             name="assumptions"
             value={formData.assumptions}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Entregas"
@@ -168,12 +181,14 @@ export function ProjectCanvas({ projectId }) {
             value={formData.deliverables}
             onChange={handleChange}
             isLarge
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Restrições"
             name="constraints"
             value={formData.constraints}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
         </div>
 
@@ -183,40 +198,51 @@ export function ProjectCanvas({ projectId }) {
             name="risks"
             value={formData.risks}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Cronograma"
             name="timeline"
             value={formData.timeline}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
           <CanvasBox
             title="Custos"
             name="costs"
             value={formData.costs}
             onChange={handleChange}
+            readOnly={!canEdit}
           />
         </div>
       </div>
 
-      <div className={styles.actions}>
-        <div className={`${styles.saveIndicator} ${styles[statusClass]}`}>
-          {saveStatus === "Salvando..." && <Clock size={18} />}
-          {saveStatus === "Salvo" && <CheckCircle size={18} />}
-          {saveStatus === "Pendente" && <Save size={18} />}
-          {saveStatus === "Erro" && <Save size={18} />}
-          <span>{saveStatus}</span>
+      {canEdit && (
+        <div className={styles.actions}>
+          <div className={`${styles.saveIndicator} ${styles[statusClass]}`}>
+            {saveStatus === "Salvando..." && <Clock size={18} />}
+            {saveStatus === "Salvo" && <CheckCircle size={18} />}
+            {saveStatus === "Pendente" && <Save size={18} />}
+            {saveStatus === "Erro" && <Save size={18} />}
+            <span>{saveStatus}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
 
-function CanvasBox({ title, name, value, onChange, isLarge }) {
+function CanvasBox({ title, name, value, onChange, isLarge, readOnly }) {
   return (
     <div className={`${styles.box} ${isLarge ? styles.large : ""}`}>
       <label>{title}</label>
-      <textarea name={name} value={value} onChange={onChange} />
+      <textarea
+        name={name}
+        value={value}
+        onChange={onChange}
+        readOnly={readOnly}
+        disabled={readOnly}
+      />
     </div>
   );
 }

@@ -36,7 +36,7 @@ const FREQUENCY_MAP = {
   NEEDED: "Conforme Necessário",
 };
 
-export function ProjectCommunications({ projectId }) {
+export function ProjectCommunications({ projectId, permissions }) {
   const [communications, setCommunications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -71,11 +71,15 @@ export function ProjectCommunications({ projectId }) {
     }
   }, [projectId, showToast]);
 
+  const canEdit = permissions?.canEditCommunications || false;
+
   useEffect(() => {
     fetchCommunications();
   }, [fetchCommunications]);
 
   async function handleSave(form) {
+    if (!canEdit) return;
+
     setSaving(true);
     try {
       const res = await api.post("communications/", {
@@ -102,10 +106,14 @@ export function ProjectCommunications({ projectId }) {
   }
 
   async function handleOpenPopup(id) {
+    if (!canEdit) return;
+
     showPopup("Tem certeza que deseja excluir esta comunicação?", id);
   }
 
   async function handleDelete(id) {
+    if (!canEdit) return;
+
     try {
       await api.delete(`communications/${id}/`);
       setCommunications((prev) => prev.filter((r) => r.id !== id));
@@ -117,6 +125,8 @@ export function ProjectCommunications({ projectId }) {
   }
 
   async function handleEdit(form) {
+    if (!canEdit) return;
+
     setEditSaving(true);
     try {
       const res = await api.put(`communications/${form.id}/`, {
@@ -146,10 +156,12 @@ export function ProjectCommunications({ projectId }) {
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <h3 className={styles.sectionTitle}>Matriz de Comunicação</h3>
-        <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
-          <Plus size={16} />
-          Nova Comunicação
-        </button>
+        {canEdit && (
+          <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
+            <Plus size={16} />
+            Nova Comunicação
+          </button>
+        )}
       </div>
 
       {communications.length === 0 ? (
@@ -167,7 +179,7 @@ export function ProjectCommunications({ projectId }) {
                 <th>Destinatário</th>
                 <th>Meio</th>
                 <th>Frequência</th>
-                <th></th>
+                {canEdit && <th></th>}
               </tr>
             </thead>
             <tbody>
@@ -198,17 +210,19 @@ export function ProjectCommunications({ projectId }) {
                       {FREQUENCY_MAP[communication.frequency] ??
                         communication.frequency}
                     </td>
-                    <td>
-                      <button
-                        className={styles.deleteBtn}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenPopup(communication.id);
-                        }}
-                      >
-                        <Trash2 size={20} />
-                      </button>
-                    </td>
+                    {canEdit && (
+                      <td>
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleOpenPopup(communication.id);
+                          }}
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </td>
+                    )}
                   </Motion.tr>
                 ))}
               </AnimatePresence>
@@ -235,6 +249,7 @@ export function ProjectCommunications({ projectId }) {
             onClose={() => setSelectedCommunication(null)}
             onSave={handleEdit}
             saving={editSaving}
+            canEdit={canEdit}
           />
         )}
 

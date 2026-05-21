@@ -8,11 +8,14 @@ export function CommunicationDrawer({
   onClose,
   onSave,
   saving,
+  canEdit,
 }) {
   const [form, setForm] = useState(communication);
   const [isDirty, setIsDirty] = useState(false);
 
   function handleChange(e) {
+    if (!canEdit) return;
+
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setIsDirty(true);
@@ -20,23 +23,26 @@ export function CommunicationDrawer({
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!canEdit) return;
     onSave(form);
     setIsDirty(false);
   }
 
   return (
     <Drawer
-      title="Editar Comunicação"
+      title={canEdit ? "Editar Comunicação" : "Detalhes da Comunicação"}
       subtitle={`ID: ${communication.id}`}
       onClose={onClose}
       footer={
-        <FormActions
-          onCancel={onClose}
-          saving={saving}
-          isDirty={isDirty}
-          saveLabel="Salvar Alterações"
-          formId="communication-drawer-form"
-        />
+        canEdit ? (
+          <FormActions
+            onCancel={onClose}
+            saving={saving}
+            isDirty={isDirty}
+            saveLabel="Salvar Alterações"
+            formId="communication-drawer-form"
+          />
+        ) : null
       }
     >
       <form
@@ -54,6 +60,8 @@ export function CommunicationDrawer({
             rows={3}
             required
             placeholder="Descreva a atividade de comunicação..."
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
         <div className={styles.formGroup}>
@@ -66,6 +74,8 @@ export function CommunicationDrawer({
             rows={3}
             required
             placeholder="Qual o resultado esperado?"
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
         <div className={styles.row}>
@@ -77,6 +87,8 @@ export function CommunicationDrawer({
               value={form.sender}
               onChange={handleChange}
               required
+              readOnly={!canEdit}
+              disabled={!canEdit}
             />
           </div>
           <div className={styles.formGroup}>
@@ -87,6 +99,8 @@ export function CommunicationDrawer({
               value={form.recipient}
               onChange={handleChange}
               required
+              readOnly={!canEdit}
+              disabled={!canEdit}
             />
           </div>
         </div>
@@ -98,6 +112,8 @@ export function CommunicationDrawer({
               name="channel"
               value={form.channel}
               onChange={handleChange}
+              required
+              disabled={!canEdit}
             >
               <option value="EMAIL">E-mail</option>
               <option value="TEAMS">Teams</option>
@@ -115,6 +131,7 @@ export function CommunicationDrawer({
               value={form.frequency}
               onChange={handleChange}
               required
+              disabled={!canEdit}
             >
               <option value="ONCE">Uma única vez</option>
               <option value="DAILY">Diária</option>

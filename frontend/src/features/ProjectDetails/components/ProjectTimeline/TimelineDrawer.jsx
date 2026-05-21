@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Drawer } from "@/components/Drawer";
 import { FormActions } from "@/components/FormActions";
 import { Trash2 } from "lucide-react";
@@ -10,16 +10,13 @@ export function TimelineDrawer({
   onSave,
   onDelete,
   saving,
+  canEdit,
 }) {
   const [form, setForm] = useState(milestone);
   const [isDirty, setIsDirty] = useState(false);
 
-  useEffect(() => {
-    setForm(milestone);
-    setIsDirty(false);
-  }, [milestone]);
-
   function handleChange(e) {
+    if (!canEdit) return;
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setIsDirty(true);
@@ -27,40 +24,43 @@ export function TimelineDrawer({
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (!canEdit) return;
     onSave(form);
     setIsDirty(false);
   }
 
   return (
     <Drawer
-      title="Editar Marco"
+      title={canEdit ? "Editar Marco" : "Detalhes do Marco"}
       subtitle={`ID: ${milestone.id}`}
       onClose={onClose}
       footer={
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => onDelete(milestone.id)}
-            className={styles.deleteBtn}
+        canEdit ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              alignItems: "center",
+            }}
           >
-            <Trash2 size={18} /> Excluir
-          </button>
+            <button
+              type="button"
+              onClick={() => onDelete(milestone.id)}
+              className={styles.deleteBtn}
+            >
+              <Trash2 size={18} /> Excluir
+            </button>
 
-          <FormActions
-            onCancel={onClose}
-            saving={saving}
-            isDirty={isDirty}
-            saveLabel="Salvar Alterações"
-            formId="milestone-drawer-form"
-          />
-        </div>
+            <FormActions
+              onCancel={onClose}
+              saving={saving}
+              isDirty={isDirty}
+              saveLabel="Salvar Alterações"
+              formId="milestone-drawer-form"
+            />
+          </div>
+        ) : null
       }
     >
       <form onSubmit={handleSubmit} id="milestone-drawer-form">
@@ -72,6 +72,8 @@ export function TimelineDrawer({
             value={form.task}
             onChange={handleChange}
             required
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
 
@@ -85,6 +87,7 @@ export function TimelineDrawer({
               value={form.start_date}
               onChange={handleChange}
               required
+              disabled={!canEdit}
             />
           </div>
           <div className={styles.formGroup}>
@@ -96,6 +99,7 @@ export function TimelineDrawer({
               value={form.end_date}
               onChange={handleChange}
               required
+              disabled={!canEdit}
             />
           </div>
         </div>

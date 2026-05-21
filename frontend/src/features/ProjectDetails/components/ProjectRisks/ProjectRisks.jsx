@@ -5,7 +5,7 @@ import { Popup } from "@/components/Popup";
 import { RiskModal } from "./RiskModal";
 import { RiskDrawer } from "./RiskDrawer";
 import { Loading } from "@/components/Loading/Loading";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectRisks.module.css";
 
@@ -75,7 +75,7 @@ export function ProjectRisks({ projectId }) {
       setLoading(true);
       const res = await api.get(`risks/?project=${projectId}`);
       setRisks(res.data.results ?? res.data);
-    } catch (error) {
+    } catch {
       showToast("Erro ao carregar riscos");
     } finally {
       setLoading(false);
@@ -195,7 +195,7 @@ export function ProjectRisks({ projectId }) {
                   const level = getScoreLevel(score);
 
                   return (
-                    <motion.tr
+                    <Motion.tr
                       key={risk.id}
                       className={styles.tableRow}
                       onClick={() => setSelectedRisk(risk)}
@@ -238,7 +238,7 @@ export function ProjectRisks({ projectId }) {
                           <Trash2 size={20} />
                         </button>
                       </td>
-                    </motion.tr>
+                    </Motion.tr>
                   );
                 })}
               </AnimatePresence>
@@ -260,6 +260,7 @@ export function ProjectRisks({ projectId }) {
 
         {selectedRisk && (
           <RiskDrawer
+            key={selectedRisk.id}
             risk={selectedRisk}
             onClose={() => setSelectedRisk(null)}
             onSave={handleEdit}

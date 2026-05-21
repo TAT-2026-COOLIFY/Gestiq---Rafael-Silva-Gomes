@@ -57,7 +57,7 @@ export function ProjectTimeline({ projectId }) {
       const data = res.data.results ?? res.data;
       setTasks(data);
       calculateTimelineBounds(data);
-    } catch (error) {
+    } catch {
       showToast("Erro ao carregar os marcos da linha do tempo.");
     } finally {
       setLoading(false);
@@ -139,7 +139,7 @@ export function ProjectTimeline({ projectId }) {
       setForm(INITIAL_MILESTONE);
       setModalOpen(false);
       showToast("Marco adicionado com sucesso!", "success");
-    } catch (error) {
+    } catch {
       showToast("Erro ao criar marco.");
     } finally {
       setSaving(false);

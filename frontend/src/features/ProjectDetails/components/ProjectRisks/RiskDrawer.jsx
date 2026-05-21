@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Drawer } from "@/components/Drawer";
 import { FormActions } from "@/components/FormActions";
 import styles from "./RiskDrawer.module.css";
@@ -20,11 +20,6 @@ function getScoreLevel(score) {
 export function RiskDrawer({ risk, onClose, onSave, saving }) {
   const [form, setForm] = useState(risk);
   const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    setForm(risk);
-    setIsDirty(false);
-  }, [risk]);
 
   function handleChange(e) {
     const { name, value } = e.target;

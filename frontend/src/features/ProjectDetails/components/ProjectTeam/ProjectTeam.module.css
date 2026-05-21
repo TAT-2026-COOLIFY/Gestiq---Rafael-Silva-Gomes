@@ -146,6 +146,7 @@
   background: rgba(179, 110, 8, 0.1);
   padding: 0.2rem 0.625rem;
   border-radius: 999px;
+  cursor: default;
 }
 
 .detail {

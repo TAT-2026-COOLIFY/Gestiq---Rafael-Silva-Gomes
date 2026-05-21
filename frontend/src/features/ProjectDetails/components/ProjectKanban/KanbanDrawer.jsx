@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Drawer } from "@/components/Drawer";
 import { FormActions } from "@/components/FormActions";
 import { Trash2 } from "lucide-react";
@@ -18,11 +18,6 @@ export function KanbanDrawer({
     milestone: task.milestone || "",
   });
   const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    setForm({ ...task, milestone: task.milestone || "" });
-    setIsDirty(false);
-  }, [task]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -90,38 +85,36 @@ export function KanbanDrawer({
           />
         </div>
 
-        <div className={styles.row}>
-          <div className={styles.formGroup}>
-            <label htmlFor="status">Status (Coluna)</label>
-            <select
-              id="status"
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-            >
-              {columns.map((col) => (
-                <option key={col.id} value={col.id}>
-                  {col.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="milestone">Marco (Milestone)</label>
-            <select
-              id="milestone"
-              name="milestone"
-              value={form.milestone}
-              onChange={handleChange}
-            >
-              <option value="">Nenhum Marco</option>
-              {milestones.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.task}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="status">Status (Coluna)</label>
+          <select
+            id="status"
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+          >
+            {columns.map((col) => (
+              <option key={col.id} value={col.id}>
+                {col.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="milestone">Marco (Milestone)</label>
+          <select
+            id="milestone"
+            name="milestone"
+            value={form.milestone}
+            onChange={handleChange}
+          >
+            <option value="">Nenhum Marco</option>
+            {milestones.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.task}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit" style={{ display: "none" }} aria-hidden="true" />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Drawer } from "@/components/Drawer";
 import { FormActions } from "@/components/FormActions";
 import styles from "./CommunicationDrawer.module.css";
@@ -11,11 +11,6 @@ export function CommunicationDrawer({
 }) {
   const [form, setForm] = useState(communication);
   const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    setForm(communication);
-    setIsDirty(false);
-  }, [communication]);
 
   function handleChange(e) {
     const { name, value } = e.target;

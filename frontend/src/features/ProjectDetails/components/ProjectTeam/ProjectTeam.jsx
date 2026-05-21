@@ -5,7 +5,7 @@ import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
 import { TeamModal } from "./TeamModal";
 import { useAuth } from "@/hooks/useAuth";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectTeam.module.css";
 
@@ -22,14 +22,20 @@ function MemberCard({
 
   const canEditingPO = isCurrentUserPO && member.username !== user?.username;
 
-  useEffect(() => {
-    setFuncValue(member.function || "");
-  }, [member.function]);
-
   function handleBlur() {
     setEditing(false);
-    if (funcValue !== member.function) {
-      onUpdateFunction(member.id, funcValue);
+
+    const trimmedValue = funcValue.trim();
+
+    if (!trimmedValue) {
+      setFuncValue(member.function || "");
+      return;
+    }
+
+    if (trimmedValue !== member.function) {
+      onUpdateFunction(member.id, trimmedValue);
+    } else {
+      setFuncValue(member.function || "");
     }
   }
 
@@ -42,7 +48,7 @@ function MemberCard({
   }
 
   return (
-    <motion.div layout className={styles.card} {...props}>
+    <Motion.div layout className={styles.card} {...props}>
       {canEditingPO && (
         <button
           className={styles.removeBtn}
@@ -82,10 +88,13 @@ function MemberCard({
           ) : (
             <span
               className={styles.role}
-              onClick={() => setEditing(true)}
               title="Clique para editar a função"
+              onClick={() => {
+                setFuncValue(member.function || "");
+                setEditing(true);
+              }}
             >
-              {funcValue || "Definir função..."}
+              {member.function || "Definir função..."}{" "}
             </span>
           )
         ) : (
@@ -107,7 +116,7 @@ function MemberCard({
         )}
         <span className={styles.email}>{member.email}</span>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }
 
@@ -142,7 +151,7 @@ export function ProjectTeam({ projectId }) {
       setLoading(true);
       const res = await api.get(`members/?project=${projectId}`);
       setMembers(res.data.results ?? res.data);
-    } catch (error) {
+    } catch {
       showToast("Erro ao carregar membros");
     } finally {
       setLoading(false);

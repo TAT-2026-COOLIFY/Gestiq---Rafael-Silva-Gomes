@@ -101,8 +101,7 @@ export function ProjectScrum({ projectId }) {
     <div className={styles.container}>
       
       <div className={styles.boardVertical}>
-        
-        {/* SEÇÃO 1: SPRINT ATUAL (No topo, estilo Jira) */}
+
         <div className={styles.section}>
           <div className={`${styles.sectionHeader} ${styles.blueHeader}`}>
             <div className={styles.headerTitle}>

@@ -6,7 +6,7 @@ import { CommunicationModal } from "./CommunicationModal";
 import { CommunicationDrawer } from "./CommunicationDrawer";
 import api from "@/services/api";
 import { Loading } from "@/components/Loading/Loading";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import styles from "./ProjectCommunications.module.css";
 
 const INITIAL_COMMUNICATION = {
@@ -64,7 +64,7 @@ export function ProjectCommunications({ projectId }) {
       setLoading(true);
       const res = await api.get(`communications/?project=${projectId}`);
       setCommunications(res.data.results ?? res.data);
-    } catch (error) {
+    } catch {
       showToast("Erro ao carregar comunicações");
     } finally {
       setLoading(false);
@@ -173,7 +173,7 @@ export function ProjectCommunications({ projectId }) {
             <tbody>
               <AnimatePresence>
                 {communications.map((communication, index) => (
-                  <motion.tr
+                  <Motion.tr
                     key={communication.id}
                     className={styles.tableRow}
                     onClick={() => setSelectedCommunication(communication)}
@@ -209,7 +209,7 @@ export function ProjectCommunications({ projectId }) {
                         <Trash2 size={20} />
                       </button>
                     </td>
-                  </motion.tr>
+                  </Motion.tr>
                 ))}
               </AnimatePresence>
             </tbody>
@@ -230,6 +230,7 @@ export function ProjectCommunications({ projectId }) {
 
         {selectedCommunication && (
           <CommunicationDrawer
+            key={selectedCommunication.id}
             communication={selectedCommunication}
             onClose={() => setSelectedCommunication(null)}
             onSave={handleEdit}

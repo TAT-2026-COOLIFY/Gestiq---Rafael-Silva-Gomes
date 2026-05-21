@@ -10,7 +10,7 @@ import { ProjectTimeline } from "./components/ProjectTimeline/ProjectTimeline";
 import { ProjectKanban } from "./components/ProjectKanban/ProjectKanban";
 import { ProjectScrum } from "./components/ProjectBacklog/ProjectScrum";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";
 import styles from "./ProjectDetails.module.css";
 
@@ -32,7 +32,7 @@ const TABS = [
   { key: "membros", label: "Equipe", component: ProjectTeam },
   { key: "milestones", label: "Linha do Tempo", component: ProjectTimeline },
   { key: "kanban", label: "Kanban", component: ProjectKanban },
-  { key: "backlog", label: "Backlog", component: ProjectScrum },
+  { key: "Scrum", label: "Scrum", component: ProjectScrum },
 ];
 
 export function ProjectDetails() {
@@ -40,7 +40,6 @@ export function ProjectDetails() {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("canvas");
-  const [animating, setAnimating] = useState(false);
   const [direction, setDirection] = useState("right");
 
   const fetchProject = useCallback(async () => {
@@ -71,12 +70,8 @@ export function ProjectDetails() {
     const newIndex = TABS.findIndex((t) => t.key === newTab);
 
     setDirection(newIndex > currentIndex ? "right" : "left");
-    setAnimating(true);
 
-    setTimeout(() => {
-      setActiveTab(newTab);
-      setAnimating(false);
-    }, 150);
+    setActiveTab(newTab);
   };
 
   if (loading) return <Loading />;
@@ -132,7 +127,7 @@ export function ProjectDetails() {
 
       <main className={styles.content}>
         <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+          <Motion.div
             key={activeTab}
             initial={{ opacity: 0, x: direction === "right" ? 40 : -40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -145,7 +140,7 @@ export function ProjectDetails() {
             ) : (
               <p>Selecione uma aba válida.</p>
             )}
-          </motion.div>
+          </Motion.div>
         </AnimatePresence>
       </main>
     </div>

@@ -66,7 +66,7 @@ export function ProjectKanban({ projectId }) {
 
       setTasks(tasksRes.data.results ?? tasksRes.data);
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
-    } catch (error) {
+    } catch {
       showToast("Erro ao carregar dados do Kanban.");
     } finally {
       setLoading(false);
@@ -113,7 +113,7 @@ export function ProjectKanban({ projectId }) {
     // 2. Chama a API
     try {
       await api.patch(`activities/${taskId}/`, { status: newStatus });
-    } catch (error) {
+    } catch {
       setTasks(previousTasks);
       showToast("Erro ao mover a tarefa.");
     }
@@ -246,7 +246,7 @@ export function ProjectKanban({ projectId }) {
         )}
         {selectedTask && (
           <KanbanDrawer
-            key="task-drawer"
+            key={selectedTask.id}
             task={selectedTask}
             onClose={() => setSelectedTask(null)}
             onSave={handleEdit}

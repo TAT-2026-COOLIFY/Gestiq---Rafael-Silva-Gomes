@@ -284,17 +284,29 @@ export function ProjectTeam({ projectId, permissions }) {
     try {
       setSaving(true);
 
+      if (isBecomingLeader) {
+        const antigoLider = members.find(
+          (m) => m.function === "Líder" || m.function === "Lider",
+        );
+
+        if (antigoLider && antigoLider.id !== member.id) {
+          await api.patch(`members/${antigoLider.id}/`, {
+            function: "Participante",
+          });
+        }
+      }
+
       await api.patch(`members/${member.id}/`, {
         function: newFunction,
       });
 
       const userId = member.user || member.user_id || member.id;
-
       await api.patch(`projects/${projectId}/`, {
         leader: isBecomingLeader ? userId : null,
       });
 
-      fetchMembers();
+      await fetchMembers();
+
       showToast(
         isBecomingLeader ? "Novo líder nomeado!" : "Líder removido.",
         "success",

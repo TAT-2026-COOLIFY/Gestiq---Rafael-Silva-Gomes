@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, MoreVertical, Crown } from "lucide-react";
 import { Toast } from "@/components/Toast";
 import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
@@ -13,17 +13,24 @@ function MemberCard({
   member,
   onRemove,
   onUpdateFunction,
+  onToggleLeader,
   canManageTeam,
   ...props
 }) {
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [funcValue, setFuncValue] = useState(member.function || "");
+  const [menuOpen, setMenuOpen] = useState(false); // 👈 Controle do menu de 3 pontinhos
+
+  // 👇 Verificações de papéis
+  const isPO = member.function === "PO";
+  const isLeader = member.function === "Líder" || member.function === "Lider";
+  const isSpecialRole = isPO || isLeader;
   const canEditThisMember = canManageTeam && member.username !== user?.username;
+  const canInlineEditRole = canEditThisMember && !isSpecialRole;
 
   function handleBlur() {
     setEditing(false);
-
     const trimmedValue = funcValue.trim();
 
     if (!trimmedValue) {
@@ -46,16 +53,65 @@ function MemberCard({
     }
   }
 
+  function toggleLeader() {
+    setMenuOpen(false);
+    const isBecomingLeader = !isLeader;
+    const newFunction = isBecomingLeader ? "Líder" : "Participante";
+
+    onToggleLeader(member, newFunction, isBecomingLeader);
+  }
+
   return (
-    <Motion.div layout className={styles.card} {...props}>
+    <Motion.div
+      layout
+      className={styles.card}
+      {...props}
+      onMouseLeave={() => setMenuOpen(false)}
+    >
+      {/* 👇 2. O Menu de 3 Pontinhos (Aparece apenas para o PO gerenciar outros membros) */}
       {canEditThisMember && (
-        <button
-          className={styles.removeBtn}
-          onClick={() => onRemove(member.id)}
-          title="Remover membro"
-        >
-          <Trash2 size={14} />
-        </button>
+        <div className={styles.actionMenu}>
+          <button
+            className={styles.menuBtn}
+            onClick={() => setMenuOpen(!menuOpen)}
+            title="Opções do Membro"
+          >
+            <MoreVertical size={18} />
+          </button>
+
+          {/* O Dropdown */}
+          <AnimatePresence>
+            {menuOpen && (
+              <Motion.div
+                className={styles.dropdown}
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+              >
+                {!isPO && (
+                  <button
+                    onClick={toggleLeader}
+                    className={styles.dropdownItem}
+                  >
+                    <Crown size={14} />
+                    {isLeader ? "Remover Líder" : "Tornar Líder"}
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onRemove(member.id);
+                  }}
+                  className={`${styles.dropdownItem} ${styles.dropdownDelete}`}
+                >
+                  <Trash2 size={14} /> Expulsar
+                </button>
+              </Motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       )}
 
       <div className={styles.avatar}>
@@ -73,7 +129,7 @@ function MemberCard({
           {member.nome_completo || member.username}
         </h4>
 
-        {canEditThisMember ? (
+        {canInlineEditRole ? (
           editing ? (
             <input
               className={styles.roleInput}
@@ -93,23 +149,27 @@ function MemberCard({
                 setEditing(true);
               }}
             >
-              {member.function || "Definir função..."}{" "}
+              {member.function || "Definir função..."}
             </span>
           )
         ) : (
+          // Modo Estático (PO, Líder ou usuário sem permissão)
           <span
             className={
-              member.function === "PO" ? styles.rolePO : styles.roleStatic
+              isPO
+                ? styles.rolePO
+                : isLeader
+                  ? styles.roleLeader
+                  : styles.roleStatic
             }
           >
-            {funcValue || "Sem função definida"}
+            {member.function || "Sem função definida"}
           </span>
         )}
 
         {member.job_title && (
           <span className={styles.detail}>{member.job_title}</span>
         )}
-
         {member.department && (
           <span className={styles.detail}>{member.department}</span>
         )}
@@ -218,6 +278,35 @@ export function ProjectTeam({ projectId, permissions }) {
     }
   }
 
+  async function handleToggleLeader(member, newFunction, isBecomingLeader) {
+    if (!canManageTeam) return;
+
+    try {
+      setSaving(true);
+
+      await api.patch(`members/${member.id}/`, {
+        function: newFunction,
+      });
+
+      const userId = member.user || member.user_id || member.id;
+
+      await api.patch(`projects/${projectId}/`, {
+        leader: isBecomingLeader ? userId : null,
+      });
+
+      fetchMembers();
+      showToast(
+        isBecomingLeader ? "Novo líder nomeado!" : "Líder removido.",
+        "success",
+      );
+    } catch (error) {
+      console.error(error);
+      showToast("Erro ao alterar liderança do projeto.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   if (loading) return <Loading />;
 
   return (
@@ -247,6 +336,7 @@ export function ProjectTeam({ projectId, permissions }) {
                 canManageTeam={canManageTeam}
                 onRemove={handleOpenPopup}
                 onUpdateFunction={handleUpdateFunction}
+                onToggleLeader={handleToggleLeader}
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}

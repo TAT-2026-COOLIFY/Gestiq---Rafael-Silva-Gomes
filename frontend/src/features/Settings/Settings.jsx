@@ -2,8 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { settingsService } from "./services/settingsService";
 import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
-import { useTheme } from "@/hooks/useTheme";
-import { Sun, Moon } from "lucide-react";
 import styles from "./Settings.module.css";
 
 const INITIAL_FORM = {
@@ -21,11 +19,10 @@ export function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
-  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     document.title = "Configurações | Gestiq";
-  });
+  }, []);
 
   const showToast = useCallback((message, type = "success") => {
     setToast({ message, type });
@@ -68,7 +65,7 @@ export function Settings() {
       const updated = await settingsService.updateProfile(formData, photoFile);
       if (updated.photo) setPhotoPreview(updated.photo);
       setPhotoFile(null);
-      showToast("Perfil atualizado com sucesso!");
+      showToast("Perfil updated com sucesso!");
     } catch {
       showToast("Erro ao salvar. Tente novamente.", "error");
     } finally {

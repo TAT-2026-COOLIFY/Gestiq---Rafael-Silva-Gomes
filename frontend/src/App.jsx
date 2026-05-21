@@ -7,6 +7,7 @@ import { ProjectDetails } from "./features/ProjectDetails";
 import { Layout } from "./components/Layout";
 import { ProjectForm } from "./features/ProjectForm";
 import { Settings } from "./features/Settings";
+import { AcceptInvite } from "./features/ProjectDetails/components/ProjectTeam/AcceptInvite";
 import "./App.css";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -23,6 +24,7 @@ function App() {
             <Route path="/projeto/novo" element={<ProjectForm />} />
             <Route path="/projeto/:id" element={<ProjectDetails />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/convite/:token" element={<AcceptInvite />} />
           </Route>
         </Route>
       </Routes>

@@ -1,3 +1,4 @@
+import uuid
 from datetime import date
 from decimal import Decimal
 from django.db import models
@@ -398,3 +399,14 @@ class Sprints(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_status_display()}) - {self.project.name}"
+
+class ProjectInvitation(models.Model):
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='invitations')
+    email = models.EmailField()
+    function = models.CharField(max_length=50)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    is_accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Convite para {self.email} - Projeto {self.project.name}"

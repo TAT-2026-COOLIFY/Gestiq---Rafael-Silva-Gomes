@@ -50,9 +50,6 @@ export function TeamModal({ onClose, onSave, saving }) {
             autoComplete="off"
             required
           />
-          <span className={styles.hint}>
-            O usuário já deve ter cadastrado no sistema.
-          </span>
         </div>
         <div className={styles.formGroup}>
           <label htmlFor="function">Função no Projeto</label>

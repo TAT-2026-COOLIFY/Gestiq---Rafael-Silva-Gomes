@@ -1,10 +1,10 @@
 import { X } from "lucide-react";
 import styles from "./Modal.module.css";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 
 export function Modal({ title, onClose, children, footer, maxWidth = 860 }) {
   return (
-    <motion.div
+    <Motion.div
       className={styles.overlay}
       onClick={onClose}
       initial={{ opacity: 0 }}
@@ -12,7 +12,7 @@ export function Modal({ title, onClose, children, footer, maxWidth = 860 }) {
       exit={{ opacity: 0.2 }}
       transition={{ duration: 0.2 }}
     >
-      <motion.div
+      <Motion.div
         className={styles.modal}
         style={{ maxWidth }}
         onClick={(e) => e.stopPropagation()}
@@ -31,7 +31,7 @@ export function Modal({ title, onClose, children, footer, maxWidth = 860 }) {
         <div className={styles.body}>{children}</div>
 
         {footer && <div className={styles.footer}>{footer}</div>}
-      </motion.div>
-    </motion.div>
+      </Motion.div>
+    </Motion.div>
   );
 }

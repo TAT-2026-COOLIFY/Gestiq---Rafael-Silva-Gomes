@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { TriangleAlert } from "lucide-react";
 import styles from "./Popup.module.css";
 
@@ -9,14 +9,14 @@ export function Popup({ message, onClose, action }) {
   }
 
   return (
-    <motion.div
+    <Motion.div
       className={styles.overlay}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
-      <motion.div
+      <Motion.div
         className={styles.popup}
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -35,7 +35,7 @@ export function Popup({ message, onClose, action }) {
             Não
           </button>
         </div>
-      </motion.div>
-    </motion.div>
+      </Motion.div>
+    </Motion.div>
   );
 }

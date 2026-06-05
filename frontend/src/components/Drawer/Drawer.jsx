@@ -1,11 +1,11 @@
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { X } from "lucide-react";
 import styles from "./Drawer.module.css";
 
 export function Drawer({ title, subtitle, onClose, children, footer }) {
   return (
     <div className={styles.wrapper}>
-      <motion.div
+      <Motion.div
         className={styles.overlay}
         onClick={onClose}
         initial={{ opacity: 0 }}
@@ -13,7 +13,7 @@ export function Drawer({ title, subtitle, onClose, children, footer }) {
         exit={{ opacity: 0 }}
       />
 
-      <motion.div
+      <Motion.div
         className={styles.drawer}
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
@@ -33,7 +33,7 @@ export function Drawer({ title, subtitle, onClose, children, footer }) {
         <div className={styles.body}>{children}</div>
 
         {footer && <div className={styles.footer}>{footer}</div>}
-      </motion.div>
+      </Motion.div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import styles from "./Toast.module.css";
 
 const ICONS = {
@@ -24,7 +24,7 @@ export function Toast({ message, type = "error", onClose, action }) {
   }
 
   return (
-    <motion.div
+    <Motion.div
       className={`${styles.toast} ${styles[type]}`}
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -43,6 +43,6 @@ export function Toast({ message, type = "error", onClose, action }) {
           <X size={16} />
         </button>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }

@@ -11,7 +11,7 @@ import { ProjectTeam } from "./components/ProjectTeam/ProjectTeam";
 import { ProjectCanvas } from "./components/ProjectCanvas/ProjectCanvas";
 import { ProjectTimeline } from "./components/ProjectTimeline/ProjectTimeline";
 import { ProjectKanban } from "./components/ProjectKanban/ProjectKanban";
-import { ProjectScrum } from "./components/ProjectBacklog/ProjectScrum";
+import { ProjectScrum } from "./components/ProjectScum/ProjectScrum";
 
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";

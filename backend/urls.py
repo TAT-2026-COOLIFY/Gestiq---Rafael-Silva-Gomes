@@ -46,8 +46,6 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/me/", views.UserMeView.as_view(), name="user-me"),
     path("api/register/", views.RegisterView.as_view(), name="register"),
-    path("api/invitations/send/", views.SendInvitationView.as_view(), name="send-invitation"),
-    path("api/invitations/accept/<uuid:token>/", views.AcceptInvitationView.as_view(), name="accept-invitation"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -222,21 +222,22 @@ export function ProjectTeam({ projectId, permissions }) {
 
     setSaving(true);
     try {
-      await api.post("invitations/send/", {
+      await api.post("members/", {
         project: projectId,
         email: form.email,
         function: form.function || "Participante",
       });
 
+      await fetchMembers();
       setModalOpen(false);
-      showToast("Convite enviado por e-mail com sucesso!", "success");
+      showToast("Membro adicionado com sucesso!", "success");
     } catch (error) {
       const msg =
         error.response?.data?.detail ??
         Object.values(error.response?.data ?? {})
           .flat()
           .join(" ") ??
-        "Erro ao enviar o convite.";
+        "Erro ao adicionar membro.";
       showToast(msg);
     } finally {
       setSaving(false);

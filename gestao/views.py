@@ -9,7 +9,6 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from django.db.models import Q
-from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from .models import (
     Areas,
@@ -22,7 +21,6 @@ from .models import (
     Activity,
     Milestones,
     Sprints,
-    ProjectInvitation,
 )
 from .serializers import (
     UsersSerializer,
@@ -213,75 +211,3 @@ class SprintsViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project", "status"]
 
-class SendInvitationView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        project_id = request.data.get("project")
-        email_recebido = request.data.get("email")
-        function = request.data.get("function", "Participante")
-
-        if not project_id or not email_recebido:
-            return Response({"detail": "Projeto e e-mail são obrigatórios."}, status=status.HTTP_400_BAD_REQUEST)
-
-        project = get_object_or_404(Projects, id=project_id)
-
-        if project.po != request.user:
-            return Response(
-                {"detail": "Você não tem permissão para enviar convites neste projeto."},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        invitation = ProjectInvitation.objects.create(
-            project=project,
-            email=email_recebido,
-            function=function
-        )
-
-        link_aceite = f"http://localhost:5173/convite/{invitation.token}"
-        
-        assunto = f"Convite para o projeto {project.name}"
-        mensagem = (
-            f"Olá!\n\nVocê foi convidado pelo {request.user.first_name} para atuar como {function} "
-            f"no projeto '{project.name}'.\n\nClique no link abaixo para aceitar:\n{link_aceite}"
-        )
-
-        send_mail(
-            assunto,
-            mensagem,
-            'nao-responda@gestiq.com.br',
-            [email_recebido],
-            fail_silently=False,
-        )
-
-        return Response({"detail": "Convite enviado por e-mail com sucesso!"}, status=status.HTTP_201_CREATED)
-
-
-class AcceptInvitationView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, token):
-        invitation = get_object_or_404(ProjectInvitation, token=token)
-
-        if invitation.is_accepted:
-            return Response({"detail": "Este convite já foi aceito anteriormente."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if request.user.email != invitation.email:
-            return Response(
-                {"detail": "Este convite foi enviado para outro e-mail. Faça login com a conta correta."}, 
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if ProjectMembers.objects.filter(project=invitation.project, user=request.user).exists():
-            return Response({"detail": "Você já é membro deste projeto."}, status=status.HTTP_400_BAD_REQUEST)
-
-        ProjectMembers.objects.create(
-            project=invitation.project,
-            user=request.user,
-            function=invitation.function
-        )
-
-        invitation.is_accepted = True
-        invitation.save()
-
-        return Response({"detail": "Convite aceito! Bem-vindo ao projeto.", "project_id": invitation.project.id}, status=status.HTTP_200_OK)

@@ -125,7 +125,7 @@ export function KanbanDrawer({
             value={form.assigned_to || ""}
             onChange={handleChange}
           >
-            <option value="">Nenhum (Não Atribuído)</option>
+            <option value="">Não Atribuído</option>
             {members &&
               members.map((m) => (
                 <option key={m.id} value={m.user}>

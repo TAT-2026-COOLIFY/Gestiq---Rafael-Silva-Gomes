@@ -128,9 +128,12 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         project = instance.project
-
+        user_to_remove = instance.user
+        
         if project.po != request.user:
             raise PermissionDenied("Apenas o PMO pode remover membros da equipe.")
+        
+        Activity.objects.filter(project=project, assigned_to=user_to_remove).update(assigned_to=None)
         
         return super().destroy(request, *args, **kwargs)
 

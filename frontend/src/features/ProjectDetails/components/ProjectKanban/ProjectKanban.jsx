@@ -249,7 +249,7 @@ export function ProjectKanban({ projectId }) {
                       prev === "UNASSIGNED" ? null : "UNASSIGNED",
                     )
                   }
-                  title="Tarefas sem responsável"
+                  title="Não Atribuído"
                   className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
                     ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
                     ${filterAssignee !== null && filterAssignee !== "UNASSIGNED" ? styles.inactiveAvatar : ""}`}

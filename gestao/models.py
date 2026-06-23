@@ -53,6 +53,9 @@ class Projects(models.Model):
     class StatusProject(models.TextChoices):
         PLANEJAMENTO = "PLAN", "A Iniciar"
         ATIVO = "ACTIVE", "Em Andamento"
+        VALIDACAO = "VALID", "Em Validação"
+        MONITORAMENTO = "MONIT", "Em Monitoramento"
+        ATRASO = "DELAY", "Em Atraso"
         CONCLUIDO = "CONC", "Concluído"
         CANCELADO = "CANC", "Cancelado"
 

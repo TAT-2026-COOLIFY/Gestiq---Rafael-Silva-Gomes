@@ -15,11 +15,15 @@ import { ProjectScrum } from "./components/ProjectScum/ProjectScrum";
 
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";
+import { StatusSelect } from "@/components/StatusSelect/StatusSelect";
 import styles from "./ProjectDetails.module.css";
 
 const STATUS_MAP = {
   PLAN: { label: "A Iniciar", color: styles.statusPlan },
   ACTIVE: { label: "Em Andamento", color: styles.statusActive },
+  VALID: { label: "Em Validação", color: styles.statusValid },
+  MONIT: { label: "Em Monitoramento", color: styles.statusMonit },
+  DELAY: { label: "Em Atraso", color: styles.statusDelay },
   CONC: { label: "Concluído", color: styles.statusConc },
   CANC: { label: "Cancelado", color: styles.statusCanc },
 };
@@ -79,6 +83,16 @@ export function ProjectDetails() {
     setActiveTab(newTab);
   };
 
+  const handleStatusChange = async (newStatus) => {
+    try {
+      await api.patch(`projects/${id}/`, { project_status: newStatus });
+      setProject((prev) => ({ ...prev, project_status: newStatus }));
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      alert("Erro ao atualizar o status do projeto.");
+    }
+  };
+
   if (loading) return <Loading />;
 
   if (!project) {
@@ -118,9 +132,17 @@ export function ProjectDetails() {
       <div className={styles.header}>
         <div className={styles.headerInfo}>
           <h1 className={styles.projectName}>{project.name}</h1>
-          <span className={`${styles.statusBadge} ${status.color}`}>
-            {status.label}
-          </span>
+
+          {isPO ? (
+            <StatusSelect
+              value={project.project_status}
+              onChange={handleStatusChange}
+            />
+          ) : (
+            <span className={`${styles.statusBadge} ${status.color}`}>
+              {status.label}
+            </span>
+          )}
         </div>
         <Link to="/" className={styles.backBtn} aria-label="Voltar para início">
           <ArrowLeft size={16} />

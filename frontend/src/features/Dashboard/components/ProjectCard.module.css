@@ -48,15 +48,34 @@
   flex-shrink: 0;
 }
 
-.statusPlan   { background: rgba(194, 65,  12,  0.12); color: #c2410c; }
-.statusActive { background: rgba(29,  78,  216, 0.12); color: #1d4ed8; }
-.statusConc   { background: rgba(21,  128, 61,  0.12); color: #15803d; }
-.statusCanc   { background: rgba(185, 28,  28,  0.12); color: #b91c1c; }
-
-[data-theme="dark"] .statusPlan   { color: #fb923c; }
-[data-theme="dark"] .statusActive { color: #60a5fa; }
-[data-theme="dark"] .statusConc   { color: #4ade80; }
-[data-theme="dark"] .statusCanc   { color: #f87171; }
+.statusPlan {
+  background-color: #ff7e29;
+  color: #ffffff;
+}
+.statusActive {
+  background-color: #2483ff;
+  color: #ffffff;
+}
+.statusValid {
+  background-color: #9169ff;
+  color: #ffffff;
+}
+.statusMonit {
+  background-color: #41c3ff;
+  color: #ffffff;
+}
+.statusDelay {
+  background-color: #ff4b4b;
+  color: #ffffff;
+}
+.statusConc {
+  background-color: #5bcf41;
+  color: #ffffff;
+}
+.statusCanc {
+  background-color: #838383;
+  color: #ffffff;
+}
 
 .progressWrapper {
   display: flex;

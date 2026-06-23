@@ -1,0 +1,134 @@
+.statusWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.statusBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.25rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: filter 0.2s;
+}
+.statusBtn:hover {
+  filter: brightness(0.93);
+}
+
+.iconOpen {
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
+
+.statusDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  min-width: 190px;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.statusOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.statusOption:hover {
+  background: var(--hover);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusPlan {
+  background-color: #ff7e29;
+  color: #ffffff;
+}
+.statusActive {
+  background-color: #2483ff;
+  color: #ffffff;
+}
+.statusValid {
+  background-color: #9169ff;
+  color: #ffffff;
+}
+.statusMonit {
+  background-color: #41c3ff;
+  color: #ffffff;
+}
+.statusDelay {
+  background-color: #ff4b4b;
+  color: #ffffff;
+}
+.statusConc {
+  background-color: #5bcf41;
+  color: #ffffff;
+}
+.statusCanc {
+  background-color: #838383;
+  color: #ffffff;
+}
+
+.dotPlan {
+  background-color: #ff7e29;
+}
+.dotActive {
+  background-color: #2483ff;
+}
+.dotValid {
+  background-color: #9169ff;
+}
+.dotMonit {
+  background-color: #41c3ff;
+}
+.dotDelay {
+  background-color: #ff4b4b;
+}
+.dotConc {
+  background-color: #5bcf41;
+}
+.dotCanc {
+  background-color: #838383;
+}
+
+.optionPlan {
+  color: #ff7e29;
+}
+.optionActive {
+  color: #2483ff;
+}
+.optionValid {
+  color: #9169ff;
+}
+.optionMonit {
+  color: #41c3ff;
+}
+.optionDelay {
+  color: #ff4b4b;
+}
+.optionConc {
+  color: #5bcf41;
+}
+.optionCanc {
+  color: #838383;
+}

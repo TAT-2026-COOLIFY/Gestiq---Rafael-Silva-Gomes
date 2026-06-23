@@ -227,3 +227,73 @@
   border: 2px dashed var(--border);
   border-radius: 8px;
 }
+
+/* --- ALINHAMENTO DO CABEÇALHO --- */
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* --- FILTRO DE AVATARES --- */
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 2px solid #e2e8f0;
+  padding-left: 24px;
+}
+
+.filterLabel {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.filterAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: #e2e8f0;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.filterAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.filterAvatar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.unassignedAvatar {
+  border: 2px dashed #94a3b8;
+  background-color: #f8fafc;
+}
+
+/* Efeito quando um filtro está clicado */
+.activeAvatar {
+  border-color: #2563eb; /* Azul para destacar o selecionado */
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  transform: scale(1.1);
+}
+
+/* Efeito nos outros avatares que não estão selecionados */
+.inactiveAvatar {
+  opacity: 0.4;
+  filter: grayscale(100%);
+}

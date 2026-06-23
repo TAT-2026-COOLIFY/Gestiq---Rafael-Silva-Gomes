@@ -65,7 +65,7 @@ export function Settings() {
       const updated = await settingsService.updateProfile(formData, photoFile);
       if (updated.photo) setPhotoPreview(updated.photo);
       setPhotoFile(null);
-      showToast("Perfil updated com sucesso!");
+      showToast("Perfil atualizado com sucesso!");
     } catch {
       showToast("Erro ao salvar. Tente novamente.", "error");
     } finally {

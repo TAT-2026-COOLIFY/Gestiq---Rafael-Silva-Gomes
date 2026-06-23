@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import api from "@/services/api";
 import { Plus } from "lucide-react";
 import { Toast } from "@/components/Toast";
@@ -42,7 +42,7 @@ export function ProjectKanban({ projectId }) {
   const [toast, setToast] = useState(null);
   const [popup, setPopup] = useState(null);
 
-  // Estado para UX do Drag and Drop (Saber qual coluna está recebendo o card)
+  const [filterAssignee, setFilterAssignee] = useState(null);
   const [draggedOverColumn, setDraggedOverColumn] = useState(null);
 
   const showToast = useCallback((message, type = "error") => {
@@ -124,6 +124,28 @@ export function ProjectKanban({ projectId }) {
     }
   };
 
+  const assignees = useMemo(() => {
+    const uniqueUsers = new Map();
+    let hasUnassigned = false;
+
+    tasks.forEach((task) => {
+      if (!task.assigned_to) {
+        hasUnassigned = true;
+      } else if (!uniqueUsers.has(task.assigned_to)) {
+        uniqueUsers.set(task.assigned_to, {
+          id: task.assigned_to,
+          name: task.assigned_to_first_name || task.assigned_to_username,
+          photo: task.assigned_to_photo,
+        });
+      }
+    });
+
+    return {
+      users: Array.from(uniqueUsers.values()),
+      hasUnassigned,
+    };
+  }, [tasks]);
+
   // --- 3. CRUD Padrão ---
   async function handleSave(formData) {
     setSaving(true);
@@ -189,7 +211,57 @@ export function ProjectKanban({ projectId }) {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <h3 className={styles.sectionTitle}>Quadro Kanban</h3>
+        <div className={styles.headerLeft}>
+          <h3 className={styles.sectionTitle}>Quadro Kanban</h3>
+
+          {(assignees.users.length > 0 || assignees.hasUnassigned) && (
+            <div className={styles.filterGroup}>
+              <span className={styles.filterLabel}>Filtrar:</span>
+
+              {assignees.users.map((user) => (
+                <button
+                  key={user.id}
+                  onClick={() =>
+                    setFilterAssignee((prev) =>
+                      prev === user.id ? null : user.id,
+                    )
+                  }
+                  title={`${user.name}`}
+                  className={`${styles.filterAvatar} 
+                    ${filterAssignee === user.id ? styles.activeAvatar : ""} 
+                    ${filterAssignee !== null && filterAssignee !== user.id ? styles.inactiveAvatar : ""}`}
+                >
+                  {user.photo ? (
+                    <img
+                      src={`http://localhost:8000${user.photo}`}
+                      alt={user.name}
+                    />
+                  ) : (
+                    <span>{user.name[0].toUpperCase()}</span>
+                  )}
+                </button>
+              ))}
+
+              {assignees.hasUnassigned && (
+                <button
+                  onClick={() =>
+                    setFilterAssignee((prev) =>
+                      prev === "UNASSIGNED" ? null : "UNASSIGNED",
+                    )
+                  }
+                  title="Tarefas sem responsável"
+                  className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
+                    ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
+                    ${filterAssignee !== null && filterAssignee !== "UNASSIGNED" ? styles.inactiveAvatar : ""}`}
+                >
+                  ?
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* O botão Nova Tarefa continua na direita */}
         <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
           <Plus size={18} /> Nova Tarefa
         </button>
@@ -197,7 +269,14 @@ export function ProjectKanban({ projectId }) {
 
       <div className={styles.boardWrapper}>
         {COLUMNS.map((col) => {
-          const columnTasks = tasks.filter((t) => t.status === col.id);
+          // 👇 3. A MÁGICA ACONTECE AQUI: Aplicamos o filtro na hora de separar as colunas!
+          const columnTasks = tasks.filter((t) => {
+            if (t.status !== col.id) return false; // Se não for da coluna, ignora
+            if (filterAssignee === "UNASSIGNED") return !t.assigned_to; // Mostra só sem responsável
+            if (filterAssignee !== null)
+              return t.assigned_to === filterAssignee; // Mostra só do usuário clicado
+            return true; // Se filterAssignee for null, mostra todas
+          });
 
           return (
             <div

@@ -12,6 +12,7 @@ export function KanbanDrawer({
   saving,
   milestones,
   columns,
+  members,
 }) {
   const [form, setForm] = useState({
     ...task,
@@ -114,6 +115,24 @@ export function KanbanDrawer({
                 {m.task}
               </option>
             ))}
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="members">Responsável</label>
+          <select
+            id="assigned_to"
+            name="assigned_to"
+            value={form.assigned_to || ""}
+            onChange={handleChange}
+          >
+            <option value="">Nenhum (Não Atribuído)</option>
+            {members &&
+              members.map((m) => (
+                <option key={m.id} value={m.user}>
+                  {m.nome_completo || m.username}{" "}
+                  {m.function ? `- ${m.function}` : ""}
+                </option>
+              ))}
           </select>
         </div>
 

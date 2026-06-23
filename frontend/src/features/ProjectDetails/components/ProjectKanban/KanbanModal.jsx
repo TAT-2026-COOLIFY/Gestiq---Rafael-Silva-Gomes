@@ -10,6 +10,7 @@ export function KanbanModal({
   saving,
   milestones,
   columns,
+  members,
 }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,6 +90,24 @@ export function KanbanModal({
                   {m.task}
                 </option>
               ))}
+            </select>
+          </div>
+          <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+            <label htmlFor="assigned_to">Responsável</label>
+            <select
+              id="assigned_to"
+              name="assigned_to"
+              value={form.assigned_to || ""}
+              onChange={handleChange}
+            >
+              <option value="">Nenhum (Não Atribuído)</option>
+              {members &&
+                members.map((m) => (
+                  <option key={m.id} value={m.user}>
+                    {m.nome_completo || m.username}{" "}
+                    {m.function ? `- ${m.function}` : ""}
+                  </option>
+                ))}
             </select>
           </div>
         </div>

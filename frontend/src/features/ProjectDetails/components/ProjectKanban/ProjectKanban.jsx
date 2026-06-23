@@ -22,11 +22,14 @@ const INITIAL_TASK = {
   description: "",
   status: "BACKLOG",
   milestone: "", // ID do marco vinculado
+  assigned_to: "",
 };
 
 export function ProjectKanban({ projectId }) {
   const [tasks, setTasks] = useState([]);
   const [milestones, setMilestones] = useState([]); // Para preencher os selects
+  const [members, setMembers] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -59,13 +62,15 @@ export function ProjectKanban({ projectId }) {
     try {
       setLoading(true);
       // Busca as tarefas e os marcos em paralelo para ser mais rápido
-      const [tasksRes, milestonesRes] = await Promise.all([
+      const [tasksRes, milestonesRes, membersRes] = await Promise.all([
         api.get(`activities/?project=${projectId}`),
         api.get(`milestones/?project=${projectId}`),
+        api.get(`members/?project=${projectId}`),
       ]);
 
       setTasks(tasksRes.data.results ?? tasksRes.data);
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
+      setMembers(membersRes.data.results ?? membersRes.data);
     } catch {
       showToast("Erro ao carregar dados do Kanban.");
     } finally {
@@ -129,6 +134,9 @@ export function ProjectKanban({ projectId }) {
         payload.milestone = null;
       }
 
+      if (!payload.assigned_to || payload.assigned_to === "")
+        payload.assigned_to = null;
+
       const res = await api.post("activities/", payload);
       setTasks([...tasks, res.data]);
       setForm(INITIAL_TASK);
@@ -147,6 +155,10 @@ export function ProjectKanban({ projectId }) {
       const payload = { ...formData, project: projectId };
       if (!payload.milestone || payload.milestone === "") {
         payload.milestone = null;
+      }
+
+      if (!payload.assigned_to || payload.assigned_to === "") {
+        payload.assigned_to = null;
       }
 
       const res = await api.put(`activities/${formData.id}/`, payload);
@@ -188,7 +200,10 @@ export function ProjectKanban({ projectId }) {
           const columnTasks = tasks.filter((t) => t.status === col.id);
 
           return (
-            <div key={col.id} className={`${styles.column} ${styles[`column${col.id}`]}`}>
+            <div
+              key={col.id}
+              className={`${styles.column} ${styles[`column${col.id}`]}`}
+            >
               <div className={styles.columnHeader}>
                 {col.title}
                 <span className={styles.taskCount}>{columnTasks.length}</span>
@@ -216,11 +231,60 @@ export function ProjectKanban({ projectId }) {
                         onClick={() => setSelectedTask(task)}
                       >
                         <h4 className={styles.taskTitle}>{task.title}</h4>
-                        {linkedMilestone && (
-                          <span className={styles.taskMilestone}>
-                            {linkedMilestone.task}
-                          </span>
-                        )}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginTop: "8px",
+                          }}
+                        >
+                          {linkedMilestone ? (
+                            <span className={styles.taskMilestone}>
+                              {linkedMilestone.task}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+
+                          {(task.assigned_to_first_name ||
+                            task.assigned_to_username) && (
+                            <div
+                              title={`${task.assigned_to_first_name || task.assigned_to_username}`}
+                            >
+                              {task.assigned_to_photo ? (
+                                <img
+                                  src={`http://localhost:8000${task.assigned_to_photo}`}
+                                  alt="Responsável"
+                                  style={{
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              ) : (
+                                <span
+                                  style={{
+                                    background: "#e2e8f0",
+                                    color: "#475569",
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: "12px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {(task.assigned_to_first_name ||
+                                    task.assigned_to_username)[0].toUpperCase()}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     );
                   })
@@ -242,6 +306,7 @@ export function ProjectKanban({ projectId }) {
             saving={saving}
             milestones={milestones}
             columns={COLUMNS}
+            members={members}
           />
         )}
         {selectedTask && (
@@ -250,10 +315,13 @@ export function ProjectKanban({ projectId }) {
             task={selectedTask}
             onClose={() => setSelectedTask(null)}
             onSave={handleEdit}
-            onDelete={(id) => showPopup("Tem certeza que deseja excluir esta tarefa?", id)}
+            onDelete={(id) =>
+              showPopup("Tem certeza que deseja excluir esta tarefa?", id)
+            }
             saving={editSaving}
             milestones={milestones}
             columns={COLUMNS}
+            members={members}
           />
         )}
         {popup && (

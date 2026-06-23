@@ -91,7 +91,7 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProjectMembersSerializer(serializers.ModelSerializer):
-    nome_completo = serializers.CharField(source="user.first_name", read_only=True)
+    nome_completo = serializers.SerializerMethodField()
     username = serializers.CharField(source="user.username", read_only=True)
     email = serializers.CharField(source="user.email", read_only=True)
     job_title = serializers.CharField(
@@ -116,6 +116,10 @@ class ProjectMembersSerializer(serializers.ModelSerializer):
             "department",
             "photo",
         ]
+
+    def get_nome_completo(self, obj):
+        full_name = f"{obj.user.first_name} {obj.user.last_name}".strip()
+        return full_name if full_name else obj.user.username
 
 
 class AreasSerializer(serializers.ModelSerializer):
@@ -257,6 +261,9 @@ class ActivitiesSerializer(serializers.ModelSerializer):
     assigned_to_username = serializers.CharField(
         source="assigned_to.username", read_only=True
     )
+    assigned_to_first_name = serializers.CharField(
+        source="assigned_to.first_name", read_only=True, default=""
+    )
     assigned_to_photo = serializers.SerializerMethodField()
     milestone_name = serializers.CharField(
         source="milestone.task", read_only=True, default=""
@@ -276,6 +283,7 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "end_date",
             "assigned_to",
             "assigned_to_username",
+            "assigned_to_first_name",
             "assigned_to_photo",
             "status",
             "priority",

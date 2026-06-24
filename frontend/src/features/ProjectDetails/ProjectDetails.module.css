@@ -103,6 +103,44 @@
   animation: slideFromLeft 0.15s ease;
 }
 
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusPlan {
+  background-color: #ff7e29;
+  color: #ffffff;
+}
+.statusActive {
+  background-color: #2483ff;
+  color: #ffffff;
+}
+.statusValid {
+  background-color: #9169ff;
+  color: #ffffff;
+}
+.statusMonit {
+  background-color: #41c3ff;
+  color: #ffffff;
+}
+.statusDelay {
+  background-color: #ff4b4b;
+  color: #ffffff;
+}
+.statusConc {
+  background-color: #5bcf41;
+  color: #ffffff;
+}
+.statusCanc {
+  background-color: #838383;
+  color: #ffffff;
+}
+
 @keyframes slideFromRight {
   from {
     opacity: 0;

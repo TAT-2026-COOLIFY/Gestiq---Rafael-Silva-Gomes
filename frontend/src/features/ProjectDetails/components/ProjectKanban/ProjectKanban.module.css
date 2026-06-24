@@ -57,17 +57,6 @@
   border-radius: 12px;
 }
 
-.columnBACKLOG {
-  border-top: 4px solid #94a3b8;
-  background-color: rgba(148, 163, 184, 0.03);
-}
-.columnBACKLOG .columnHeader {
-  background-color: rgba(148, 163, 184, 0.03);
-}
-.columnBACKLOG .taskCard {
-  border-left-color: #94a3b8;
-}
-
 .columnPLAN {
   border-top: 4px solid #f59e0b;
   background-color: rgba(245, 158, 11, 0.03);

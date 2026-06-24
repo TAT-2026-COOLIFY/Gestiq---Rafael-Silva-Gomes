@@ -266,7 +266,6 @@ class Risks(models.Model):
 
 class Activity(models.Model):
     class Status(models.TextChoices):
-        BACKLOG = "BACKLOG", "Backlog"
         PLAN = "PLAN", "A Iniciar"
         DOING = "DOING", "Em Andamento"
         REVIEW = "REVIEW", "Em Validação"

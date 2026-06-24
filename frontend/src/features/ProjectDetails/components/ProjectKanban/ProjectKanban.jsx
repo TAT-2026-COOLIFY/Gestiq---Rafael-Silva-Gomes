@@ -10,7 +10,6 @@ import { KanbanDrawer } from "./KanbanDrawer";
 import styles from "./ProjectKanban.module.css";
 
 const COLUMNS = [
-  { id: "BACKLOG", title: "Backlog" },
   { id: "PLAN", title: "A Iniciar" },
   { id: "DOING", title: "Em Andamento" },
   { id: "REVIEW", title: "Em Validação" },
@@ -20,7 +19,7 @@ const COLUMNS = [
 const INITIAL_TASK = {
   title: "",
   description: "",
-  status: "BACKLOG",
+  status: "PLAN",
   milestone: "", // ID do marco vinculado
   assigned_to: "",
 };

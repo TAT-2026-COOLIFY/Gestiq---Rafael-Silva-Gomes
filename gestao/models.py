@@ -96,7 +96,7 @@ class Projects(models.Model):
 
     @property
     def total_percentage_real(self):
-        marcos = self.milestones_set.all()
+        marcos = self.milestones.all()
         if not marcos.exists():
             return 0
 

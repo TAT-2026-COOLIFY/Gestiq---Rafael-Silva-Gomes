@@ -29,7 +29,7 @@ const STATUS_MAP = {
 };
 
 const TABS = [
-  { key: "canvas", label: "Project Canvas", component: ProjectCanvas },
+  { key: "canvas", label: "Canvas", component: ProjectCanvas },
   { key: "riscos", label: "Riscos", component: ProjectRisks },
   {
     key: "comunicacoes",
@@ -37,7 +37,7 @@ const TABS = [
     component: ProjectCommunications,
   },
   { key: "membros", label: "Equipe", component: ProjectTeam },
-  { key: "milestones", label: "Linha do Tempo", component: ProjectTimeline },
+  { key: "milestones", label: "Cronograma", component: ProjectTimeline },
   { key: "kanban", label: "Kanban", component: ProjectKanban },
   { key: "Scrum", label: "Scrum", component: ProjectScrum },
 ];

@@ -75,10 +75,6 @@ class Projects(models.Model):
         blank=True,
     )
     name = models.CharField(max_length=250)
-    objective = models.TextField()
-    justification = models.TextField()
-    scope = models.TextField()
-    results = models.TextField()
     area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects")
     category = models.ForeignKey(
         Categories, on_delete=models.PROTECT, related_name="projects"

@@ -126,7 +126,7 @@ export function Dashboard() {
 
       {filtered.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>Nenhum projeto encontrado.</p>
+          <p>Nenhum projeto em andamento</p>
           <Link to="/projeto/novo" className={styles.newBtn}>
             <Plus size={18} />
             Criar projeto

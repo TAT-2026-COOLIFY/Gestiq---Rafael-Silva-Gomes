@@ -13,6 +13,7 @@ export function KanbanDrawer({
   milestones,
   columns,
   members,
+  canEdit,
 }) {
   const [form, setForm] = useState({
     ...task,
@@ -21,12 +22,14 @@ export function KanbanDrawer({
   const [isDirty, setIsDirty] = useState(false);
 
   function handleChange(e) {
+    if (!canEdit) return;
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setIsDirty(true);
   }
 
   function handleSubmit(e) {
+    if (!canEdit) return;
     e.preventDefault();
     onSave(form);
     setIsDirty(false);
@@ -34,33 +37,35 @@ export function KanbanDrawer({
 
   return (
     <Drawer
-      title="Editar Tarefa"
+      title={canEdit ? "Editar Tarefa" : "Detalhes da Tarefa"}
       subtitle={`ID: ${task.id}`}
       onClose={onClose}
       footer={
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => onDelete(task.id)}
-            className={styles.deleteBtn}
+        canEdit ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              alignItems: "center",
+            }}
           >
-            <Trash2 size={18} /> Excluir
-          </button>
-          <FormActions
-            onCancel={onClose}
-            saving={saving}
-            isDirty={isDirty}
-            saveLabel="Salvar"
-            formId="task-drawer-form"
-          />
-        </div>
+            <button
+              type="button"
+              onClick={() => onDelete(task.id)}
+              className={styles.deleteBtn}
+            >
+              <Trash2 size={18} /> Excluir
+            </button>
+            <FormActions
+              onCancel={onClose}
+              saving={saving}
+              isDirty={isDirty}
+              saveLabel="Salvar"
+              formId="task-drawer-form"
+            />
+          </div>
+        ) : null
       }
     >
       <form onSubmit={handleSubmit} id="task-drawer-form">
@@ -72,6 +77,8 @@ export function KanbanDrawer({
             value={form.title}
             onChange={handleChange}
             required
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
 
@@ -83,6 +90,8 @@ export function KanbanDrawer({
             name="description"
             value={form.description || ""}
             onChange={handleChange}
+            readOnly={!canEdit}
+            disabled={!canEdit}
           />
         </div>
 
@@ -93,6 +102,7 @@ export function KanbanDrawer({
             name="status"
             value={form.status}
             onChange={handleChange}
+            disabled={!canEdit}
           >
             {columns.map((col) => (
               <option key={col.id} value={col.id}>
@@ -108,6 +118,7 @@ export function KanbanDrawer({
             name="milestone"
             value={form.milestone}
             onChange={handleChange}
+            disabled={!canEdit}
           >
             <option value="">Nenhum Marco</option>
             {milestones.map((m) => (
@@ -124,6 +135,7 @@ export function KanbanDrawer({
             name="assigned_to"
             value={form.assigned_to || ""}
             onChange={handleChange}
+            disabled={!canEdit}
           >
             <option value="">Não Atribuído</option>
             {members &&

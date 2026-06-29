@@ -24,7 +24,7 @@ const INITIAL_TASK = {
   assigned_to: "",
 };
 
-export function ProjectKanban({ projectId }) {
+export function ProjectKanban({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
   const [milestones, setMilestones] = useState([]); // Para preencher os selects
   const [members, setMembers] = useState([]);
@@ -77,27 +77,32 @@ export function ProjectKanban({ projectId }) {
     }
   }, [projectId, showToast]);
 
+  const canEdit = permissions?.canManageKanban || false;
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // --- 2. Lógica do Drag and Drop (Nativo HTML5) ---
   const handleDragStart = (e, taskId) => {
+    if (!canEdit) return;
     // Guarda o ID da tarefa que está sendo arrastada
     e.dataTransfer.setData("taskId", taskId);
     e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragOver = (e, columnId) => {
+    if (!canEdit) return;
     e.preventDefault(); // Necessário para permitir o "drop"
     setDraggedOverColumn(columnId); // Ativa o estilo CSS de hover na coluna
   };
 
   const handleDragLeave = () => {
+    if (!canEdit) return;
     setDraggedOverColumn(null);
   };
 
   const handleDrop = async (e, newStatus) => {
+    if (!canEdit) return;
     e.preventDefault();
     setDraggedOverColumn(null);
 
@@ -147,6 +152,7 @@ export function ProjectKanban({ projectId }) {
 
   // --- 3. CRUD Padrão ---
   async function handleSave(formData) {
+    if (!canEdit) return;
     setSaving(true);
     try {
       const payload = { ...formData, project: projectId };
@@ -171,6 +177,7 @@ export function ProjectKanban({ projectId }) {
   }
 
   async function handleEdit(formData) {
+    if (!canEdit) return;
     setEditSaving(true);
     try {
       const payload = { ...formData, project: projectId };
@@ -194,6 +201,7 @@ export function ProjectKanban({ projectId }) {
   }
 
   async function handleDelete(id) {
+    if (!canEdit) return;
     try {
       await api.delete(`activities/${id}/`);
       setTasks(tasks.filter((t) => t.id !== id));
@@ -260,10 +268,11 @@ export function ProjectKanban({ projectId }) {
           )}
         </div>
 
-        {/* O botão Nova Tarefa continua na direita */}
-        <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
-          <Plus size={18} /> Nova Tarefa
-        </button>
+        {canEdit && (
+          <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
+            <Plus size={18} /> Nova Tarefa
+          </button>
+        )}
       </div>
 
       <div className={styles.boardWrapper}>
@@ -400,6 +409,7 @@ export function ProjectKanban({ projectId }) {
             milestones={milestones}
             columns={COLUMNS}
             members={members}
+            canEdit={canEdit}
           />
         )}
         {popup && (

@@ -20,7 +20,9 @@ export function ProjectCard({ project }) {
   const realProgress = Number(project.total_percentage_real ?? 0);
   const planProgress = Number(project.total_percentage_plan ?? 0);
   const isDelayed = planProgress - realProgress >= 10;
-  const progressColor = isDelayed ? "#ef4444" : "#2563eb";
+  const progressColor = isDelayed
+    ? "var(--danger, #ef4444)"
+    : "var(--primary, #2563eb)";
 
   return (
     <div className={styles.card}>

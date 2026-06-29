@@ -19,13 +19,13 @@ import { StatusSelect } from "@/components/StatusSelect/StatusSelect";
 import styles from "./ProjectDetails.module.css";
 
 const STATUS_MAP = {
-  PLAN: { label: "A Iniciar", color: styles.statusPlan },
-  ACTIVE: { label: "Em Andamento", color: styles.statusActive },
-  VALID: { label: "Em Validação", color: styles.statusValid },
-  MONIT: { label: "Em Monitoramento", color: styles.statusMonit },
-  DELAY: { label: "Em Atraso", color: styles.statusDelay },
-  CONC: { label: "Concluído", color: styles.statusConc },
-  CANC: { label: "Cancelado", color: styles.statusCanc },
+  PLAN: { label: "A INICIAR", color: styles.statusPlan },
+  ACTIVE: { label: "EM ANDAMENTO", color: styles.statusActive },
+  VALID: { label: "EM VALIDAÇÃO", color: styles.statusValid },
+  MONIT: { label: "EM MONITORAMENTO", color: styles.statusMonit },
+  DELAY: { label: "EM ATRASO", color: styles.statusDelay },
+  CONC: { label: "CONCLUÍDO", color: styles.statusConc },
+  CANC: { label: "CANCELADO", color: styles.statusCanc },
 };
 
 const TABS = [
@@ -108,14 +108,15 @@ export function ProjectDetails() {
 
   const isPO = project.po === Number(user?.id);
   const isLeader = project.leader === Number(user?.id);
+  const isCanceled = project.project_status === "CANC";
 
   const permissions = {
-    canEditCanvas: isPO || isLeader,
-    canEditRisks: isPO || isLeader,
-    canEditCommunications: isPO || isLeader,
-    canManageTeam: isPO,
-    canEditTimeline: isPO,
-    canManageKanban: true,
+    canEditCanvas: (isPO || isLeader) && !isCanceled,
+    canEditRisks: (isPO || isLeader) && !isCanceled,
+    canEditCommunications: (isPO || isLeader) && !isCanceled,
+    canManageTeam: isPO && !isCanceled,
+    canEditTimeline: isPO && !isCanceled,
+    canManageKanban: !isCanceled,
   };
 
   const status = STATUS_MAP[project.project_status] ?? {

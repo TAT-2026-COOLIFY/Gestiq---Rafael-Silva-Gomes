@@ -75,7 +75,7 @@ class Projects(models.Model):
         blank=True,
     )
     name = models.CharField(max_length=250)
-    area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects")
+    area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects", null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.PROTECT, related_name="projects"
     )

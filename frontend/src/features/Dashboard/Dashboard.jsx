@@ -9,10 +9,10 @@ import { Toast } from "@/components/Toast";
 import styles from "./Dashboard.module.css";
 
 const TABS = [
-  { key: "CORP", label: "Corporativos" },
-  { key: "DEP", label: "Departamentais" },
-  { key: "PES", label: "Pessoais" },
-  { key: "ACAD", label: "Acadêmicos" },
+  { key: "CORP", label: "CORPORATIVOS" },
+  { key: "DEP", label: "DEPARTAMENTAIS" },
+  { key: "PES", label: "PESSOAIS" },
+  { key: "ACAD", label: "ACADÊMICOS" },
 ];
 
 export function Dashboard() {
@@ -92,10 +92,10 @@ export function Dashboard() {
     <div className={styles.container}>
       <div className={styles.pageHeader}>
         <div>
-          <h1>Meus Projetos</h1>
+          <h1>MEUS PROJETOS</h1>
           <p>
-            {projects.length} projeto{projects.length !== 1 ? "s" : ""}{" "}
-            encontrado{projects.length !== 1 ? "s" : ""}
+            {projects.length} Projeto{projects.length !== 1 ? "s" : ""}{" "}
+            Encontrado{projects.length !== 1 ? "s" : ""}
           </p>
         </div>
         {filtered.length > 0 && (
@@ -126,10 +126,10 @@ export function Dashboard() {
 
       {filtered.length === 0 ? (
         <div className={styles.emptyState}>
-          <p>Nenhum projeto em andamento</p>
+          <p>Nenhum Projeto em Andamento</p>
           <Link to="/projeto/novo" className={styles.newBtn}>
             <Plus size={18} />
-            Criar projeto
+            Criar Projeto
           </Link>
         </div>
       ) : (

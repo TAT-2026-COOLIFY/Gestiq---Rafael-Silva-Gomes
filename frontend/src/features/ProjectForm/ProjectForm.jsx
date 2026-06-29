@@ -99,43 +99,6 @@ export function ProjectForm() {
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label htmlFor="area">Área</label>
-              <select
-                id="area"
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Selecione...</option>
-                {areas.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="category">Categoria</label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Selecione...</option>
-                {categories.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
               <label htmlFor="project_type">Tipo</label>
               <select
                 id="project_type"
@@ -162,6 +125,64 @@ export function ProjectForm() {
               </select>
             </div>
           </div>
+
+          {formData.project_type !== "ACAD" &&
+          formData.project_type !== "PES" ? (
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label htmlFor="area">Área</label>
+                <select
+                  id="area"
+                  name="area"
+                  value={formData.area}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selecione...</option>
+                  {areas.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="category">Categoria</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selecione...</option>
+                  {categories.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.formGroup}>
+              <label htmlFor="category">Categoria</label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecione...</option>
+                {categories.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>

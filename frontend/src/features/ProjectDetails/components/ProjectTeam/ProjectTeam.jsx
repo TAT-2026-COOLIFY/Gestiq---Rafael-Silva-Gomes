@@ -251,8 +251,22 @@ export function ProjectTeam({ projectId, permissions }) {
 
   async function handleRemove(id) {
     if (!canManageTeam) return;
+
     try {
+      const memberToRemove = members.find((m) => m.id === id);
+      const isLeader =
+        memberToRemove &&
+        (memberToRemove.function === "Líder" ||
+          memberToRemove.function === "Lider");
+
       await api.delete(`members/${id}/`);
+
+      if (isLeader) {
+        await api.patch(`projects/${projectId}/`, {
+          leader: null,
+        });
+      }
+
       setMembers((prev) => prev.filter((m) => m.id !== id));
       showToast("Membro removido.", "success");
     } catch (error) {

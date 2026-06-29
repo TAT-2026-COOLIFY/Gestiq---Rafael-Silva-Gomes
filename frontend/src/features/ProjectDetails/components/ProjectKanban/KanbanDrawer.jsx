@@ -12,6 +12,8 @@ export function KanbanDrawer({
   saving,
   milestones,
   columns,
+  types,
+  priorities,
   members,
   canEdit,
 }) {
@@ -96,7 +98,7 @@ export function KanbanDrawer({
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="status">Status (Coluna)</label>
+          <label htmlFor="status">Status</label>
           <select
             id="status"
             name="status"
@@ -112,7 +114,39 @@ export function KanbanDrawer({
           </select>
         </div>
         <div className={styles.formGroup}>
-          <label htmlFor="milestone">Marco (Milestone)</label>
+          <label htmlFor="type">Tipo</label>
+          <select
+            id="type"
+            name="type"
+            value={form.type}
+            onChange={handleChange}
+            disabled={!canEdit}
+          >
+            {types.map((ty) => (
+              <option key={ty.id} value={ty.id}>
+                {ty.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="priority">Prioridade</label>
+          <select
+            id="priority"
+            name="priority"
+            value={form.priority}
+            onChange={handleChange}
+            disabled={!canEdit}
+          >
+            {priorities.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.title}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="milestone">Marco</label>
           <select
             id="milestone"
             name="milestone"

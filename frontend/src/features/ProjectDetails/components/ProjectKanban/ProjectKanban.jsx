@@ -16,17 +16,32 @@ const COLUMNS = [
   { id: "DONE", title: "Concluída" },
 ];
 
+const TYPES = [
+  { id: "TASK", title: "Tarefa" },
+  { id: "BUG", title: "Bug" },
+  { id: "STORY", title: "História" },
+];
+
+const PRIORITIES = [
+  { id: "LOW", title: "Baixa" },
+  { id: "MEDIUM", title: "Média" },
+  { id: "HIGH", title: "Alta" },
+  { id: "CRITICAL", title: "Critíca" },
+];
+
 const INITIAL_TASK = {
   title: "",
   description: "",
   status: "PLAN",
-  milestone: "", // ID do marco vinculado
+  type: "TASK",
+  priority: "MEDIUM",
+  milestone: "",
   assigned_to: "",
 };
 
 export function ProjectKanban({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
-  const [milestones, setMilestones] = useState([]); // Para preencher os selects
+  const [milestones, setMilestones] = useState([]);
   const [members, setMembers] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -60,12 +75,12 @@ export function ProjectKanban({ projectId, permissions }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      // Busca as tarefas e os marcos em paralelo para ser mais rápido
-      const [tasksRes, milestonesRes, membersRes] = await Promise.all([
-        api.get(`activities/?project=${projectId}`),
-        api.get(`milestones/?project=${projectId}`),
-        api.get(`members/?project=${projectId}`),
-      ]);
+      const [tasksRes, milestonesRes, membersRes] =
+        await Promise.all([
+          api.get(`activities/?project=${projectId}`),
+          api.get(`milestones/?project=${projectId}`),
+          api.get(`members/?project=${projectId}`),
+        ]);
 
       setTasks(tasksRes.data.results ?? tasksRes.data);
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
@@ -109,9 +124,8 @@ export function ProjectKanban({ projectId, permissions }) {
     const taskId = e.dataTransfer.getData("taskId");
     const task = tasks.find((t) => t.id.toString() === taskId);
 
-    if (!task || task.status === newStatus) return; // Se soltou na mesma coluna, ignora
+    if (!task || task.status === newStatus) return;
 
-    // 1. Atualização Otimista (Muda na tela antes do backend responder para UX perfeita)
     const previousTasks = [...tasks];
     setTasks(
       tasks.map((t) =>
@@ -119,7 +133,6 @@ export function ProjectKanban({ projectId, permissions }) {
       ),
     );
 
-    // 2. Chama a API
     try {
       await api.patch(`activities/${taskId}/`, { status: newStatus });
     } catch {
@@ -150,13 +163,11 @@ export function ProjectKanban({ projectId, permissions }) {
     };
   }, [tasks]);
 
-  // --- 3. CRUD Padrão ---
   async function handleSave(formData) {
     if (!canEdit) return;
     setSaving(true);
     try {
       const payload = { ...formData, project: projectId };
-      // Se não selecionou milestone, manda nulo pro backend
       if (!payload.milestone || payload.milestone === "") {
         payload.milestone = null;
       }
@@ -277,13 +288,12 @@ export function ProjectKanban({ projectId, permissions }) {
 
       <div className={styles.boardWrapper}>
         {COLUMNS.map((col) => {
-          // 👇 3. A MÁGICA ACONTECE AQUI: Aplicamos o filtro na hora de separar as colunas!
           const columnTasks = tasks.filter((t) => {
-            if (t.status !== col.id) return false; // Se não for da coluna, ignora
-            if (filterAssignee === "UNASSIGNED") return !t.assigned_to; // Mostra só sem responsável
+            if (t.status !== col.id) return false;
+            if (filterAssignee === "UNASSIGNED") return !t.assigned_to; 
             if (filterAssignee !== null)
-              return t.assigned_to === filterAssignee; // Mostra só do usuário clicado
-            return true; // Se filterAssignee for null, mostra todas
+              return t.assigned_to === filterAssignee; 
+            return true; 
           });
 
           return (
@@ -393,6 +403,8 @@ export function ProjectKanban({ projectId, permissions }) {
             saving={saving}
             milestones={milestones}
             columns={COLUMNS}
+            types={TYPES}
+            priorities={PRIORITIES}
             members={members}
           />
         )}
@@ -408,6 +420,8 @@ export function ProjectKanban({ projectId, permissions }) {
             saving={editSaving}
             milestones={milestones}
             columns={COLUMNS}
+            types={TYPES}
+            priorities={PRIORITIES}
             members={members}
             canEdit={canEdit}
           />

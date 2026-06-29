@@ -10,6 +10,8 @@ export function KanbanModal({
   saving,
   milestones,
   columns,
+  types,
+  priorities,
   members,
 }) {
   const handleChange = (e) => {
@@ -61,7 +63,7 @@ export function KanbanModal({
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="status">Coluna Inicial</label>
+            <label htmlFor="status">Status</label>
             <select
               id="status"
               name="status"
@@ -77,7 +79,7 @@ export function KanbanModal({
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="milestone">Vincular ao Marco (Opcional)</label>
+            <label htmlFor="milestone">Vincular ao Marco</label>
             <select
               id="milestone"
               name="milestone"
@@ -88,6 +90,38 @@ export function KanbanModal({
               {milestones.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.task}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="type">Tipo</label>
+            <select
+              id="type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+            >
+              {types.map((ty) => (
+                <option key={ty.id} value={ty.id}>
+                  {ty.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="priority">Prioridade</label>
+            <select
+              id="priority"
+              name="priority"
+              value={form.priority}
+              onChange={handleChange}
+            >
+              {priorities.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.title}
                 </option>
               ))}
             </select>

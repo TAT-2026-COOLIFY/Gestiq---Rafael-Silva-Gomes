@@ -196,7 +196,7 @@ class ActivitiesViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitiesSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["project", "milestone", "sprint", "status"]
+    filterset_fields = ["project", "milestone", "sprint", "status", "type", "priority"]
 
 
 class MilestonesViewSet(viewsets.ModelViewSet):

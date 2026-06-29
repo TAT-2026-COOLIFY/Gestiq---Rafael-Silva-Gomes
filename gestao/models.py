@@ -273,6 +273,11 @@ class Activity(models.Model):
         HIGH = "HIGH", "Alta"
         CRITICAL = "CRITICAL", "Crítica"
 
+    class Type(models.TextChoices):
+        TASK = "TASK", "Tarefa"
+        BUG = "BUG", "Bug"
+        STORY = "STORY", "História"
+
     project = models.ForeignKey(
         Projects, on_delete=models.CASCADE, related_name="activities"
     )
@@ -312,6 +317,9 @@ class Activity(models.Model):
     )
     priority = models.CharField(
         max_length=20, choices=Priority.choices, default=Priority.MEDIUM
+    )
+    type = models.CharField(
+        max_length=20, choices=Type.choices, default=Type.TASK
     )
 
     create_date = models.DateTimeField(auto_now_add=True)

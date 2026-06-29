@@ -286,6 +286,7 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "assigned_to_first_name",
             "assigned_to_photo",
             "status",
+            "type",
             "priority",
             "create_date",
             "milestone",

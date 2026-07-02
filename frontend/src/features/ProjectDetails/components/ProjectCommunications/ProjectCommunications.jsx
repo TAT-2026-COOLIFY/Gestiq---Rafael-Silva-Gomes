@@ -155,7 +155,7 @@ export function ProjectCommunications({ projectId, permissions }) {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <h3 className={styles.sectionTitle}>Matriz de Comunicação</h3>
+        <h3 className={styles.sectionTitle}>MATRIZ DE COMUNICAÇÃO</h3>
         {canEdit && (
           <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
             <Plus size={16} />

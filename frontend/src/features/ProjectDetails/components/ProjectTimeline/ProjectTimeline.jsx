@@ -194,7 +194,7 @@ export function ProjectTimeline({ projectId, permissions }) {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <h3 className={styles.sectionTitle}>Cronograma do Projeto</h3>
+        <h3 className={styles.sectionTitle}>CRONOGRAMA DO PROJETO</h3>
         {canEdit && (
           <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
             <Plus size={18} /> Novo Marco

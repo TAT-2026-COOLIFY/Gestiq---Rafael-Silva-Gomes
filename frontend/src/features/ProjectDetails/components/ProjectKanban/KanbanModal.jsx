@@ -126,7 +126,17 @@ export function KanbanModal({
               ))}
             </select>
           </div>
-          <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="story_points">Story Points</label>
+            <input
+              id="story_points"
+              name="story_points"
+              value={form.story_points}
+              onChange={handleChange}
+            />
+          </div>
+          <div className={styles.formGroup}>
             <label htmlFor="assigned_to">Responsável</label>
             <select
               id="assigned_to"

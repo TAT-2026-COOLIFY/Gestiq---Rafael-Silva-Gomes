@@ -75,12 +75,11 @@ export function ProjectKanban({ projectId, permissions }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [tasksRes, milestonesRes, membersRes] =
-        await Promise.all([
-          api.get(`activities/?project=${projectId}`),
-          api.get(`milestones/?project=${projectId}`),
-          api.get(`members/?project=${projectId}`),
-        ]);
+      const [tasksRes, milestonesRes, membersRes] = await Promise.all([
+        api.get(`activities/?project=${projectId}`),
+        api.get(`milestones/?project=${projectId}`),
+        api.get(`members/?project=${projectId}`),
+      ]);
 
       setTasks(tasksRes.data.results ?? tasksRes.data);
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
@@ -230,7 +229,7 @@ export function ProjectKanban({ projectId, permissions }) {
     <div className={styles.container}>
       <div className={styles.toolbar}>
         <div className={styles.headerLeft}>
-          <h3 className={styles.sectionTitle}>Quadro Kanban</h3>
+          <h3 className={styles.sectionTitle}>QUADRO KANBAN</h3>
 
           {(assignees.users.length > 0 || assignees.hasUnassigned) && (
             <div className={styles.filterGroup}>
@@ -250,10 +249,7 @@ export function ProjectKanban({ projectId, permissions }) {
                     ${filterAssignee !== null && filterAssignee !== user.id ? styles.inactiveAvatar : ""}`}
                 >
                   {user.photo ? (
-                    <img
-                      src={`http://localhost:8000${user.photo}`}
-                      alt={user.name}
-                    />
+                    <img src={user.photo} alt={user.name} />
                   ) : (
                     <span>{user.name[0].toUpperCase()}</span>
                   )}
@@ -290,10 +286,10 @@ export function ProjectKanban({ projectId, permissions }) {
         {COLUMNS.map((col) => {
           const columnTasks = tasks.filter((t) => {
             if (t.status !== col.id) return false;
-            if (filterAssignee === "UNASSIGNED") return !t.assigned_to; 
+            if (filterAssignee === "UNASSIGNED") return !t.assigned_to;
             if (filterAssignee !== null)
-              return t.assigned_to === filterAssignee; 
-            return true; 
+              return t.assigned_to === filterAssignee;
+            return true;
           });
 
           return (
@@ -351,7 +347,7 @@ export function ProjectKanban({ projectId, permissions }) {
                             >
                               {task.assigned_to_photo ? (
                                 <img
-                                  src={`http://localhost:8000${task.assigned_to_photo}`}
+                                  src={task.assigned_to_photo}
                                   alt="Responsável"
                                   style={{
                                     width: 24,

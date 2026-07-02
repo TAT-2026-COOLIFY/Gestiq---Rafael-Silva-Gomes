@@ -163,6 +163,18 @@ export function KanbanDrawer({
           </select>
         </div>
         <div className={styles.formGroup}>
+          <label htmlFor="story_points">Story Points</label>
+          <input
+            id="story_points"
+            name="story_points"
+            value={form.story_points}
+            onChange={handleChange}
+            required
+            readOnly={!canEdit}
+            disabled={!canEdit}
+          />
+        </div>
+        <div className={styles.formGroup}>
           <label htmlFor="members">Responsável</label>
           <select
             id="assigned_to"

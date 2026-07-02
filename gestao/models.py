@@ -322,6 +322,8 @@ class Activity(models.Model):
         max_length=20, choices=Type.choices, default=Type.TASK
     )
 
+    story_points = models.IntegerField(blank=True, null=True)
+
     create_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

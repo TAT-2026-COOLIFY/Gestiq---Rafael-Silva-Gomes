@@ -173,7 +173,7 @@ export function ProjectRisks({ projectId, permissions }) {
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
-        <h3 className={styles.sectionTitle}>Riscos do Projeto</h3>
+        <h3 className={styles.sectionTitle}>RISCOS DO PROJETO</h3>
         {canEdit && (
           <button className={styles.addBtn} onClick={() => setModalOpen(true)}>
             <Plus size={16} />

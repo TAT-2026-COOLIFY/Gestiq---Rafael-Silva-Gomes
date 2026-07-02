@@ -287,6 +287,7 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "assigned_to_photo",
             "status",
             "type",
+            "story_points",
             "priority",
             "create_date",
             "milestone",
@@ -302,7 +303,11 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             and obj.assigned_to.profile.photo
         ):
             try:
-                return obj.assigned_to.profile.photo.url
+                request = self.context.get('request')
+                photo_url = obj.assigned_to.profile.photo.url
+                if request is not None:
+                    return request.build_absolute_uri(photo_url)
+                return photo_url
             except Exception:
                 return None
         return None

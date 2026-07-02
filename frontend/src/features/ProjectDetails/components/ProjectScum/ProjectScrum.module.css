@@ -1,278 +1,377 @@
 .container {
-  padding: 20px;
-  background-color: var(--background);
-  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  background-color: var(--background); /* Variável global */
+  min-height: calc(100vh - 80px);
 }
 
 .boardVertical {
   display: flex;
   flex-direction: column;
-  gap: 30px; /* Espaço entre Sprint e Backlog */
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 2rem;
+  padding-bottom: 5rem;
 }
 
-.section {
+/* ================================
+   BOARD SECTIONS (Sprint / Backlog)
+================================ */
+.boardSection {
+  background: var(
+    --background
+  ); /* Variável global (se quiser um fundo mais escuro, use var(--border) ou similar, dependendo do seu tema) */
+  border: 1px solid var(--border); /* Adicionado borda para imitar o estilo do seu tableWrapper */
+  border-radius: 12px;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
-/* Cabeçalhos estilo barra horizontal fina */
 .sectionHeader {
-  padding: 10px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 6px 6px 0 0;
-  color: white;
+  padding: 0 0.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .headerTitle {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
-.sectionHeader h3 {
+.sprintName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main); /* Variável global */
   margin: 0;
-  font-size: 1rem;
+}
+
+.taskCount {
+  font-size: 0.75rem;
+  color: var(--text-muted); /* Variável global */
   font-weight: 600;
 }
 
-.badge {
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: bold;
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.grayHeader {
-  background-color: #5e6c84;
-} /* Cor padrão do Jira para Backlog */
-.blueHeader {
-  background-color: #0052cc;
-} /* Cor padrão do Jira para Sprint */
+.addBtn,
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
 
+.addBtn {
+  background: var(--primary); /* Variável global */
+  color: white;
+  border: none;
+}
+.addBtn:hover {
+  opacity: 0.88;
+}
+
+.secondaryBtn {
+  background: transparent;
+  color: var(--text-main); /* Variável global */
+  border: 1px solid var(--border); /* Variável global */
+}
+.secondaryBtn:hover {
+  background: var(--border);
+}
+
+/* ================================
+   LISTA DE TAREFAS
+================================ */
 .taskList {
   display: flex;
   flex-direction: column;
-  background-color: #f4f5f7;
-  padding: 5px;
-  border-radius: 0 0 6px 6px;
-  min-height: 50px;
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden; /* Mantém as bordas arredondadas nos itens filhos */
 }
 
-.divider {
-  height: 2px;
-  background-color: #dfe1e6;
-  margin: 10px 0;
-  border-radius: 2px;
-}
-
-.emptyText {
-  text-align: center;
-  color: #6b778c;
-  font-style: italic;
-  padding: 15px;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* NOVO: DESIGN INLINE (TIPO JIRA) */
-.taskInline {
+.taskItem {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: white;
-  padding: 8px 12px;
-  margin-bottom: 2px; /* Espaçamento mínimo para parecer uma lista compacta */
-  border-radius: 3px;
-  border-left: 3px solid transparent;
-  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.05);
-  cursor: pointer;
-  transition: background-color 0.1s ease;
+  justify-content: space-between;
+  background: var(--background); /* Variável global */
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border); /* Variável global */
+  transition: background-color 0.15s;
 }
 
-.taskInline:hover {
-  background-color: #ebecf0;
+.taskItem:last-child {
+  border-bottom: none;
 }
 
-.taskInline.selected {
-  background-color: #e6effc;
-  border-left-color: #0052cc;
+.taskItem:hover {
+  background: var(
+    --border
+  ); /* Reaproveitando a cor de borda para o hover (igual ao background de hover da table) */
+}
+
+/* Estado selecionado */
+.taskItem.selected {
+  background: var(--primary);
+  opacity: 0.1; /* Truque simples caso você não tenha uma variável "primary-light" */
+}
+/* Como a opacidade aplica no item todo, a melhor forma com suas variáveis é usar o border */
+.taskItem.selected {
+  background: var(--border);
+  border-left: 4px solid var(--primary);
 }
 
 .taskMain {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   flex: 1;
+  min-width: 0;
 }
 
 .checkbox {
-  transform: scale(1.1);
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  margin: 0;
+  accent-color: var(--primary); /* Variável global */
 }
 
 .taskKey {
-  font-size: 0.85rem;
-  color: #6b778c;
-  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--text-muted); /* Variável global */
+  font-weight: 600;
   min-width: 65px;
 }
 
 .taskTitle {
-  font-size: 0.95rem;
-  color: #172b4d;
-  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--text-main); /* Variável global */
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.taskItem:hover .taskTitle {
+  text-decoration: underline;
 }
 
 .taskMeta {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1.25rem;
+  flex-shrink: 0;
 }
 
-.priorityTag {
+.statusBadge {
   font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 3px;
   font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  color: var(--text-main);
+  background: var(--border);
 }
 
-.tagRed {
-  background-color: #ffebee;
-  color: #c0392b;
-}
-.tagYellow {
-  background-color: #fffde7;
-  color: #f39c12;
-}
-.tagGreen {
-  background-color: #e8f5e9;
-  color: #27ae60;
-}
-
-/* Avatar simulado (Bolhinha com a inicial do nome) */
-.assigneeAvatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: #0052cc;
+.PLAN {
+  background: #f0c03c;
   color: white;
+}
+
+.DOING {
+  background: var(--primary);
+  color: white;
+}
+
+.REVIEW {
+  background: #df3737;
+  color: white;
+}
+
+.DONE {
+  background: #3d9e1d;
+  color: white;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--primary); /* Variável global */
+  color: white;
   font-size: 0.75rem;
   font-weight: bold;
 }
 
-.assigneeUnassigned {
-  width: 24px;
-  height: 24px;
+.avatarUnassigned {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  background-color: #dfe1e6;
-  color: #42526e;
+  background: var(--background);
+  border: 1px dashed var(--text-muted); /* Variável global */
+}
+
+.menuBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted); /* Variável global */
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  border: 1px dashed #b3bac5;
+}
+.menuBtn:hover {
+  background: var(--border); /* Variável global */
+  color: var(--text-main); /* Variável global */
 }
 
-/* Botões do cabeçalho */
-.newSprintBtn,
-.createTaskBtn {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: background 0.2s;
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted); /* Variável global */
+  background: var(--background); /* Variável global */
 }
 
-.newSprintBtn:hover,
-.createTaskBtn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-/* BARRA FLUTUANTE INFERIOR (Mantida igual ao Canvas) */
-.actions {
+/* ================================
+   BARRA FLUTUANTE (FLOATING BAR)
+================================ */
+.floatingBarWrapper {
   position: fixed;
-  bottom: 25px;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.saveIndicator {
+.floatingBar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  gap: 1.5rem;
+  background: var(
+    --text-main
+  ); /* Usando text-main como fundo para criar contraste alto (preto no claro, branco no escuro) */
+  color: var(--background); /* Invertendo a cor do texto */
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  font-size: 0.875rem;
   transition: all 0.3s ease;
-  user-select: none;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background-color: #172b4d;
+  max-width: 90%;
+}
+
+.floatingBar.salvo {
+  background: #10b981;
+  color: white;
+} /* Mantém cores fixas para estados de sucesso/erro para destaque visual */
+.floatingBar.erro {
+  background: #ef4444;
   color: white;
 }
 
-.saveIndicator.salvo {
-  background-color: #e8f5e9;
-  color: #27ae60;
+.floatingStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
 }
-.saveIndicator.salvando {
-  background-color: #fff3e0;
-  color: #d35400;
-}
-.saveIndicator.erro {
-  background-color: #ffebee;
-  color: #c0392b;
+
+.floatingActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .selectionCount {
-  padding-right: 15px;
-  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+  opacity: 0.8;
 }
 
 .actionBtn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.4rem;
   background: transparent;
-  color: white;
-  border: none;
-  font-weight: 600;
+  color: inherit;
+  border: 1px solid currentColor;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 20px;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
 }
-
 .actionBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.7;
 }
 
 .btnPrimary {
-  background-color: #27ae60;
-}
-.btnPrimary:hover {
-  background-color: #2ecc71;
+  background: var(--primary); /* Variável global */
+  border-color: var(--primary);
+  color: white; /* Garante que o texto seja branco sob a cor primária */
 }
 
 .spin {
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  100% {
+  to {
     transform: rotate(360deg);
   }
+}
+
+/* ================================
+   AVATARES
+================================ */
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary); 
+  color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitial {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.avatarUnassigned {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--background);
+  border: 1px dashed var(--text-muted);
 }

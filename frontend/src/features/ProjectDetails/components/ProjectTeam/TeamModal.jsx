@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Modal } from "@/components/Modal";
 import { FormActions } from "@/components/FormActions";
 import styles from "./TeamModal.module.css";
-import { Popup } from "@/components/Popup";
-import { Form } from "react-router-dom";
 
 const INITIAL_FORM = {
   email: "",

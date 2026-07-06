@@ -5,8 +5,8 @@ import { Toast } from "@/components/Toast";
 import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
 import { AnimatePresence } from "framer-motion";
-import { KanbanModal } from "./KanbanModal";
-import { KanbanDrawer } from "./KanbanDrawer";
+import { KanbanModal } from "./components/KanbanModal/KanbanModal";
+import { KanbanDrawer } from "./components/KanbanDrawer/KanbanDrawer";
 import styles from "./ProjectKanban.module.css";
 
 const COLUMNS = [

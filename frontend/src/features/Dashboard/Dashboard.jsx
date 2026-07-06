@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { dashboardService } from "./services/dashboardService";
-import { ProjectCard } from "./components/ProjectCard";
+import { ProjectCard } from "./components/ProjectCard/ProjectCard";
 import { Loading } from "@/components/Loading/Loading";
 import { Toast } from "@/components/Toast";
 import styles from "./Dashboard.module.css";

@@ -5,8 +5,8 @@ import { Toast } from "@/components/Toast";
 import { Popup } from "@/components/Popup";
 import { Loading } from "@/components/Loading/Loading";
 import { AnimatePresence } from "framer-motion";
-import { TimelineModal } from "./TimelineModal";
-import { TimelineDrawer } from "./TimelineDrawer";
+import { TimelineModal } from "./components/TimelineModal/TimelineModal";
+import { TimelineDrawer } from "./components/TimelineDrawer/TimelineDrawer";
 import styles from "./ProjectTimeline.module.css";
 
 const INITIAL_MILESTONE = {

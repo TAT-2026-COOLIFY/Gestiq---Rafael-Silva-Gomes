@@ -106,11 +106,11 @@ export function TimelineDrawer({
 
         <div className={styles.statsCard}>
           <p>
-            <strong>Progresso Planejado (Dias):</strong>{" "}
+            <strong>Prazo Utilizado:</strong>{" "}
             {milestone.percentage_plan}%
           </p>
           <p>
-            <strong>Progresso Real (Tarefas):</strong>{" "}
+            <strong>Total Realizado:</strong>{" "}
             {milestone.percentage_real}%
           </p>
         </div>

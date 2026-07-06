@@ -87,7 +87,7 @@ export function KanbanDrawer({
         <div className={styles.formGroup}>
           <label htmlFor="description">Descrição</label>
 
-          <input
+          <textarea
             id="description"
             name="description"
             value={form.description || ""}
@@ -96,55 +96,73 @@ export function KanbanDrawer({
             disabled={!canEdit}
           />
         </div>
+        <div className={styles.row}>
+          <div className={styles.formGroup}>
+            <label htmlFor="status">Status</label>
+            <select
+              id="status"
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              disabled={!canEdit}
+            >
+              {columns.map((col) => (
+                <option key={col.id} value={col.id}>
+                  {col.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="type">Tipo</label>
+            <select
+              id="type"
+              name="type"
+              value={form.type}
+              onChange={handleChange}
+              disabled={!canEdit}
+            >
+              {types.map((ty) => (
+                <option key={ty.id} value={ty.id}>
+                  {ty.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="status">Status</label>
-          <select
-            id="status"
-            name="status"
-            value={form.status}
-            onChange={handleChange}
-            disabled={!canEdit}
-          >
-            {columns.map((col) => (
-              <option key={col.id} value={col.id}>
-                {col.title}
-              </option>
-            ))}
-          </select>
+        <div className={styles.row}>
+          <div className={styles.formGroup}>
+            <label htmlFor="priority">Prioridade</label>
+            <select
+              id="priority"
+              name="priority"
+              value={form.priority}
+              onChange={handleChange}
+              disabled={!canEdit}
+            >
+              {priorities.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="story_points">Story Points</label>
+            <input
+              id="story_points"
+              name="story_points"
+              value={form.story_points}
+              onChange={handleChange}
+              required
+              readOnly={!canEdit}
+              disabled={!canEdit}
+            />
+          </div>
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="type">Tipo</label>
-          <select
-            id="type"
-            name="type"
-            value={form.type}
-            onChange={handleChange}
-            disabled={!canEdit}
-          >
-            {types.map((ty) => (
-              <option key={ty.id} value={ty.id}>
-                {ty.title}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="priority">Prioridade</label>
-          <select
-            id="priority"
-            name="priority"
-            value={form.priority}
-            onChange={handleChange}
-            disabled={!canEdit}
-          >
-            {priorities.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.title}
-              </option>
-            ))}
-          </select>
-        </div>
+
         <div className={styles.formGroup}>
           <label htmlFor="milestone">Marco</label>
           <select
@@ -162,18 +180,7 @@ export function KanbanDrawer({
             ))}
           </select>
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="story_points">Story Points</label>
-          <input
-            id="story_points"
-            name="story_points"
-            value={form.story_points}
-            onChange={handleChange}
-            required
-            readOnly={!canEdit}
-            disabled={!canEdit}
-          />
-        </div>
+
         <div className={styles.formGroup}>
           <label htmlFor="members">Responsável</label>
           <select

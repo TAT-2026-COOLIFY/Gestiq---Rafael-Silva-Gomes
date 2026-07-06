@@ -53,7 +53,7 @@ export function KanbanModal({
 
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label htmlFor="description">Descrição</label>
-            <input
+            <textarea
               id="description"
               name="description"
               value={form.description}

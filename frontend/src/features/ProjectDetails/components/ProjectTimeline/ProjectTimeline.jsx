@@ -126,6 +126,19 @@ export function ProjectTimeline({ projectId, permissions }) {
     };
   };
 
+  const getTodayPosition = () => {
+    if (!timelineData.minDate || !timelineData.maxDate) return null;
+
+    const today = new Date().getTime();
+    const start = timelineData.minDate.getTime();
+    const end = timelineData.maxDate.getTime();
+
+    if (today < start || today > end) return null;
+
+    const leftPercentage = ((today - start) / (end - start)) * 100;
+    return `${leftPercentage}%`;
+  };
+
   // --- 3. CRUD ---
   async function handleSave(formData) {
     if (!canEdit) return;
@@ -191,6 +204,8 @@ export function ProjectTimeline({ projectId, permissions }) {
 
   if (loading) return <Loading />;
 
+  const todayLeft = getTodayPosition();
+
   return (
     <div className={styles.container}>
       <div className={styles.toolbar}>
@@ -239,6 +254,12 @@ export function ProjectTimeline({ projectId, permissions }) {
                   <div key={i} className={styles.gridLine}></div>
                 ))}
               </div>
+
+              {todayLeft && (
+                <div className={styles.todayMarker} style={{ left: todayLeft }}>
+                  <div className={styles.todayLabel} title="Hoje" />{" "}
+                </div>
+              )}
 
               {tasks.map((task) => {
                 const position = getPositionStyles(

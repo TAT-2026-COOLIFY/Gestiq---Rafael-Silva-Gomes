@@ -156,7 +156,7 @@ export function RiskModal({ form, onFormChange, onClose, onSave, saving }) {
           </div>
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label htmlFor="mitigation_plan">Plano de Ação</label>
-            <input
+            <textarea
               id="mitigation_plan"
               name="mitigation_plan"
               value={form.mitigation_plan}

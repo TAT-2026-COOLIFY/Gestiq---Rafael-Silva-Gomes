@@ -281,7 +281,7 @@ export function ProjectScrum({ projectId }) {
               className={styles.addBtn}
               onClick={() => setTaskModalOpen(true)}
             >
-              + Criar Tarefa
+              + Nova Tarefa
             </button>
           }
         />

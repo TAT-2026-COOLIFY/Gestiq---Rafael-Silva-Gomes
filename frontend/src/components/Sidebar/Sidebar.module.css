@@ -178,6 +178,26 @@
   width: auto;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logoImg {
+  width: 28px; 
+  height: 28px;
+  object-fit: contain; 
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .collapseBtn {
     display: none;

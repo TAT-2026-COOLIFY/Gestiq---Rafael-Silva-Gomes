@@ -15,6 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import styles from "./Sidebar.module.css";
+import logoImg from "@/../public/favicon.svg"
 
 export function Sidebar({ isCollapsed, onToggleCollapse }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +45,12 @@ export function Sidebar({ isCollapsed, onToggleCollapse }) {
                 `}
       >
         <div className={styles.header}>
-          {!isCollapsed && <span className={styles.logo}>Gestiq</span>}
+          {!isCollapsed && (
+            <div className={styles.brand}>
+              <img src={logoImg} alt="Gestiq" className={styles.logoImg} />
+              <span className={styles.logoText}>Gestiq</span>
+            </div>
+          )}
 
           <button className={styles.collapseBtn} onClick={onToggleCollapse}>
             {isCollapsed ? (

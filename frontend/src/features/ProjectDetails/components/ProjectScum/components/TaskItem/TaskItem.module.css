@@ -1,0 +1,165 @@
+.taskItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--background);
+  padding: 0.5rem 1rem; 
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.15s;
+}
+
+.taskItem:last-child {
+  border-bottom: none;
+}
+
+.taskItem:hover {
+  background: var(--border);
+}
+
+.taskItem.selected {
+  background: var(--border);
+  border-left: 4px solid var(--primary);
+}
+
+.taskMain {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.taskKey {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 65px;
+}
+
+.taskTitle {
+  font-size: 0.875rem;
+  color: var(--text-main);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.taskItem:hover .taskTitle {
+  text-decoration: underline;
+}
+
+.taskMeta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  color: var(--text-main);
+  background: var(--border);
+}
+
+/* Cores de Status Específicas */
+.PLAN {
+  background: #f0c03c;
+  color: white;
+}
+
+.DOING {
+  background: var(--primary);
+  color: white;
+}
+
+.REVIEW {
+  background: #df3737;
+  color: white;
+}
+
+.DONE {
+  background: #3d9e1d;
+  color: white;
+}
+
+/* ================================
+   STORY POINTS E AVATARES
+================================ */
+.storyPoint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.taskItem:hover .storyPoint {
+  background: var(--text-muted);
+  color: var(--background);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: white;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitial {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.avatarUnassigned {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--background);
+  border: 1px dashed var(--text-muted);
+}
+
+.menuBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+.menuBtn:hover {
+  background: var(--border);
+  color: var(--text-main);
+}

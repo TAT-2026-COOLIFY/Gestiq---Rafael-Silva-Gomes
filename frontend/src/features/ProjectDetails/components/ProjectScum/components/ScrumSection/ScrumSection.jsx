@@ -1,5 +1,5 @@
-import styles from "./ProjectScrum.module.css";
-import { TaskItem } from "./TaskItem";
+import styles from "./ScrumSection.module.css";
+import { TaskItem } from "../TaskItem/TaskItem";
 
 export function ScrumSection({
   title,

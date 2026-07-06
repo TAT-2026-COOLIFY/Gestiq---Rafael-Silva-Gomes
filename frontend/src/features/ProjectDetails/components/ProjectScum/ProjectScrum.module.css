@@ -15,54 +15,6 @@
   padding-bottom: 5rem;
 }
 
-/* ================================
-   BOARD SECTIONS (Sprint / Backlog)
-================================ */
-.boardSection {
-  background: var(
-    --background
-  ); /* Variável global (se quiser um fundo mais escuro, use var(--border) ou similar, dependendo do seu tema) */
-  border: 1px solid var(--border); /* Adicionado borda para imitar o estilo do seu tableWrapper */
-  border-radius: 12px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.headerTitle {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.sprintName {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-main); /* Variável global */
-  margin: 0;
-}
-
-.taskCount {
-  font-size: 0.75rem;
-  color: var(--text-muted); /* Variável global */
-  font-weight: 600;
-}
-
-.headerActions {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .addBtn,
 .secondaryBtn {
   display: inline-flex;
@@ -87,168 +39,11 @@
 
 .secondaryBtn {
   background: transparent;
-  color: var(--text-main); /* Variável global */
-  border: 1px solid var(--border); /* Variável global */
+  color: var(--text-main);
+  border: 1px solid var(--border); 
 }
 .secondaryBtn:hover {
   background: var(--border);
-}
-
-/* ================================
-   LISTA DE TAREFAS
-================================ */
-.taskList {
-  display: flex;
-  flex-direction: column;
-  min-height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden; /* Mantém as bordas arredondadas nos itens filhos */
-}
-
-.taskItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--background); /* Variável global */
-  padding: 0.875rem 1rem;
-  border-bottom: 1px solid var(--border); /* Variável global */
-  transition: background-color 0.15s;
-}
-
-.taskItem:last-child {
-  border-bottom: none;
-}
-
-.taskItem:hover {
-  background: var(
-    --border
-  ); /* Reaproveitando a cor de borda para o hover (igual ao background de hover da table) */
-}
-
-/* Estado selecionado */
-.taskItem.selected {
-  background: var(--primary);
-  opacity: 0.1; /* Truque simples caso você não tenha uma variável "primary-light" */
-}
-/* Como a opacidade aplica no item todo, a melhor forma com suas variáveis é usar o border */
-.taskItem.selected {
-  background: var(--border);
-  border-left: 4px solid var(--primary);
-}
-
-.taskMain {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.checkbox {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: var(--primary); /* Variável global */
-}
-
-.taskKey {
-  font-size: 0.75rem;
-  color: var(--text-muted); /* Variável global */
-  font-weight: 600;
-  min-width: 65px;
-}
-
-.taskTitle {
-  font-size: 0.875rem;
-  color: var(--text-main); /* Variável global */
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.taskItem:hover .taskTitle {
-  text-decoration: underline;
-}
-
-.taskMeta {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  flex-shrink: 0;
-}
-
-.statusBadge {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0.25rem 0.5rem;
-  border-radius: 20px;
-  color: var(--text-main);
-  background: var(--border);
-}
-
-.PLAN {
-  background: #f0c03c;
-  color: white;
-}
-
-.DOING {
-  background: var(--primary);
-  color: white;
-}
-
-.REVIEW {
-  background: #df3737;
-  color: white;
-}
-
-.DONE {
-  background: #3d9e1d;
-  color: white;
-}
-
-.avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primary); /* Variável global */
-  color: white;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-
-.avatarUnassigned {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: var(--background);
-  border: 1px dashed var(--text-muted); /* Variável global */
-}
-
-.menuBtn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted); /* Variável global */
-  cursor: pointer;
-  padding: 0.2rem;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-}
-.menuBtn:hover {
-  background: var(--border); /* Variável global */
-  color: var(--text-main); /* Variável global */
-}
-
-.emptyState {
-  padding: 3rem;
-  text-align: center;
-  color: var(--text-muted); /* Variável global */
-  background: var(--background); /* Variável global */
 }
 
 /* ================================
@@ -326,9 +121,9 @@
 }
 
 .btnPrimary {
-  background: var(--primary); /* Variável global */
+  background: var(--primary);
   border-color: var(--primary);
-  color: white; /* Garante que o texto seja branco sob a cor primária */
+  color: white;
 }
 
 .spin {
@@ -338,40 +133,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-/* ================================
-   AVATARES
-================================ */
-.avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--primary); 
-  color: white;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.avatarImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatarInitial {
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.avatarUnassigned {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: var(--background);
-  border: 1px dashed var(--text-muted);
 }

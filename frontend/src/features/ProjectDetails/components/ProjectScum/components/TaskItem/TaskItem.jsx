@@ -8,7 +8,7 @@ import {
   AlertCircle,
   MoreVertical,
 } from "lucide-react";
-import styles from "./ProjectScrum.module.css";
+import styles from "./TaskItem.module.css";
 
 const TYPE_CONFIG = {
   TASK: { icon: CheckSquare, color: "var(--color-task)" },
@@ -17,10 +17,17 @@ const TYPE_CONFIG = {
 };
 
 const PRIORITY_CONFIG = {
-  LOW: { icon: ArrowDown, color: "var(--color-prio-low)" },
-  MEDIUM: { icon: ArrowRight, color: "var(--color-prio-med)" },
-  HIGH: { icon: ArrowUp, color: "var(--color-prio-high)" },
-  CRITICAL: { icon: AlertCircle, color: "var(--color-prio-crit)" },
+  LOW: { icon: ArrowDown, color: "#0065ff" },
+  MEDIUM: { icon: ArrowRight, color: "#ff991f" },
+  HIGH: { icon: ArrowUp, color: "#ff5630" },
+  CRITICAL: { icon: AlertCircle, color: "#bf2600" },
+};
+
+const PRIORITY_LABELS = {
+  LOW: "Baixa",
+  MEDIUM: "Média",
+  HIGH: "Alta",
+  CRITICAL: "Crítica",
 };
 
 const STATUS_MAP = {
@@ -34,8 +41,9 @@ export function TaskItem({ task, isSelected, onToggle }) {
   const TypeIcon = TYPE_CONFIG[task.type]?.icon || CheckSquare;
   const typeColor = TYPE_CONFIG[task.type]?.color || "#4bade8";
 
-  const PrioIcon = PRIORITY_CONFIG[task.priority]?.icon || ArrowRight;
-  const prioColor = PRIORITY_CONFIG[task.priority]?.color || "#ff991f";
+  const priorityKey = task.priority ? task.priority.toUpperCase() : "MEDIUM";
+  const PrioIcon = PRIORITY_CONFIG[priorityKey]?.icon || ArrowRight;
+  const prioColor = PRIORITY_CONFIG[priorityKey]?.color || "#ff991f";
 
   return (
     <div className={`${styles.taskItem} ${isSelected ? styles.selected : ""}`}>
@@ -58,11 +66,21 @@ export function TaskItem({ task, isSelected, onToggle }) {
           {STATUS_MAP[task.status] || task.status}
         </span>
 
-        <PrioIcon
-          size={16}
-          color={prioColor}
-          title={`Prioridade: ${task.priority}`}
-        />
+        {task.story_points != null && (
+          <span
+            className={styles.storyPoint}
+            title={`${task.story_points} Story Points`}
+          >
+            {task.story_points}
+          </span>
+        )}
+
+        <span 
+          title={`Prioridade: ${PRIORITY_LABELS[priorityKey] || priorityKey}`} 
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <PrioIcon size={16} color={prioColor} />
+        </span>
 
         <div className={styles.avatar}>
           {task.assigned_to_photo ? (

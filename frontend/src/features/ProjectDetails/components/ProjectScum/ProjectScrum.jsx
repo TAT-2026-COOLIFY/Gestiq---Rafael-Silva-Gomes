@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectScrum.module.css";
 import { Loading } from "@/components/Loading/Loading";
@@ -10,8 +11,16 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
+import { Toast } from "@/components/Toast";
+import { ScrumSection } from "./components/ScrumSection/ScrumSection";
+import { SprintModal } from "./components/SprintModal/SprintModal";
 
-import { ScrumSection } from "./ScrumSection";
+const INITIAL_SPRINT = {
+  name: "",
+  goal: "",
+  start_date: "",
+  end_date: "",
+};
 
 export function ProjectScrum({ projectId }) {
   const [tasks, setTasks] = useState([]);
@@ -19,28 +28,104 @@ export function ProjectScrum({ projectId }) {
   const [selectedTaskIds, setSelectedTaskIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionStatus, setActionStatus] = useState("");
+  const [sprintModalOpen, setSprintModalOpen] = useState(false);
+  const [savingSprint, setSavingSprint] = useState(false);
+  const [sprintForm, setSprintForm] = useState(INITIAL_SPRINT);
+  const [toast, setToast] = useState(null);
+
+  const showToast = useCallback((message, type = "error") => {
+    setToast({ id: Math.random(), message, type });
+  }, []);
+
+  const loadScrumData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [tasksRes, sprintsRes] = await Promise.all([
+        api.get(`activities/?project=${projectId}`),
+        api.get(`sprints/?project=${projectId}`),
+      ]);
+      setTasks(tasksRes.data?.results || tasksRes.data);
+
+      const sprintsData = sprintsRes.data?.results || sprintsRes.data;
+      const activeSprint = sprintsData.find((s) => s.status !== "FINISHED");
+      setCurrentSprint(activeSprint || null);
+    } catch (err) {
+      console.error(err);
+      showToast("Erro ao carregar os dados.");
+    } finally {
+      setLoading(false);
+    }
+  }, [projectId, showToast]);
 
   useEffect(() => {
-    if (!projectId) return;
-    async function loadScrumData() {
-      try {
-        const [tasksRes, sprintsRes] = await Promise.all([
-          api.get(`activities/?project=${projectId}`),
-          api.get(`sprints/?project=${projectId}`),
-        ]);
-        setTasks(tasksRes.data?.results || tasksRes.data);
+    if (projectId) loadScrumData();
+  }, [projectId, loadScrumData]);
 
-        const sprintsData = sprintsRes.data?.results || sprintsRes.data;
-        const activeSprint = sprintsData.find((s) => s.status !== "FINISHED");
-        setCurrentSprint(activeSprint || null);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+  const handleSaveSprint = async (form) => {
+    setSavingSprint(true);
+    try {
+      const payload = {
+        project: projectId,
+        name: form.name,
+        goal: form.goal,
+        start_date: form.start_date || null,
+        end_date: form.end_date || null,
+        status: "PLANNED",
+      };
+
+      await api.post("sprints/", payload);
+
+      showToast("Sprint criada com sucesso!", "success");
+      setSprintModalOpen(false);
+      setSprintForm(INITIAL_SPRINT);
+
+      // Atualiza a tela puxando tudo do banco novamente
+      await loadScrumData();
+    } catch (error) {
+      // 👇 Vamos extrair o erro exato que o Django mandou de volta
+      console.error("Erro completo:", error.response?.data);
+
+      const errorMsg = error.response?.data
+        ? Object.values(error.response.data).flat().join(" | ")
+        : "Erro ao criar Sprint.";
+
+      showToast(errorMsg);
+    } finally {
+      setSavingSprint(false);
     }
-    loadScrumData();
-  }, [projectId]);
+  };
+
+  // Função para Iniciar a Sprint (Muda o status de Planejada para Ativa)
+  const handleStartSprint = async () => {
+    if (!currentSprint) return;
+    try {
+      // ATENÇÃO: Verifique se "ACTIVE" é a palavra exata que o seu backend usa para "Em andamento"
+      await api.patch(`sprints/${currentSprint.id}/`, { status: "ACTIVE" });
+      showToast("Sprint iniciada com sucesso!", "success");
+      await loadScrumData(); // Recarrega a tela
+    } catch (error) {
+      showToast("Erro ao iniciar a Sprint.");
+      console.error(error);
+    }
+  };
+
+  // Função para Concluir a Sprint (Muda o status para Finalizada)
+  const handleFinishSprint = async () => {
+    if (!currentSprint) return;
+
+    // Opcional: Aqui você pode colocar um window.confirm para evitar cliques acidentais
+    if (!window.confirm("Tem certeza que deseja concluir esta Sprint?")) return;
+
+    try {
+      // ATENÇÃO: Verifique se "FINISHED" é a palavra exata que o seu backend usa
+      await api.patch(`sprints/${currentSprint.id}/`, { status: "FINISHED" });
+      showToast("Sprint concluída!", "success");
+      await loadScrumData(); // Recarrega a tela (a sprint vai sumir e liberar para criar outra)
+    } catch (error) {
+      showToast("Erro ao concluir a Sprint.");
+      console.error(error);
+    }
+  };
 
   const toggleSelection = (taskId) => {
     setSelectedTaskIds((prev) =>
@@ -105,20 +190,35 @@ export function ProjectScrum({ projectId }) {
         <ScrumSection
           title={currentSprint ? currentSprint.name : "Nenhuma Sprint Ativa"}
           icon={CheckCircle2}
-          iconColor="var(--icon-blue)"
+          iconColor="var(--primary)"
           tasks={sprintTasks}
           selectedTaskIds={selectedTaskIds}
           onToggleTask={toggleSelection}
           emptyStateText={
             currentSprint
-              ? "Arraste ou envie tarefas do Backlog para iniciar a Sprint."
+              ? "Arraste tarefas do Backlog para iniciar a Sprint."
               : "Crie uma Sprint para começar."
           }
           headerActions={
             !currentSprint ? (
-              <button className={styles.secondaryBtn}>+ Nova Sprint</button>
+              <button
+                onClick={() => setSprintModalOpen(true)}
+                className={styles.secondaryBtn}
+              >
+                + Nova Sprint
+              </button>
+            ) : currentSprint.status === "PLANNED" ? (
+
+              <button onClick={handleStartSprint} className={styles.addBtn}>
+                Iniciar Sprint
+              </button>
             ) : (
-              <button className={styles.secondaryBtn}>Concluir Sprint</button>
+              <button
+                onClick={handleFinishSprint}
+                className={styles.secondaryBtn}
+              >
+                Concluir Sprint
+              </button>
             )
           }
         />
@@ -175,6 +275,25 @@ export function ProjectScrum({ projectId }) {
           </div>
         </div>
       )}
+      <AnimatePresence>
+        {sprintModalOpen && (
+          <SprintModal
+            form={sprintForm}
+            onFormChange={setSprintForm}
+            onClose={() => setSprintModalOpen(false)}
+            onSave={handleSaveSprint}
+            saving={savingSprint}
+          />
+        )}
+        {toast && (
+          <Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

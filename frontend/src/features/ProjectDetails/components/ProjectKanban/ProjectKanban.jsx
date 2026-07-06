@@ -7,37 +7,13 @@ import { Loading } from "@/components/Loading/Loading";
 import { AnimatePresence } from "framer-motion";
 import { KanbanModal } from "./components/KanbanModal/KanbanModal";
 import { KanbanDrawer } from "./components/KanbanDrawer/KanbanDrawer";
+import {
+  COLUMNS,
+  TYPES,
+  PRIORITIES,
+  INITIAL_TASK,
+} from "@/utils/taskConstants";
 import styles from "./ProjectKanban.module.css";
-
-const COLUMNS = [
-  { id: "PLAN", title: "A Iniciar" },
-  { id: "DOING", title: "Em Andamento" },
-  { id: "REVIEW", title: "Em Validação" },
-  { id: "DONE", title: "Concluída" },
-];
-
-const TYPES = [
-  { id: "TASK", title: "Tarefa" },
-  { id: "BUG", title: "Bug" },
-  { id: "STORY", title: "História" },
-];
-
-const PRIORITIES = [
-  { id: "LOW", title: "Baixa" },
-  { id: "MEDIUM", title: "Média" },
-  { id: "HIGH", title: "Alta" },
-  { id: "CRITICAL", title: "Critíca" },
-];
-
-const INITIAL_TASK = {
-  title: "",
-  description: "",
-  status: "PLAN",
-  type: "TASK",
-  priority: "MEDIUM",
-  milestone: "",
-  assigned_to: "",
-};
 
 export function ProjectKanban({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);

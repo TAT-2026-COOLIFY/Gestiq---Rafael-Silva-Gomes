@@ -14,6 +14,13 @@ import {
 import { Toast } from "@/components/Toast";
 import { ScrumSection } from "./components/ScrumSection/ScrumSection";
 import { SprintModal } from "./components/SprintModal/SprintModal";
+import {
+  COLUMNS,
+  TYPES,
+  PRIORITIES,
+  INITIAL_TASK,
+} from "@/utils/taskConstants";
+import { KanbanModal } from "../ProjectKanban/components/KanbanModal/KanbanModal";
 
 const INITIAL_SPRINT = {
   name: "",
@@ -30,6 +37,11 @@ export function ProjectScrum({ projectId }) {
   const [actionStatus, setActionStatus] = useState("");
   const [sprintModalOpen, setSprintModalOpen] = useState(false);
   const [savingSprint, setSavingSprint] = useState(false);
+  const [members, setMembers] = useState([]);
+  const [milestones, setMilestones] = useState([]);
+  const [taskForm, setTaskForm] = useState(INITIAL_TASK);
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [savingTask, setSavingTask] = useState(false);
   const [sprintForm, setSprintForm] = useState(INITIAL_SPRINT);
   const [toast, setToast] = useState(null);
 
@@ -40,15 +52,21 @@ export function ProjectScrum({ projectId }) {
   const loadScrumData = useCallback(async () => {
     try {
       setLoading(true);
-      const [tasksRes, sprintsRes] = await Promise.all([
-        api.get(`activities/?project=${projectId}`),
-        api.get(`sprints/?project=${projectId}`),
-      ]);
+      const [tasksRes, sprintsRes, membersRes, milestonesRes] =
+        await Promise.all([
+          api.get(`activities/?project=${projectId}`),
+          api.get(`sprints/?project=${projectId}`),
+          api.get(`members/?project=${projectId}`),
+          api.get(`milestones/?project=${projectId}`),
+        ]);
+
       setTasks(tasksRes.data?.results || tasksRes.data);
 
       const sprintsData = sprintsRes.data?.results || sprintsRes.data;
       const activeSprint = sprintsData.find((s) => s.status !== "FINISHED");
       setCurrentSprint(activeSprint || null);
+      setMembers(membersRes.data?.results || membersRes.data);
+      setMilestones(milestonesRes.data?.results || milestonesRes.data);
     } catch (err) {
       console.error(err);
       showToast("Erro ao carregar os dados.");
@@ -60,6 +78,34 @@ export function ProjectScrum({ projectId }) {
   useEffect(() => {
     if (projectId) loadScrumData();
   }, [projectId, loadScrumData]);
+
+  const handleSaveTask = async (formData) => {
+    setSavingTask(true);
+    try {
+      const payload = {
+        ...formData,
+        project: projectId,
+        sprint: null,
+      };
+
+      if (!payload.milestone || payload.milestone === "")
+        payload.milestone = null;
+      if (!payload.assigned_to || payload.assigned_to === "")
+        payload.assigned_to = null;
+
+      await api.post("activities/", payload);
+
+      showToast("Tarefa adicionada ao Backlog!", "success");
+      setTaskModalOpen(false);
+      setTaskForm(INITIAL_TASK);
+      await loadScrumData();
+    } catch (error) {
+      showToast("Erro ao criar tarefa.");
+      console.error(error);
+    } finally {
+      setSavingTask(false);
+    }
+  };
 
   const handleSaveSprint = async (form) => {
     setSavingSprint(true);
@@ -208,7 +254,6 @@ export function ProjectScrum({ projectId }) {
                 + Nova Sprint
               </button>
             ) : currentSprint.status === "PLANNED" ? (
-
               <button onClick={handleStartSprint} className={styles.addBtn}>
                 Iniciar Sprint
               </button>
@@ -232,7 +277,12 @@ export function ProjectScrum({ projectId }) {
           onToggleTask={toggleSelection}
           emptyStateText="Seu backlog está vazio. Crie novas tarefas!"
           headerActions={
-            <button className={styles.addBtn}>+ Criar Tarefa</button>
+            <button
+              className={styles.addBtn}
+              onClick={() => setTaskModalOpen(true)}
+            >
+              + Criar Tarefa
+            </button>
           }
         />
       </div>
@@ -276,6 +326,20 @@ export function ProjectScrum({ projectId }) {
         </div>
       )}
       <AnimatePresence>
+        {taskModalOpen && (
+          <KanbanModal
+            form={taskForm}
+            onFormChange={setTaskForm}
+            onClose={() => setTaskModalOpen(false)}
+            onSave={handleSaveTask}
+            saving={savingTask}
+            milestones={milestones}
+            columns={COLUMNS}
+            types={TYPES}
+            priorities={PRIORITIES}
+            members={members}
+          />
+        )}
         {sprintModalOpen && (
           <SprintModal
             form={sprintForm}

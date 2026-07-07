@@ -359,6 +359,8 @@ class Milestones(models.Model):
 
         total_dias = (self.end_date - self.start_date).days
         dias_passados = (hoje - self.start_date).days
+        if total_dias <= 0:
+            return 100 if dias_passados >= 0 else 0
         return round((dias_passados / total_dias) * 100, 2)
 
     @property

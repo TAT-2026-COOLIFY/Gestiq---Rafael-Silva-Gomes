@@ -15,7 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import styles from "./Sidebar.module.css";
-import logoImg from "@/../public/favicon.svg"
+import logoImg from "@/assets/favicon.svg"
 
 export function Sidebar({ isCollapsed, onToggleCollapse }) {
   const [isOpen, setIsOpen] = useState(false);

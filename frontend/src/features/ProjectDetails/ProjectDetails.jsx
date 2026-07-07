@@ -116,6 +116,7 @@ export function ProjectDetails() {
     canEditCommunications: (isPO || isLeader) && !isCanceled,
     canManageTeam: isPO && !isCanceled,
     canEditTimeline: isPO && !isCanceled,
+    canCreateSprint: isPO && !isCanceled,
     canManageKanban: !isCanceled,
   };
 

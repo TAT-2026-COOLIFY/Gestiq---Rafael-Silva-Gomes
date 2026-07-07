@@ -10,6 +10,7 @@ export function ScrumSection({
   onToggleTask,
   headerActions,
   emptyStateText,
+  onOpenDrawer,
 }) {
   return (
     <div className={styles.boardSection}>
@@ -33,6 +34,7 @@ export function ScrumSection({
               task={task}
               isSelected={selectedTaskIds.includes(task.id)}
               onToggle={() => onToggleTask(task.id)}
+              onOpenDrawer={onOpenDrawer}
             />
           ))
         )}

@@ -52,13 +52,14 @@ export function ProjectTeam({ projectId, permissions }) {
 
     setSaving(true);
     try {
-      await api.post("members/", {
+      const res = await api.post("members/", {
         project: projectId,
         email: form.email,
         function: form.function || "Participante",
       });
 
-      await fetchMembers();
+      setMembers((prev) => [...prev, res.data]);
+
       setModalOpen(false);
       showToast("Membro adicionado com sucesso!", "success");
     } catch (error) {
@@ -128,9 +129,10 @@ export function ProjectTeam({ projectId, permissions }) {
 
     try {
       setSaving(true);
+      let antigoLider = null;
 
       if (isBecomingLeader) {
-        const antigoLider = members.find(
+        antigoLider = members.find(
           (m) => m.function === "Líder" || m.function === "Lider",
         );
 
@@ -141,7 +143,7 @@ export function ProjectTeam({ projectId, permissions }) {
         }
       }
 
-      await api.patch(`members/${member.id}/`, {
+      const res = await api.patch(`members/${member.id}/`, {
         function: newFunction,
       });
 
@@ -150,7 +152,17 @@ export function ProjectTeam({ projectId, permissions }) {
         leader: isBecomingLeader ? userId : null,
       });
 
-      await fetchMembers();
+      setMembers((prev) =>
+        prev.map((m) => {
+          if (isBecomingLeader && antigoLider && m.id === antigoLider.id) {
+            return { ...m, function: "Participante" };
+          }
+          if (m.id === member.id) {
+            return { ...m, function: res.data.function };
+          }
+          return m;
+        }),
+      );
 
       showToast(
         isBecomingLeader ? "Novo líder nomeado!" : "Líder removido.",

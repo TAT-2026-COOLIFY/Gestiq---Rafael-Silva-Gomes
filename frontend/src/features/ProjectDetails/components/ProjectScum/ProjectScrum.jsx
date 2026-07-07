@@ -21,6 +21,8 @@ import {
   INITIAL_TASK,
 } from "@/utils/taskConstants";
 import { KanbanModal } from "../ProjectKanban/components/KanbanModal/KanbanModal";
+import { KanbanDrawer } from "../ProjectKanban/components/KanbanDrawer/KanbanDrawer";
+import { Popup } from "@/components/Popup";
 
 const INITIAL_SPRINT = {
   name: "",
@@ -29,7 +31,7 @@ const INITIAL_SPRINT = {
   end_date: "",
 };
 
-export function ProjectScrum({ projectId }) {
+export function ProjectScrum({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
   const [currentSprint, setCurrentSprint] = useState(null);
   const [selectedTaskIds, setSelectedTaskIds] = useState([]);
@@ -43,10 +45,19 @@ export function ProjectScrum({ projectId }) {
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [savingTask, setSavingTask] = useState(false);
   const [sprintForm, setSprintForm] = useState(INITIAL_SPRINT);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [editSaving, setEditSaving] = useState(false);
+  const [popup, setPopup] = useState(null);
   const [toast, setToast] = useState(null);
+
+  const canCreateSprint = permissions?.canCreateSprint || false;
 
   const showToast = useCallback((message, type = "error") => {
     setToast({ id: Math.random(), message, type });
+  }, []);
+
+  const showPopup = useCallback((message, id) => {
+    setPopup({ message, id });
   }, []);
 
   const loadScrumData = useCallback(async () => {
@@ -79,6 +90,30 @@ export function ProjectScrum({ projectId }) {
     if (projectId) loadScrumData();
   }, [projectId, loadScrumData]);
 
+  const handleEditTask = async (formData) => {
+    setEditSaving(true);
+    try {
+      const payload = { ...formData, project: projectId };
+      if (!payload.milestone || payload.milestone === "")
+        payload.milestone = null;
+      if (!payload.assigned_to || payload.assigned_to === "")
+        payload.assigned_to = null;
+
+      const res = await api.put(`activities/${formData.id}/`, payload);
+
+      setTasks((prevTasks) =>
+        prevTasks.map((t) => (t.id === res.data.id ? res.data : t)),
+      );
+
+      showToast("Tarefa atualizada!", "success");
+      setSelectedTask(null);
+    } catch {
+      showToast("Erro ao atualizar tarefa.");
+    } finally {
+      setEditSaving(false);
+    }
+  };
+
   const handleSaveTask = async (formData) => {
     setSavingTask(true);
     try {
@@ -87,27 +122,42 @@ export function ProjectScrum({ projectId }) {
         project: projectId,
         sprint: null,
       };
-
       if (!payload.milestone || payload.milestone === "")
         payload.milestone = null;
       if (!payload.assigned_to || payload.assigned_to === "")
         payload.assigned_to = null;
 
-      await api.post("activities/", payload);
+      const res = await api.post("activities/", payload);
+
+      setTasks((prevTasks) => [...prevTasks, res.data]);
 
       showToast("Tarefa adicionada ao Backlog!", "success");
       setTaskModalOpen(false);
       setTaskForm(INITIAL_TASK);
-      await loadScrumData();
-    } catch (error) {
+    } catch {
       showToast("Erro ao criar tarefa.");
-      console.error(error);
     } finally {
       setSavingTask(false);
     }
   };
 
+  const handleDeleteTask = async (id) => {
+    try {
+      await api.delete(`activities/${id}/`);
+
+      setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
+
+      showToast("Tarefa excluída.", "success");
+      setPopup(null);
+      setSelectedTask(null);
+    } catch {
+      showToast("Erro ao excluir tarefa.");
+    }
+  };
+
   const handleSaveSprint = async (form) => {
+    if (!canCreateSprint) return;
+
     setSavingSprint(true);
     try {
       const payload = {
@@ -125,10 +175,8 @@ export function ProjectScrum({ projectId }) {
       setSprintModalOpen(false);
       setSprintForm(INITIAL_SPRINT);
 
-      // Atualiza a tela puxando tudo do banco novamente
       await loadScrumData();
     } catch (error) {
-      // 👇 Vamos extrair o erro exato que o Django mandou de volta
       console.error("Erro completo:", error.response?.data);
 
       const errorMsg = error.response?.data
@@ -141,32 +189,29 @@ export function ProjectScrum({ projectId }) {
     }
   };
 
-  // Função para Iniciar a Sprint (Muda o status de Planejada para Ativa)
   const handleStartSprint = async () => {
+    if (!canCreateSprint) return;
     if (!currentSprint) return;
     try {
-      // ATENÇÃO: Verifique se "ACTIVE" é a palavra exata que o seu backend usa para "Em andamento"
       await api.patch(`sprints/${currentSprint.id}/`, { status: "ACTIVE" });
       showToast("Sprint iniciada com sucesso!", "success");
-      await loadScrumData(); // Recarrega a tela
+      await loadScrumData();
     } catch (error) {
       showToast("Erro ao iniciar a Sprint.");
       console.error(error);
     }
   };
 
-  // Função para Concluir a Sprint (Muda o status para Finalizada)
   const handleFinishSprint = async () => {
+    if (!canCreateSprint) return;
     if (!currentSprint) return;
 
-    // Opcional: Aqui você pode colocar um window.confirm para evitar cliques acidentais
     if (!window.confirm("Tem certeza que deseja concluir esta Sprint?")) return;
 
     try {
-      // ATENÇÃO: Verifique se "FINISHED" é a palavra exata que o seu backend usa
       await api.patch(`sprints/${currentSprint.id}/`, { status: "FINISHED" });
       showToast("Sprint concluída!", "success");
-      await loadScrumData(); // Recarrega a tela (a sprint vai sumir e liberar para criar outra)
+      await loadScrumData();
     } catch (error) {
       showToast("Erro ao concluir a Sprint.");
       console.error(error);
@@ -246,7 +291,8 @@ export function ProjectScrum({ projectId }) {
               : "Crie uma Sprint para começar."
           }
           headerActions={
-            !currentSprint ? (
+            canCreateSprint &&
+            (!currentSprint ? (
               <button
                 onClick={() => setSprintModalOpen(true)}
                 className={styles.secondaryBtn}
@@ -264,8 +310,9 @@ export function ProjectScrum({ projectId }) {
               >
                 Concluir Sprint
               </button>
-            )
+            ))
           }
+          onOpenDrawer={(task) => setSelectedTask(task)}
         />
 
         <ScrumSection
@@ -284,6 +331,7 @@ export function ProjectScrum({ projectId }) {
               + Nova Tarefa
             </button>
           }
+          onOpenDrawer={(task) => setSelectedTask(task)}
         />
       </div>
 
@@ -347,6 +395,32 @@ export function ProjectScrum({ projectId }) {
             onClose={() => setSprintModalOpen(false)}
             onSave={handleSaveSprint}
             saving={savingSprint}
+          />
+        )}
+        {selectedTask && (
+          <KanbanDrawer
+            key={selectedTask.id}
+            task={selectedTask}
+            onClose={() => setSelectedTask(null)}
+            onSave={handleEditTask}
+            onDelete={(id) =>
+              showPopup("Tem certeza que deseja excluir esta tarefa?", id)
+            }
+            saving={editSaving}
+            milestones={milestones}
+            columns={COLUMNS}
+            types={TYPES}
+            priorities={PRIORITIES}
+            members={members}
+            canEdit={true}
+          />
+        )}
+        {popup && (
+          <Popup
+            key="task-popup"
+            message={popup.message}
+            onClose={() => setPopup(null)}
+            action={() => handleDeleteTask(popup.id)}
           />
         )}
         {toast && (

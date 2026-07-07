@@ -11,9 +11,9 @@ import {
 import styles from "./TaskItem.module.css";
 
 const TYPE_CONFIG = {
-  TASK: { icon: CheckSquare, color: "var(--color-task)" },
-  BUG: { icon: Bug, color: "var(--color-bug)" },
-  STORY: { icon: BookOpen, color: "var(--color-story)" },
+  TASK: { icon: CheckSquare, color: "var(--primary)" },
+  BUG: { icon: Bug, color: "#df3737" },
+  STORY: { icon: BookOpen, color: "#3d9e1d" },
 };
 
 const PRIORITY_CONFIG = {
@@ -37,7 +37,7 @@ const STATUS_MAP = {
   DONE: "Concluído",
 };
 
-export function TaskItem({ task, isSelected, onToggle }) {
+export function TaskItem({ task, isSelected, onToggle, onOpenDrawer }) {
   const TypeIcon = TYPE_CONFIG[task.type]?.icon || CheckSquare;
   const typeColor = TYPE_CONFIG[task.type]?.color || "#4bade8";
 
@@ -56,7 +56,7 @@ export function TaskItem({ task, isSelected, onToggle }) {
         />
         <TypeIcon size={16} color={typeColor} title={task.type} />
         <span className={styles.taskKey}>TASK-{task.id}</span>
-        <span className={styles.taskTitle} onClick={onToggle}>
+        <span className={styles.taskTitle} onClick={() => onOpenDrawer(task)}>
           {task.title}
         </span>
       </div>
@@ -75,8 +75,8 @@ export function TaskItem({ task, isSelected, onToggle }) {
           </span>
         )}
 
-        <span 
-          title={`Prioridade: ${PRIORITY_LABELS[priorityKey] || priorityKey}`} 
+        <span
+          title={`Prioridade: ${PRIORITY_LABELS[priorityKey] || priorityKey}`}
           style={{ display: "flex", alignItems: "center" }}
         >
           <PrioIcon size={16} color={prioColor} />
@@ -88,14 +88,16 @@ export function TaskItem({ task, isSelected, onToggle }) {
               src={task.assigned_to_photo}
               alt="Foto do responsável"
               className={styles.avatarImg}
-              title={task.assigned_to_username}
+              title={task.assigned_to_first_name || task.assigned_to_username}
             />
           ) : task.assigned_to_username ? (
             <span
               className={styles.avatarInitial}
-              title={task.assigned_to_username}
+              title={task.assigned_to_first_name || task.assigned_to_username}
             >
-              {task.assigned_to_username.charAt(0).toUpperCase()}
+              {(task.assigned_to_first_name || task.assigned_to_username)
+                .charAt(0)
+                .toUpperCase()}
             </span>
           ) : (
             <span className={styles.avatarUnassigned} title="Não atribuído" />

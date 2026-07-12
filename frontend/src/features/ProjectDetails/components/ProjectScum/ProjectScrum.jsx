@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import styles from "./ProjectScrum.module.css";
@@ -35,6 +35,7 @@ export function ProjectScrum({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
   const [currentSprint, setCurrentSprint] = useState(null);
   const [selectedTaskIds, setSelectedTaskIds] = useState([]);
+  const [filterAssignee, setFilterAssignee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionStatus, setActionStatus] = useState("");
   const [sprintModalOpen, setSprintModalOpen] = useState(false);
@@ -256,16 +257,89 @@ export function ProjectScrum({ projectId, permissions }) {
     }
   };
 
+  const assignees = useMemo(() => {
+    const uniqueUsers = new Map();
+    let hasUnassigned = false;
+    tasks.forEach((task) => {
+      if (!task.assigned_to) hasUnassigned = true;
+      else if (!uniqueUsers.has(task.assigned_to)) {
+        uniqueUsers.set(task.assigned_to, {
+          id: task.assigned_to,
+          name: task.assigned_to_first_name || task.assigned_to_username,
+          photo: task.assigned_to_photo,
+        });
+      }
+    });
+    return { users: Array.from(uniqueUsers.values()), hasUnassigned };
+  }, [tasks]);
+
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((t) => {
+      if (filterAssignee === "UNASSIGNED") return !t.assigned_to;
+      if (filterAssignee !== null) return t.assigned_to === filterAssignee;
+      return true;
+    });
+  }, [tasks, filterAssignee]);
+
+  const sprintTasks = useMemo(
+    () => filteredTasks.filter((t) => t.sprint === currentSprint?.id),
+    [filteredTasks, currentSprint],
+  );
+  const backlogTasks = useMemo(
+    () => filteredTasks.filter((t) => t.sprint === null),
+    [filteredTasks],
+  );
+
+  const isAllSprintSelected = useMemo(() => {
+    return (
+      sprintTasks.length > 0 &&
+      sprintTasks.map((t) => t.id).every((id) => selectedTaskIds.includes(id))
+    );
+  }, [sprintTasks, selectedTaskIds]);
+
+  const isAllBacklogSelected = useMemo(() => {
+    return (
+      backlogTasks.length > 0 &&
+      backlogTasks.map((t) => t.id).every((id) => selectedTaskIds.includes(id))
+    );
+  }, [backlogTasks, selectedTaskIds]);
+
   if (loading) return <Loading />;
 
-  const backlogTasks = tasks.filter((task) => task.sprint === null);
-  const sprintTasks = tasks.filter((task) => task.sprint !== null);
+  const handleSelectAllSprint = () => {
+    const sprintIds = sprintTasks.map((t) => t.id);
+    if (isAllSprintSelected) {
+      setSelectedTaskIds((prev) =>
+        prev.filter((id) => !sprintIds.includes(id)),
+      );
+    } else {
+      setSelectedTaskIds((prev) =>
+        Array.from(new Set([...prev, ...sprintIds])),
+      );
+    }
+  };
+
+  const handleSelectAllBacklog = () => {
+    const backlogIds = backlogTasks.map((t) => t.id);
+    if (isAllBacklogSelected) {
+      setSelectedTaskIds((prev) =>
+        prev.filter((id) => !backlogIds.includes(id)),
+      );
+    } else {
+      setSelectedTaskIds((prev) =>
+        Array.from(new Set([...prev, ...backlogIds])),
+      );
+    }
+  };
+
   const isMovingToSprint = tasks.some(
     (t) => selectedTaskIds.includes(t.id) && t.sprint === null,
   );
+
   const isMovingToBacklog = tasks.some(
     (t) => selectedTaskIds.includes(t.id) && t.sprint !== null,
   );
+
   const statusClass =
     actionStatus === "Movendo..."
       ? "salvando"
@@ -277,6 +351,44 @@ export function ProjectScrum({ projectId, permissions }) {
 
   return (
     <div className={styles.container}>
+      
+      {(assignees.users.length > 0 || assignees.hasUnassigned) && (
+        <div className={styles.globalFilterBar}>
+          <span className={styles.filterLabel}>Filtrar por:</span>
+          
+          <div className={styles.avatarList}>
+            {assignees.users.map((user) => (
+              <button
+                key={user.id}
+                onClick={() => setFilterAssignee((prev) => prev === user.id ? null : user.id)}
+                title={user.name}
+                className={`${styles.filterAvatar} 
+                  ${filterAssignee === user.id ? styles.activeAvatar : ""} 
+                  ${filterAssignee !== null && filterAssignee !== user.id ? styles.inactiveAvatar : ""}`}
+              >
+                {user.photo ? (
+                  <img src={user.photo} alt={user.name} />
+                ) : (
+                  <span>{user.name[0].toUpperCase()}</span>
+                )}
+              </button>
+            ))}
+
+            {assignees.hasUnassigned && (
+              <button
+                onClick={() => setFilterAssignee((prev) => prev === "UNASSIGNED" ? null : "UNASSIGNED")}
+                title="Não Atribuído"
+                className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
+                  ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
+                  ${filterAssignee !== null && filterAssignee !== "UNASSIGNED" ? styles.inactiveAvatar : ""}`}
+              >
+                ?
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className={styles.boardVertical}>
         <ScrumSection
           title={currentSprint ? currentSprint.name : "Nenhuma Sprint Ativa"}
@@ -291,47 +403,67 @@ export function ProjectScrum({ projectId, permissions }) {
               : "Crie uma Sprint para começar."
           }
           headerActions={
-            canCreateSprint &&
-            (!currentSprint ? (
-              <button
-                onClick={() => setSprintModalOpen(true)}
-                className={styles.secondaryBtn}
-              >
-                + Nova Sprint
-              </button>
-            ) : currentSprint.status === "PLANNED" ? (
-              <button onClick={handleStartSprint} className={styles.addBtn}>
-                Iniciar Sprint
-              </button>
-            ) : (
-              <button
-                onClick={handleFinishSprint}
-                className={styles.secondaryBtn}
-              >
-                Concluir Sprint
-              </button>
-            ))
+            <div className={styles.headerActionGroup}>
+              {sprintTasks.length > 0 && (
+                <button
+                  onClick={handleSelectAllSprint}
+                  className={styles.selectAllBtn}
+                >
+                  {isAllSprintSelected ? "Desmarcar Todas" : "Selecionar Todas"}
+                </button>
+              )}
+
+              {canCreateSprint &&
+                (!currentSprint ? (
+                  <button
+                    onClick={() => setSprintModalOpen(true)}
+                    className={styles.secondaryBtn}
+                  >
+                    + Nova Sprint
+                  </button>
+                ) : currentSprint.status === "PLANNED" ? (
+                  <button onClick={handleStartSprint} className={styles.addBtn}>
+                    Iniciar Sprint
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleFinishSprint}
+                    className={styles.secondaryBtn}
+                  >
+                    Concluir Sprint
+                  </button>
+                ))}
+            </div>
           }
           onOpenDrawer={(task) => setSelectedTask(task)}
         />
 
         <ScrumSection
           title="Backlog"
-          icon={ListTodo}
-          iconColor="var(--text-muted)"
           tasks={backlogTasks}
           selectedTaskIds={selectedTaskIds}
           onToggleTask={toggleSelection}
-          emptyStateText="Seu backlog está vazio. Crie novas tarefas!"
-          headerActions={
-            <button
-              className={styles.addBtn}
-              onClick={() => setTaskModalOpen(true)}
-            >
-              + Nova Tarefa
-            </button>
-          }
           onOpenDrawer={(task) => setSelectedTask(task)}
+          headerActions={
+            <div className={styles.headerActionGroup}>
+              {backlogTasks.length > 0 && (
+                <button
+                  onClick={handleSelectAllBacklog}
+                  className={styles.selectAllBtn}
+                >
+                  {isAllBacklogSelected
+                    ? "Desmarcar Todas"
+                    : "Selecionar Todas"}
+                </button>
+              )}
+              <button
+                className={styles.addBtn}
+                onClick={() => setTaskModalOpen(true)}
+              >
+                + Nova Tarefa
+              </button>
+            </div>
+          }
         />
       </div>
 

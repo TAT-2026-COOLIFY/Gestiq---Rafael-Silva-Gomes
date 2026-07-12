@@ -53,7 +53,7 @@
   min-height: 40px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .emptyState {
@@ -61,4 +61,37 @@
   text-align: center;
   color: var(--text-muted);
   background: var(--background);
+}
+
+.indicators {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.5rem;
+}
+
+.indicatorCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.PLAN {
+  background-color: #f0c03c;
+}
+.DOING {
+  background-color: var(--primary);
+}
+.REVIEW {
+  background-color: #df3737;
+}
+.DONE {
+  background-color: #3d9e1d;
 }

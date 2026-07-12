@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import styles from "./ScrumSection.module.css";
 import { TaskItem } from "../TaskItem/TaskItem";
 
@@ -12,6 +13,18 @@ export function ScrumSection({
   emptyStateText,
   onOpenDrawer,
 }) {
+  // Calcula os Story Points por status exclusivamente para as tarefas desta seção
+  const spSums = useMemo(() => {
+    const sums = { PLAN: 0, DOING: 0, REVIEW: 0, DONE: 0 };
+    tasks.forEach((task) => {
+      const sp = parseFloat(task.story_points) || 0;
+      if (sums[task.status] !== undefined) {
+        sums[task.status] += sp;
+      }
+    });
+    return sums;
+  }, [tasks]);
+
   return (
     <div className={styles.boardSection}>
       <div className={styles.sectionHeader}>
@@ -19,6 +32,42 @@ export function ScrumSection({
           {Icon && <Icon size={18} color={iconColor} />}
           <h4 className={styles.sprintName}>{title}</h4>
           <span className={styles.taskCount}>{tasks.length} Tarefas</span>
+
+          {/* 👇 Bolinhas minimalistas coloridas (só aparecem se o valor for maior que 0) */}
+          <div className={styles.indicators}>
+            {spSums.PLAN > 0 && (
+              <span
+                className={`${styles.indicatorCircle} ${styles.PLAN}`}
+                title="Story Points: A Iniciar"
+              >
+                {spSums.PLAN}
+              </span>
+            )}
+            {spSums.DOING > 0 && (
+              <span
+                className={`${styles.indicatorCircle} ${styles.DOING}`}
+                title="Story Points: Em Andamento"
+              >
+                {spSums.DOING}
+              </span>
+            )}
+            {spSums.REVIEW > 0 && (
+              <span
+                className={`${styles.indicatorCircle} ${styles.REVIEW}`}
+                title="Story Points: Em Validação"
+              >
+                {spSums.REVIEW}
+              </span>
+            )}
+            {spSums.DONE > 0 && (
+              <span
+                className={`${styles.indicatorCircle} ${styles.DONE}`}
+                title="Story Points: Concluído"
+              >
+                {spSums.DONE}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className={styles.headerActions}>{headerActions}</div>

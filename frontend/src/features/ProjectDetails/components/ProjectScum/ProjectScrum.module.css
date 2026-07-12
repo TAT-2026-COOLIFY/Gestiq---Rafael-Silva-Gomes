@@ -40,7 +40,7 @@
 .secondaryBtn {
   background: transparent;
   color: var(--text-main);
-  border: 1px solid var(--border); 
+  border: 1px solid var(--border);
 }
 .secondaryBtn:hover {
   background: var(--border);
@@ -133,4 +133,86 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.globalFilterBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+}
+
+.avatarList {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filterLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.filterAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: var(--primary);
+  transition: all 0.2s ease;
+}
+
+.filterAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.activeAvatar {
+  border-color: var(--primary);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.inactiveAvatar {
+  opacity: 0.4;
+}
+
+.unassignedAvatar {
+  border-style: dashed;
+  color: var(--text-muted);
+}
+
+.selectAllBtn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.selectAllBtn:hover {
+  background: var(--background);
+  border-color: var(--text-muted);
+}
+
+.headerActionGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

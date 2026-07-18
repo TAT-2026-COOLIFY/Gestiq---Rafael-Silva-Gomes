@@ -229,7 +229,7 @@ export function ProjectScrum({ projectId, permissions }) {
 
   const handleBulkMove = async (targetSprintId) => {
     if (targetSprintId !== null && !currentSprint) {
-      alert(
+      showToast(
         "Você não tem nenhuma Sprint ativa ou planejada. Crie uma primeiro!",
       );
       return;
@@ -351,16 +351,19 @@ export function ProjectScrum({ projectId, permissions }) {
 
   return (
     <div className={styles.container}>
-      
       {(assignees.users.length > 0 || assignees.hasUnassigned) && (
         <div className={styles.globalFilterBar}>
           <span className={styles.filterLabel}>Filtrar por:</span>
-          
+
           <div className={styles.avatarList}>
             {assignees.users.map((user) => (
               <button
                 key={user.id}
-                onClick={() => setFilterAssignee((prev) => prev === user.id ? null : user.id)}
+                onClick={() =>
+                  setFilterAssignee((prev) =>
+                    prev === user.id ? null : user.id,
+                  )
+                }
                 title={user.name}
                 className={`${styles.filterAvatar} 
                   ${filterAssignee === user.id ? styles.activeAvatar : ""} 
@@ -376,7 +379,11 @@ export function ProjectScrum({ projectId, permissions }) {
 
             {assignees.hasUnassigned && (
               <button
-                onClick={() => setFilterAssignee((prev) => prev === "UNASSIGNED" ? null : "UNASSIGNED")}
+                onClick={() =>
+                  setFilterAssignee((prev) =>
+                    prev === "UNASSIGNED" ? null : "UNASSIGNED",
+                  )
+                }
                 title="Não Atribuído"
                 className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
                   ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
@@ -402,9 +409,10 @@ export function ProjectScrum({ projectId, permissions }) {
               ? "Arraste tarefas do Backlog para iniciar a Sprint."
               : "Crie uma Sprint para começar."
           }
+          hideCheckboxes={currentSprint?.status === "ACTIVE"}
           headerActions={
             <div className={styles.headerActionGroup}>
-              {sprintTasks.length > 0 && (
+              {sprintTasks.length > 0 && currentSprint?.status !== "ACTIVE" && (
                 <button
                   onClick={handleSelectAllSprint}
                   className={styles.selectAllBtn}
@@ -486,8 +494,17 @@ export function ProjectScrum({ projectId, permissions }) {
                 </span>
                 {isMovingToBacklog && (
                   <button
-                    onClick={() => handleBulkMove(null)}
-                    className={styles.actionBtn}
+                    onClick={() => {
+                      if (currentSprint?.status === "ACTIVE") {
+                        showToast(
+                          "Não é possível remover tarefas de uma Sprint em andamento.",
+                        );
+                        return;
+                      }
+                      handleBulkMove(null);
+                    }}
+                    className={`${styles.actionBtn}`}
+                    title={"Remover da Sprint"}
                   >
                     <ArrowDownCircle size={18} /> Remover da Sprint
                   </button>

@@ -3,6 +3,7 @@ from datetime import date
 from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class UsersProfile(models.Model):
@@ -75,7 +76,9 @@ class Projects(models.Model):
         blank=True,
     )
     name = models.CharField(max_length=250)
-    area = models.ForeignKey(Areas, on_delete=models.PROTECT, related_name="projects", null=True)
+    area = models.ForeignKey(
+        Areas, on_delete=models.PROTECT, related_name="projects", null=True
+    )
     category = models.ForeignKey(
         Categories, on_delete=models.PROTECT, related_name="projects"
     )
@@ -318,13 +321,32 @@ class Activity(models.Model):
     priority = models.CharField(
         max_length=20, choices=Priority.choices, default=Priority.MEDIUM
     )
-    type = models.CharField(
-        max_length=20, choices=Type.choices, default=Type.TASK
-    )
+    type = models.CharField(max_length=20, choices=Type.choices, default=Type.TASK)
 
     story_points = models.IntegerField(blank=True, null=True)
 
     create_date = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        hoje = timezone.now().date()
+
+        if (
+            self.status in [self.Status.DOING, self.Status.REVIEW, self.Status.DONE]
+            and not self.start_date
+        ):
+            self.start_date = hoje
+
+        if self.status == self.Status.DONE and not self.end_date:
+            self.end_date = hoje
+
+        if self.status == self.Status.PLAN:
+            self.start_date = None
+            self.end_date = None
+
+        if self.status != self.Status.DONE:
+            self.end_date = None
+
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Activity"
@@ -384,9 +406,9 @@ class Milestones(models.Model):
 
 class Sprints(models.Model):
     STATUS_CHOICES = [
-        ('PLANNED', 'Planejada'),
-        ('ACTIVE', 'Ativa'),
-        ('FINISHED', 'Finalizada'),
+        ("PLANNED", "Planejada"),
+        ("ACTIVE", "Ativa"),
+        ("FINISHED", "Finalizada"),
     ]
 
     project = models.ForeignKey(
@@ -396,16 +418,12 @@ class Sprints(models.Model):
     goal = models.TextField(blank=True, null=True)
     start_date = models.DateField()
     end_date = models.DateField()
-    status = models.CharField(
-        max_length=10, 
-        choices=STATUS_CHOICES, 
-        default='PLANNED'
-    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PLANNED")
 
     class Meta:
         verbose_name = "Sprint"
         verbose_name_plural = "Sprints"
-        ordering = ['start_date']
+        ordering = ["start_date"]
 
     def __str__(self):
         return f"{self.name} ({self.get_status_display()}) - {self.project.name}"

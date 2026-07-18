@@ -12,6 +12,7 @@ export function ScrumSection({
   headerActions,
   emptyStateText,
   onOpenDrawer,
+  hideCheckboxes,
 }) {
   // Calcula os Story Points por status exclusivamente para as tarefas desta seção
   const spSums = useMemo(() => {
@@ -84,6 +85,7 @@ export function ScrumSection({
               isSelected={selectedTaskIds.includes(task.id)}
               onToggle={() => onToggleTask(task.id)}
               onOpenDrawer={onOpenDrawer}
+              hideCheckbox={hideCheckboxes}
             />
           ))
         )}

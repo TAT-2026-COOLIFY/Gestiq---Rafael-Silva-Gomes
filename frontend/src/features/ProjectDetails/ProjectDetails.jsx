@@ -12,6 +12,7 @@ import { ProjectCanvas } from "./components/ProjectCanvas/ProjectCanvas";
 import { ProjectTimeline } from "./components/ProjectTimeline/ProjectTimeline";
 import { ProjectKanban } from "./components/ProjectKanban/ProjectKanban";
 import { ProjectScrum } from "./components/ProjectScum/ProjectScrum";
+import { ProjectBurnup } from "./components/ProjectBurnup/ProjectBurnup";
 
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Loading } from "@/components/Loading/Loading";
@@ -40,6 +41,7 @@ const TABS = [
   { key: "milestones", label: "Cronograma", component: ProjectTimeline },
   { key: "kanban", label: "Kanban", component: ProjectKanban },
   { key: "Scrum", label: "Scrum", component: ProjectScrum },
+  { key: "burnup", label: "Burnup", component: ProjectBurnup }, 
 ];
 
 export function ProjectDetails() {

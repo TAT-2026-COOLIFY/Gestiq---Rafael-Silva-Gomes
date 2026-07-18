@@ -37,7 +37,13 @@ const STATUS_MAP = {
   DONE: "Concluído",
 };
 
-export function TaskItem({ task, isSelected, onToggle, onOpenDrawer }) {
+export function TaskItem({
+  task,
+  isSelected,
+  onToggle,
+  onOpenDrawer,
+  hideCheckbox,
+}) {
   const TypeIcon = TYPE_CONFIG[task.type]?.icon || CheckSquare;
   const typeColor = TYPE_CONFIG[task.type]?.color || "#4bade8";
 
@@ -48,12 +54,14 @@ export function TaskItem({ task, isSelected, onToggle, onOpenDrawer }) {
   return (
     <div className={`${styles.taskItem} ${isSelected ? styles.selected : ""}`}>
       <div className={styles.taskMain}>
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={onToggle}
-          className={styles.checkbox}
-        />
+        {!hideCheckbox && (
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={onToggle}
+            className={styles.checkbox}
+          />
+        )}
         <TypeIcon size={16} color={typeColor} title={task.type} />
         <span className={styles.taskKey}>TASK-{task.id}</span>
         <span className={styles.taskTitle} onClick={() => onOpenDrawer(task)}>

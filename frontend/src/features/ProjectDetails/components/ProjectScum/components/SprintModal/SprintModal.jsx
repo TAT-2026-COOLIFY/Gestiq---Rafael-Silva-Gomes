@@ -1,8 +1,15 @@
 import { Modal } from "@/components/Modal";
-import { FormActions } from "@/components/FormActions";
 import styles from "./SprintModal.module.css";
 
-export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
+export function SprintModal({
+  form,
+  onFormChange,
+  onClose,
+  onSave,
+  saving,
+  canEdit,
+  isEditing,
+}) {
   function handleSubmit(e) {
     e.preventDefault();
     onSave(form);
@@ -15,15 +22,31 @@ export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
 
   return (
     <Modal
-      title="Criar Nova Sprint"
+      // 👇 1. Título dinâmico baseado na ação
+      title={isEditing ? "Detalhes da Sprint" : "Criar Nova Sprint"}
       onClose={onClose}
+      // 👇 2. Movemos os nossos botões com trava de permissão direto para o Footer do Modal
       footer={
-        <FormActions
-          onCancel={onClose}
-          saving={saving}
-          saveLabel="Criar Sprint"
-          formId="sprint-modal-form" 
-        />
+        <div className={styles.modalFooter}>
+          <button type="button" onClick={onClose} className={styles.cancelBtn}>
+            {canEdit ? "Cancelar" : "Fechar"}
+          </button>
+
+          {canEdit && (
+            <button
+              type="submit"
+              form="sprint-modal-form" // Conecta o botão ao formulário para funcionar com o Enter
+              disabled={saving}
+              className={styles.saveBtn}
+            >
+              {saving
+                ? "Salvando..."
+                : isEditing
+                  ? "Atualizar Sprint"
+                  : "Criar Sprint"}
+            </button>
+          )}
+        </div>
       }
     >
       <form id="sprint-modal-form" onSubmit={handleSubmit}>
@@ -35,6 +58,7 @@ export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
             type="text"
             value={form.name}
             onChange={handleChange}
+            disabled={!canEdit}
             placeholder="Ex: Sprint 1 - MVP"
             required
             autoFocus
@@ -48,6 +72,7 @@ export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
             name="goal"
             value={form.goal}
             onChange={handleChange}
+            disabled={!canEdit}
             placeholder="Qual a meta principal dessa sprint?"
             rows={3}
           />
@@ -62,6 +87,7 @@ export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
               type="date"
               value={form.start_date}
               onChange={handleChange}
+              disabled={!canEdit}
             />
           </div>
           <div className={styles.formGroup}>
@@ -72,11 +98,10 @@ export function SprintModal({ form, onFormChange, onClose, onSave, saving }) {
               type="date"
               value={form.end_date}
               onChange={handleChange}
+              disabled={!canEdit}
             />
           </div>
         </div>
-
-        <button type="submit" style={{ display: "none" }} />
       </form>
     </Modal>
   );

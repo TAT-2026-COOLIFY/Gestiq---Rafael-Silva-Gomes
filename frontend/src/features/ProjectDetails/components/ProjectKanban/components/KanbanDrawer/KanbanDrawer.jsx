@@ -16,6 +16,7 @@ export function KanbanDrawer({
   priorities,
   members,
   canEdit,
+  canDelete,
 }) {
   const [form, setForm] = useState({
     ...task,
@@ -52,13 +53,15 @@ export function KanbanDrawer({
               alignItems: "center",
             }}
           >
-            <button
-              type="button"
-              onClick={() => onDelete(task.id)}
-              className={styles.deleteBtn}
-            >
-              <Trash2 size={18} /> Excluir
-            </button>
+            {canEdit && canDelete && (
+              <button
+                type="button"
+                className={styles.deleteBtn}
+                onClick={() => onDelete(task.id)}
+              >
+                <Trash2 size={16} /> Excluir
+              </button>
+            )}
             <FormActions
               onCancel={onClose}
               saving={saving}

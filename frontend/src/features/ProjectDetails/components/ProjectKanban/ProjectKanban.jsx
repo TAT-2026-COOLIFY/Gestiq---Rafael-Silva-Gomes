@@ -19,6 +19,7 @@ export function ProjectKanban({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
   const [milestones, setMilestones] = useState([]);
   const [members, setMembers] = useState([]);
+  const [currentSprint, setCurrentSprint] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -51,15 +52,22 @@ export function ProjectKanban({ projectId, permissions }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [tasksRes, milestonesRes, membersRes] = await Promise.all([
-        api.get(`activities/?project=${projectId}`),
-        api.get(`milestones/?project=${projectId}`),
-        api.get(`members/?project=${projectId}`),
-      ]);
+      const [tasksRes, milestonesRes, membersRes, sprintsRes] =
+        await Promise.all([
+          api.get(`activities/?project=${projectId}`),
+          api.get(`milestones/?project=${projectId}`),
+          api.get(`members/?project=${projectId}`),
+          api.get(`sprints/?project=${projectId}`),
+        ]);
 
       setTasks(tasksRes.data.results ?? tasksRes.data);
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
       setMembers(membersRes.data.results ?? membersRes.data);
+
+      // 👇 Filtra e guarda a sprint ativa
+      const sprintsData = sprintsRes.data.results ?? sprintsRes.data;
+      const activeSprint = sprintsData.find((s) => s.status === "ACTIVE");
+      setCurrentSprint(activeSprint || null);
     } catch {
       showToast("Erro ao carregar dados do Kanban.");
     } finally {
@@ -198,6 +206,10 @@ export function ProjectKanban({ projectId, permissions }) {
       showToast("Erro ao excluir tarefa.");
     }
   }
+
+  const isSelectedTaskInActiveSprint =
+    selectedTask?.sprint === currentSprint?.id &&
+    currentSprint?.status === "ACTIVE";
 
   if (loading) return <Loading />;
 
@@ -396,6 +408,7 @@ export function ProjectKanban({ projectId, permissions }) {
             priorities={PRIORITIES}
             members={members}
             canEdit={canEdit}
+            canDelete={!isSelectedTaskInActiveSprint}
           />
         )}
         {popup && (

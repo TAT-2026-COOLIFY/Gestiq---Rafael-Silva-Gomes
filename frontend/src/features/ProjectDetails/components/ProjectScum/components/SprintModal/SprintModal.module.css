@@ -32,9 +32,7 @@
   border-radius: 8px;
   font-size: 0.875rem;
   color: var(--text-main);
-  background-color: var(
-    --surface
-  );
+  background-color: var(--surface);
   outline: none;
   transition: border-color 0.2s;
   font-family: inherit;
@@ -49,4 +47,47 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   border-color: var(--primary);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cancelBtn,
+.saveBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.cancelBtn {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.cancelBtn:hover {
+  background: var(--border);
+}
+
+.saveBtn {
+  background: var(--primary);
+  color: #ffffff;
+  border: 1px solid var(--primary);
+}
+
+.saveBtn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

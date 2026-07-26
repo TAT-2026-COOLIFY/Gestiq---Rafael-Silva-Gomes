@@ -114,7 +114,7 @@ export function ProjectBurnup({ projectId }) {
             <Legend verticalAlign="top" height={40} iconType="circle" />
 
             <Line
-              name="Escopo Total (SP)"
+              name="Total"
               type="stepAfter"
               dataKey="Escopo Total"
               stroke="#94a3b8"
@@ -124,7 +124,7 @@ export function ProjectBurnup({ projectId }) {
             />
 
             <Line
-              name="Ritmo Ideal"
+              name="Meta Ideal"
               type="linear"
               dataKey="Ideal"
               stroke="#c69a71"
@@ -134,7 +134,7 @@ export function ProjectBurnup({ projectId }) {
             />
 
             <Line
-              name="Trabalho Concluído (SP)"
+              name="Concluído"
               type="monotone"
               dataKey="Trabalho Concluído"
               stroke="#34d399"

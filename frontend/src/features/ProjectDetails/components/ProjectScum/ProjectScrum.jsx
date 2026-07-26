@@ -42,8 +42,10 @@ export function ProjectScrum({ projectId, permissions }) {
   const [savingSprint, setSavingSprint] = useState(false);
   const [members, setMembers] = useState([]);
   const [milestones, setMilestones] = useState([]);
+  const [sprints, setSprints] = useState([]);
   const [taskForm, setTaskForm] = useState(INITIAL_TASK);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [isEditingSprint, setIsEditingSprint] = useState(false);
   const [savingTask, setSavingTask] = useState(false);
   const [sprintForm, setSprintForm] = useState(INITIAL_SPRINT);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -57,8 +59,8 @@ export function ProjectScrum({ projectId, permissions }) {
     setToast({ id: Math.random(), message, type });
   }, []);
 
-  const showPopup = useCallback((message, id) => {
-    setPopup({ message, id });
+  const showPopup = useCallback((message, id = null, type = "DELETE_TASK") => {
+    setPopup({ message, id, type });
   }, []);
 
   const loadScrumData = useCallback(async () => {
@@ -75,6 +77,8 @@ export function ProjectScrum({ projectId, permissions }) {
       setTasks(tasksRes.data?.results || tasksRes.data);
 
       const sprintsData = sprintsRes.data?.results || sprintsRes.data;
+      setSprints(sprintsData); // 👈 GUARDA TODAS AS SPRINTS
+
       const activeSprint = sprintsData.find((s) => s.status !== "FINISHED");
       setCurrentSprint(activeSprint || null);
       setMembers(membersRes.data?.results || membersRes.data);
@@ -86,6 +90,12 @@ export function ProjectScrum({ projectId, permissions }) {
       setLoading(false);
     }
   }, [projectId, showToast]);
+
+  const finishedSprintIds = useMemo(() => {
+    return new Set(
+      sprints.filter((s) => s.status === "FINISHED").map((s) => s.id),
+    );
+  }, [sprints]);
 
   useEffect(() => {
     if (projectId) loadScrumData();
@@ -156,10 +166,30 @@ export function ProjectScrum({ projectId, permissions }) {
     }
   };
 
-  const handleSaveSprint = async (form) => {
-    if (!canCreateSprint) return;
+  const handleOpenNewSprint = () => {
+    setSprintForm(INITIAL_SPRINT);
+    setIsEditingSprint(false);
+    setSprintModalOpen(true);
+  };
 
+  // 👇 Prepara o modal com os dados atuais da Sprint
+  const handleOpenSprintSettings = () => {
+    if (!currentSprint) return;
+    setSprintForm({
+      name: currentSprint.name || "",
+      goal: currentSprint.goal || "",
+      start_date: currentSprint.start_date || "",
+      end_date: currentSprint.end_date || "",
+    });
+    setIsEditingSprint(true);
+    setSprintModalOpen(true);
+  };
+
+  // 👇 Salva ou atualiza dependendo do estado
+  const handleSaveSprint = async (form) => {
+    if (!canCreateSprint) return; // Trava de segurança
     setSavingSprint(true);
+
     try {
       const payload = {
         project: projectId,
@@ -167,23 +197,27 @@ export function ProjectScrum({ projectId, permissions }) {
         goal: form.goal,
         start_date: form.start_date || null,
         end_date: form.end_date || null,
-        status: "PLANNED",
       };
 
-      await api.post("sprints/", payload);
+      if (isEditingSprint) {
+        // Atualiza a sprint existente
+        await api.patch(`sprints/${currentSprint.id}/`, payload);
+        showToast("Sprint atualizada com sucesso!", "success");
+      } else {
+        // Cria uma nova (adicionando o status PLANNED)
+        payload.status = "PLANNED";
+        await api.post("sprints/", payload);
+        showToast("Sprint criada com sucesso!", "success");
+      }
 
-      showToast("Sprint criada com sucesso!", "success");
       setSprintModalOpen(false);
       setSprintForm(INITIAL_SPRINT);
-
       await loadScrumData();
     } catch (error) {
       console.error("Erro completo:", error.response?.data);
-
       const errorMsg = error.response?.data
         ? Object.values(error.response.data).flat().join(" | ")
-        : "Erro ao criar Sprint.";
-
+        : "Erro ao salvar Sprint.";
       showToast(errorMsg);
     } finally {
       setSavingSprint(false);
@@ -206,8 +240,6 @@ export function ProjectScrum({ projectId, permissions }) {
   const handleFinishSprint = async () => {
     if (!canCreateSprint) return;
     if (!currentSprint) return;
-
-    if (!window.confirm("Tem certeza que deseja concluir esta Sprint?")) return;
 
     try {
       await api.patch(`sprints/${currentSprint.id}/`, { status: "FINISHED" });
@@ -285,10 +317,17 @@ export function ProjectScrum({ projectId, permissions }) {
     () => filteredTasks.filter((t) => t.sprint === currentSprint?.id),
     [filteredTasks, currentSprint],
   );
-  const backlogTasks = useMemo(
-    () => filteredTasks.filter((t) => t.sprint === null),
-    [filteredTasks],
-  );
+
+  const backlogTasks = useMemo(() => {
+    return filteredTasks.filter((t) => {
+      if (t.status === "DONE") return false;
+
+      const isNoSprint = t.sprint === null;
+      const isFromPastSprint = finishedSprintIds.has(t.sprint);
+
+      return isNoSprint || isFromPastSprint;
+    });
+  }, [filteredTasks, finishedSprintIds]);
 
   const isAllSprintSelected = useMemo(() => {
     return (
@@ -333,11 +372,11 @@ export function ProjectScrum({ projectId, permissions }) {
   };
 
   const isMovingToSprint = tasks.some(
-    (t) => selectedTaskIds.includes(t.id) && t.sprint === null,
+    (t) => selectedTaskIds.includes(t.id) && t.sprint !== currentSprint?.id,
   );
 
   const isMovingToBacklog = tasks.some(
-    (t) => selectedTaskIds.includes(t.id) && t.sprint !== null,
+    (t) => selectedTaskIds.includes(t.id) && t.sprint === currentSprint?.id,
   );
 
   const statusClass =
@@ -348,6 +387,10 @@ export function ProjectScrum({ projectId, permissions }) {
         : actionStatus === "Erro"
           ? "erro"
           : "";
+
+  const isSelectedTaskInActiveSprint =
+    selectedTask?.sprint === currentSprint?.id &&
+    currentSprint?.status === "ACTIVE";
 
   return (
     <div className={styles.container}>
@@ -399,6 +442,7 @@ export function ProjectScrum({ projectId, permissions }) {
       <div className={styles.boardVertical}>
         <ScrumSection
           title={currentSprint ? currentSprint.name : "Nenhuma Sprint Ativa"}
+          onOpenSettings={currentSprint ? handleOpenSprintSettings : null}
           icon={CheckCircle2}
           iconColor="var(--primary)"
           tasks={sprintTasks}
@@ -430,12 +474,27 @@ export function ProjectScrum({ projectId, permissions }) {
                     + Nova Sprint
                   </button>
                 ) : currentSprint.status === "PLANNED" ? (
-                  <button onClick={handleStartSprint} className={styles.addBtn}>
+                  <button
+                    onClick={() =>
+                      showPopup(
+                        "Deseja realmente iniciar esta Sprint?",
+                        null,
+                        "START_SPRINT",
+                      )
+                    }
+                    className={styles.addBtn}
+                  >
                     Iniciar Sprint
                   </button>
                 ) : (
                   <button
-                    onClick={handleFinishSprint}
+                    onClick={() =>
+                      showPopup(
+                        "Tem certeza que deseja concluir e encerrar esta Sprint?",
+                        null,
+                        "FINISH_SPRINT",
+                      )
+                    }
                     className={styles.secondaryBtn}
                   >
                     Concluir Sprint
@@ -452,6 +511,7 @@ export function ProjectScrum({ projectId, permissions }) {
           selectedTaskIds={selectedTaskIds}
           onToggleTask={toggleSelection}
           onOpenDrawer={(task) => setSelectedTask(task)}
+          finishedSprintIds={finishedSprintIds}
           headerActions={
             <div className={styles.headerActionGroup}>
               {backlogTasks.length > 0 && (
@@ -544,6 +604,8 @@ export function ProjectScrum({ projectId, permissions }) {
             onClose={() => setSprintModalOpen(false)}
             onSave={handleSaveSprint}
             saving={savingSprint}
+            canEdit={canCreateSprint}
+            isEditing={isEditingSprint}
           />
         )}
         {selectedTask && (
@@ -562,14 +624,25 @@ export function ProjectScrum({ projectId, permissions }) {
             priorities={PRIORITIES}
             members={members}
             canEdit={true}
+            canDelete={!isSelectedTaskInActiveSprint}
           />
         )}
         {popup && (
           <Popup
-            key="task-popup"
+            key="scrum-popup"
             message={popup.message}
             onClose={() => setPopup(null)}
-            action={() => handleDeleteTask(popup.id)}
+            action={() => {
+              if (popup.type === "START_SPRINT") {
+                handleStartSprint();
+                setPopup(null);
+              } else if (popup.type === "FINISH_SPRINT") {
+                handleFinishSprint();
+                setPopup(null);
+              } else {
+                handleDeleteTask(popup.id);
+              }
+            }}
           />
         )}
         {toast && (

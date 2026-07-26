@@ -1,6 +1,13 @@
 import { useMemo } from "react";
+import { Settings } from "lucide-react";
 import styles from "./ScrumSection.module.css";
 import { TaskItem } from "../TaskItem/TaskItem";
+
+const formatDate = (dateString) => {
+  if (!dateString) return "--/--";
+  const [year, month, day] = dateString.split("-");
+  return `${day}/${month}`;
+};
 
 export function ScrumSection({
   title,
@@ -13,6 +20,8 @@ export function ScrumSection({
   emptyStateText,
   onOpenDrawer,
   hideCheckboxes,
+  finishedSprintIds,
+  onOpenSettings,
 }) {
   // Calcula os Story Points por status exclusivamente para as tarefas desta seção
   const spSums = useMemo(() => {
@@ -33,6 +42,16 @@ export function ScrumSection({
           {Icon && <Icon size={18} color={iconColor} />}
           <h4 className={styles.sprintName}>{title}</h4>
           <span className={styles.taskCount}>{tasks.length} Tarefas</span>
+
+          {onOpenSettings && (
+            <button
+              onClick={onOpenSettings}
+              className={styles.settingsBtn}
+              title="Detalhes e Configurações da Sprint"
+            >
+              <Settings size={16} />
+            </button>
+          )}
 
           {/* 👇 Bolinhas minimalistas coloridas (só aparecem se o valor for maior que 0) */}
           <div className={styles.indicators}>
@@ -86,6 +105,7 @@ export function ScrumSection({
               onToggle={() => onToggleTask(task.id)}
               onOpenDrawer={onOpenDrawer}
               hideCheckbox={hideCheckboxes}
+              isPastSprint={finishedSprintIds?.has(task.sprint)}
             />
           ))
         )}

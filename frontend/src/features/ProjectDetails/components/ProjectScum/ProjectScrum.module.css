@@ -216,3 +216,28 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+.sprintInfoBar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--background); /* Um fundo sutilmente diferente */
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
+}
+
+.infoItem span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 600px; /* Evita que um objetivo gigante quebre o layout */
+}

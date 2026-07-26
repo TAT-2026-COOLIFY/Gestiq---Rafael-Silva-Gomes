@@ -7,6 +7,7 @@ import {
   ArrowRight,
   AlertCircle,
   MoreVertical,
+  History,
 } from "lucide-react";
 import styles from "./TaskItem.module.css";
 
@@ -43,6 +44,7 @@ export function TaskItem({
   onToggle,
   onOpenDrawer,
   hideCheckbox,
+  isPastSprint,
 }) {
   const TypeIcon = TYPE_CONFIG[task.type]?.icon || CheckSquare;
   const typeColor = TYPE_CONFIG[task.type]?.color || "#4bade8";
@@ -68,6 +70,16 @@ export function TaskItem({
           {task.title}
         </span>
       </div>
+
+      {isPastSprint && (
+        <span
+          className={styles.pastSprintBadge}
+          title="Esta tarefa não foi concluída na Sprint passada"
+        >
+          <History size={12} />
+          Sprint Passada
+        </span>
+      )}
 
       <div className={styles.taskMeta}>
         <span className={`${styles.statusBadge} ${styles[task.status]}`}>
@@ -111,10 +123,6 @@ export function TaskItem({
             <span className={styles.avatarUnassigned} title="Não atribuído" />
           )}
         </div>
-
-        <button className={styles.menuBtn}>
-          <MoreVertical size={16} />
-        </button>
       </div>
     </div>
   );

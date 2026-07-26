@@ -83,7 +83,28 @@
   flex-shrink: 0;
 }
 
-.PLAN { background-color: #ffb061; } /* Amarelo mostarda claro */
-.DOING { background-color: #38bdf8; } /* Azul celeste */
-.REVIEW { background-color: #fb7185; } /* Rosa/Coral suave */
-.DONE { background-color: #34d399; } /* Verde esmeralda ameno */
+.PLAN {
+  background-color: #ffb061;
+} /* Amarelo mostarda claro */
+.DOING {
+  background-color: #38bdf8;
+} /* Azul celeste */
+.REVIEW {
+  background-color: #fb7185;
+} /* Rosa/Coral suave */
+.DONE {
+  background-color: #34d399;
+} /* Verde esmeralda ameno */
+
+.settingsBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.settingsBtn:hover {
+  color: var(--primary);
+}

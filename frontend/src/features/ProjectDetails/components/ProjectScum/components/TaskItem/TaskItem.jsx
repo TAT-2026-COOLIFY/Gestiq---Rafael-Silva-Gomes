@@ -89,7 +89,7 @@ export function TaskItem({
         {task.story_points != null && (
           <span
             className={styles.storyPoint}
-            title={`${task.story_points} Story Points`}
+            title={`${task.story_points} Estimativa`}
           >
             {task.story_points}
           </span>

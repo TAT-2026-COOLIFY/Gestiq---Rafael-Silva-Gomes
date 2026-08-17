@@ -127,7 +127,7 @@ export function KanbanModal({
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="story_points">Story Points</label>
+            <label htmlFor="story_points">Estimativa</label>
             <input
               id="story_points"
               name="story_points"

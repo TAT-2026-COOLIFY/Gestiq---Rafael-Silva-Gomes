@@ -81,7 +81,6 @@ export function KanbanDrawer({
             name="title"
             value={form.title}
             onChange={handleChange}
-            required
             readOnly={!canEdit}
             disabled={!canEdit}
           />

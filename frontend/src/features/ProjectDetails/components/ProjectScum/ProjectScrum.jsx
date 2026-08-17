@@ -77,7 +77,7 @@ export function ProjectScrum({ projectId, permissions }) {
       setTasks(tasksRes.data?.results || tasksRes.data);
 
       const sprintsData = sprintsRes.data?.results || sprintsRes.data;
-      setSprints(sprintsData); // 👈 GUARDA TODAS AS SPRINTS
+      setSprints(sprintsData);
 
       const activeSprint = sprintsData.find((s) => s.status !== "FINISHED");
       setCurrentSprint(activeSprint || null);
@@ -102,6 +102,11 @@ export function ProjectScrum({ projectId, permissions }) {
   }, [projectId, loadScrumData]);
 
   const handleEditTask = async (formData) => {
+    if (!formData.title || formData.title.trim() === "") {
+      showToast("O título da tarefa é obrigatório.", "error");
+      return;
+    }
+
     setEditSaving(true);
     try {
       const payload = { ...formData, project: projectId };
@@ -126,6 +131,11 @@ export function ProjectScrum({ projectId, permissions }) {
   };
 
   const handleSaveTask = async (formData) => {
+    if (!formData.title || formData.title.trim() === "") {
+      showToast("O título da tarefa é obrigatório.", "error");
+      return;
+    }
+
     setSavingTask(true);
     try {
       const payload = {
@@ -166,13 +176,6 @@ export function ProjectScrum({ projectId, permissions }) {
     }
   };
 
-  const handleOpenNewSprint = () => {
-    setSprintForm(INITIAL_SPRINT);
-    setIsEditingSprint(false);
-    setSprintModalOpen(true);
-  };
-
-  // 👇 Prepara o modal com os dados atuais da Sprint
   const handleOpenSprintSettings = () => {
     if (!currentSprint) return;
     setSprintForm({
@@ -185,7 +188,6 @@ export function ProjectScrum({ projectId, permissions }) {
     setSprintModalOpen(true);
   };
 
-  // 👇 Salva ou atualiza dependendo do estado
   const handleSaveSprint = async (form) => {
     if (!canCreateSprint) return; // Trava de segurança
     setSavingSprint(true);

@@ -46,7 +46,6 @@ export function KanbanModal({
               name="title"
               value={form.title}
               onChange={handleChange}
-              required
               autoFocus
             />
           </div>

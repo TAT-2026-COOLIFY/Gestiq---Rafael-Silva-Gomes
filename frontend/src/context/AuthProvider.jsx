@@ -1,6 +1,6 @@
-import { createContext, useReducer, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import { authService } from "@/features/Auth/services/authService";
-import api from "@/services/api";
+import { AuthContext } from "./AuthContext";
 
 // ─── Decoder de JWT ────────────────────────────────────────────────────────────
 function decodeJWT(token) {
@@ -58,9 +58,7 @@ const storage = {
   },
 };
 
-// ─── Contexto ──────────────────────────────────────────────────────────────────
-export const AuthContext = createContext({});
-
+// ─── Provider ──────────────────────────────────────────────────────────────────
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 

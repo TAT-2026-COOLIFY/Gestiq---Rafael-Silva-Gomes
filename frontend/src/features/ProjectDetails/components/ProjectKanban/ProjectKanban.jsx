@@ -64,7 +64,6 @@ export function ProjectKanban({ projectId, permissions }) {
       setMilestones(milestonesRes.data.results ?? milestonesRes.data);
       setMembers(membersRes.data.results ?? membersRes.data);
 
-      // 👇 Filtra e guarda a sprint ativa
       const sprintsData = sprintsRes.data.results ?? sprintsRes.data;
       const activeSprint = sprintsData.find((s) => s.status === "ACTIVE");
       setCurrentSprint(activeSprint || null);
@@ -83,15 +82,14 @@ export function ProjectKanban({ projectId, permissions }) {
 
   const handleDragStart = (e, taskId) => {
     if (!canEdit) return;
-    // Guarda o ID da tarefa que está sendo arrastada
     e.dataTransfer.setData("taskId", taskId);
     e.dataTransfer.effectAllowed = "move";
   };
 
   const handleDragOver = (e, columnId) => {
     if (!canEdit) return;
-    e.preventDefault(); // Necessário para permitir o "drop"
-    setDraggedOverColumn(columnId); // Ativa o estilo CSS de hover na coluna
+    e.preventDefault();
+    setDraggedOverColumn(columnId);
   };
 
   const handleDragLeave = () => {
@@ -148,6 +146,12 @@ export function ProjectKanban({ projectId, permissions }) {
 
   async function handleSave(formData) {
     if (!canEdit) return;
+
+    if (!formData.title || formData.title.trim() === "") {
+      showToast("O título da tarefa é obrigatório.", "error");
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = { ...formData, project: projectId };
@@ -172,6 +176,12 @@ export function ProjectKanban({ projectId, permissions }) {
 
   async function handleEdit(formData) {
     if (!canEdit) return;
+
+    if (!formData.title || formData.title.trim() === "") {
+      showToast("O título da tarefa é obrigatório.", "error");
+      return;
+    }
+
     setEditSaving(true);
     try {
       const payload = { ...formData, project: projectId };

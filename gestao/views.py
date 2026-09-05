@@ -90,16 +90,16 @@ class ProjectsViewSet(viewsets.ModelViewSet):
             return Projects.objects.all()
 
         return Projects.objects.filter(
-            Q(po=user) | Q(leader=user) | Q(project_members__user=user)
+            Q(project_manager=user) | Q(leader=user) | Q(project_members__user=user)
         ).distinct()
 
     def perform_create(self, serializer):
-        project = serializer.save(po=self.request.user)
+        project = serializer.save(project_manager=self.request.user)
 
         ProjectMembers.objects.create(
             project=project,
             user=self.request.user,
-            function="PO"
+            function="Gestor do Projeto"
         )
 
 
@@ -130,8 +130,10 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
         project = instance.project
         user_to_remove = instance.user
         
-        if project.po != request.user:
-            raise PermissionDenied("Apenas o PMO pode remover membros da equipe.")
+        if project.project_manager != request.user:
+            raise PermissionDenied(
+                "Apenas o Gestor do Projeto pode remover membros da equipe."
+            )
         
         Activity.objects.filter(project=project, assigned_to=user_to_remove).update(assigned_to=None)
         
@@ -148,7 +150,7 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
         except Projects.DoesNotExist:
             return Response({"detail": "Projeto não encontrado."}, status=404)
 
-        if project.po != request.user:
+        if project.project_manager != request.user:
             return Response(
                 {"detail": "Você não tem permissão para adicionar membros a este projeto."},
                 status=status.HTTP_403_FORBIDDEN

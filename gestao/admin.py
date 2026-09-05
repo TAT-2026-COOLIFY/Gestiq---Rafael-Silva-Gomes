@@ -69,7 +69,7 @@ class ProjectsAdmin(admin.ModelAdmin):
         "name",
         "project_type",
         "project_status",
-        "po",
+        "project_manager",
         "leader",
         "total_percentage_real",
     )
@@ -77,7 +77,7 @@ class ProjectsAdmin(admin.ModelAdmin):
     list_filter = ("project_status", "project_type", "area", "category")
 
     # Barra de pesquisa (Busca por nome do projeto ou nome do líder)
-    search_fields = ("name", "po__username", "leader__username")
+    search_fields = ("name", "project_manager__username", "leader__username")
 
     # Campos que são apenas leitura (automáticos)
     readonly_fields = ("create_date", "total_percentage_real", "total_percentage_plan")
@@ -166,7 +166,7 @@ class ActivityAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "priority", "project", "sprint")
     search_fields = ("title", "project__name")
-    readonly_fields = ("create_date",)
+    readonly_fields = ("create_date", "sprint_added_at")
 
 
 @admin.register(Sprints)

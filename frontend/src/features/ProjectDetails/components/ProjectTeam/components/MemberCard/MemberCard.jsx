@@ -17,9 +17,9 @@ export function MemberCard({
   const [funcValue, setFuncValue] = useState(member.function || "");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isPO = member.function === "PO";
+  const isProjectManager = member.function === "Gestor do Projeto";
   const isLeader = member.function === "Líder" || member.function === "Lider";
-  const isSpecialRole = isPO || isLeader;
+  const isSpecialRole = isProjectManager || isLeader;
   const canEditThisMember = canManageTeam && member.username !== user?.username;
   const canInlineEditRole = canEditThisMember && !isSpecialRole;
 
@@ -81,7 +81,7 @@ export function MemberCard({
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
               >
-                {!isPO && (
+                {!isProjectManager && (
                   <button
                     onClick={toggleLeader}
                     className={styles.dropdownItem}
@@ -147,8 +147,8 @@ export function MemberCard({
         ) : (
           <span
             className={
-              isPO
-                ? styles.rolePO
+              isProjectManager
+                ? styles.roleProjectManager
                 : isLeader
                   ? styles.roleLeader
                   : styles.roleStatic

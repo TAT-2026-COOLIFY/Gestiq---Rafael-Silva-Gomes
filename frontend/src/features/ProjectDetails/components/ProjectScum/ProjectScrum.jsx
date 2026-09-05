@@ -23,6 +23,7 @@ import {
 import { KanbanModal } from "../ProjectKanban/components/KanbanModal/KanbanModal";
 import { KanbanDrawer } from "../ProjectKanban/components/KanbanDrawer/KanbanDrawer";
 import { Popup } from "@/components/Popup";
+import { notifyBurnupChanged } from "@/utils/burnupEvents";
 
 const INITIAL_SPRINT = {
   name: "",
@@ -120,6 +121,7 @@ export function ProjectScrum({ projectId, permissions }) {
       setTasks((prevTasks) =>
         prevTasks.map((t) => (t.id === res.data.id ? res.data : t)),
       );
+      notifyBurnupChanged(projectId);
 
       showToast("Tarefa atualizada!", "success");
       setSelectedTask(null);
@@ -151,6 +153,7 @@ export function ProjectScrum({ projectId, permissions }) {
       const res = await api.post("activities/", payload);
 
       setTasks((prevTasks) => [...prevTasks, res.data]);
+      notifyBurnupChanged(projectId);
 
       showToast("Tarefa adicionada ao Backlog!", "success");
       setTaskModalOpen(false);
@@ -167,6 +170,7 @@ export function ProjectScrum({ projectId, permissions }) {
       await api.delete(`activities/${id}/`);
 
       setTasks((prevTasks) => prevTasks.filter((t) => t.id !== id));
+      notifyBurnupChanged(projectId);
 
       showToast("Tarefa excluída.", "success");
       setPopup(null);
@@ -270,18 +274,20 @@ export function ProjectScrum({ projectId, permissions }) {
     }
     setActionStatus("Movendo...");
     try {
-      await Promise.all(
+      const responses = await Promise.all(
         selectedTaskIds.map((id) =>
           api.patch(`activities/${id}/`, { sprint: targetSprintId }),
         ),
       );
+      const updatedTasks = new Map(
+        responses.map((response) => [response.data.id, response.data]),
+      );
       setTasks((prev) =>
         prev.map((task) =>
-          selectedTaskIds.includes(task.id)
-            ? { ...task, sprint: targetSprintId }
-            : task,
+          updatedTasks.get(task.id) || task,
         ),
       );
+      notifyBurnupChanged(projectId);
       setSelectedTaskIds([]);
       setActionStatus("Sucesso");
       setTimeout(() => setActionStatus(""), 3000);

@@ -61,12 +61,13 @@ class Projects(models.Model):
         CANCELADO = "CANC", "Cancelado"
 
     create_date = models.DateTimeField(auto_now_add=True)
-    po = models.ForeignKey(
+    project_manager = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name="project_po",
+        related_name="managed_projects",
         null=True,
         blank=True,
+        verbose_name="Gestor do Projeto",
     )
     leader = models.ForeignKey(
         User,
@@ -326,9 +327,23 @@ class Activity(models.Model):
     story_points = models.IntegerField(blank=True, null=True)
 
     create_date = models.DateTimeField(auto_now_add=True)
+    sprint_added_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        hoje = timezone.now().date()
+        hoje = timezone.localdate()
+
+        sprint_anterior_id = None
+        if self.pk:
+            sprint_anterior_id = (
+                type(self).objects.filter(pk=self.pk)
+                .values_list("sprint_id", flat=True)
+                .first()
+            )
+
+        if self.sprint_id and self.sprint_id != sprint_anterior_id:
+            self.sprint_added_at = timezone.now()
+        elif not self.sprint_id:
+            self.sprint_added_at = None
 
         if (
             self.status in [self.Status.DOING, self.Status.REVIEW, self.Status.DONE]

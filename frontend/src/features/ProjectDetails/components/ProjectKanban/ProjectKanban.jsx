@@ -14,6 +14,7 @@ import {
   INITIAL_TASK,
 } from "@/utils/taskConstants";
 import styles from "./ProjectKanban.module.css";
+import { notifyBurnupChanged } from "@/utils/burnupEvents";
 
 export function ProjectKanban({ projectId, permissions }) {
   const [tasks, setTasks] = useState([]);
@@ -115,7 +116,15 @@ export function ProjectKanban({ projectId, permissions }) {
     );
 
     try {
-      await api.patch(`activities/${taskId}/`, { status: newStatus });
+      const response = await api.patch(`activities/${taskId}/`, {
+        status: newStatus,
+      });
+      setTasks((current) =>
+        current.map((item) =>
+          item.id === response.data.id ? response.data : item,
+        ),
+      );
+      notifyBurnupChanged(projectId);
     } catch {
       setTasks(previousTasks);
       showToast("Erro ao mover a tarefa.");
@@ -164,6 +173,7 @@ export function ProjectKanban({ projectId, permissions }) {
 
       const res = await api.post("activities/", payload);
       setTasks([...tasks, res.data]);
+      notifyBurnupChanged(projectId);
       setForm(INITIAL_TASK);
       setModalOpen(false);
       showToast("Tarefa criada com sucesso!", "success");
@@ -195,6 +205,7 @@ export function ProjectKanban({ projectId, permissions }) {
 
       const res = await api.put(`activities/${formData.id}/`, payload);
       setTasks(tasks.map((t) => (t.id === res.data.id ? res.data : t)));
+      notifyBurnupChanged(projectId);
       setSelectedTask(null);
       showToast("Tarefa atualizada!", "success");
     } catch {
@@ -209,6 +220,7 @@ export function ProjectKanban({ projectId, permissions }) {
     try {
       await api.delete(`activities/${id}/`);
       setTasks(tasks.filter((t) => t.id !== id));
+      notifyBurnupChanged(projectId);
       setPopup(null);
       setSelectedTask(null);
       showToast("Tarefa excluída.", "success");

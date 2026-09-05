@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import api from "@/services/api";
 import { generateBurnupData } from "@/utils/burnupUtils"; // 👈 Lembre-se de criar aquele arquivo Utils!
+import { BURNUP_CHANGED_EVENT } from "@/utils/burnupEvents";
 import { Loading } from "@/components/Loading/Loading";
 import styles from "./ProjectBurnup.module.css";
 
@@ -20,9 +21,9 @@ export function ProjectBurnup({ projectId }) {
   const [loading, setLoading] = useState(true);
 
   // Busca apenas a Sprint Ativa e as tarefas atreladas a ela
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (showLoading = true) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       const [sprintsRes, tasksRes] = await Promise.all([
         api.get(`sprints/?project=${projectId}`),
         api.get(`activities/?project=${projectId}`),
@@ -36,17 +37,39 @@ export function ProjectBurnup({ projectId }) {
       if (activeSprint) {
         const allTasks = tasksRes.data?.results || tasksRes.data;
         setSprintTasks(allTasks.filter((t) => t.sprint === activeSprint.id));
+      } else {
+        setSprintTasks([]);
       }
     } catch (error) {
       console.error("Erro ao carregar dados do Burnup:", error);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   }, [projectId]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+    const refresh = (event) => {
+      if (
+        !event.detail?.projectId ||
+        event.detail.projectId === String(projectId)
+      ) {
+        fetchData(false);
+      }
+    };
+    const refreshOnFocus = () => fetchData(false);
+
+    window.addEventListener(BURNUP_CHANGED_EVENT, refresh);
+    window.addEventListener("focus", refreshOnFocus);
+
+    return () => {
+      window.removeEventListener(BURNUP_CHANGED_EVENT, refresh);
+      window.removeEventListener("focus", refreshOnFocus);
+    };
+  }, [fetchData, projectId]);
 
   // Gera os pontos do gráfico usando o arquivo Utils
   const data = useMemo(() => {

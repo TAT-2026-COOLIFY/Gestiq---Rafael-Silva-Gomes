@@ -108,17 +108,17 @@ export function ProjectDetails() {
     );
   }
 
-  const isPO = project.po === Number(user?.id);
+  const isProjectManager = project.project_manager === Number(user?.id);
   const isLeader = project.leader === Number(user?.id);
   const isCanceled = project.project_status === "CANC";
 
   const permissions = {
-    canEditCanvas: (isPO || isLeader) && !isCanceled,
-    canEditRisks: (isPO || isLeader) && !isCanceled,
-    canEditCommunications: (isPO || isLeader) && !isCanceled,
-    canManageTeam: isPO && !isCanceled,
-    canEditTimeline: isPO && !isCanceled,
-    canCreateSprint: isPO && !isCanceled,
+    canEditCanvas: (isProjectManager || isLeader) && !isCanceled,
+    canEditRisks: (isProjectManager || isLeader) && !isCanceled,
+    canEditCommunications: (isProjectManager || isLeader) && !isCanceled,
+    canManageTeam: isProjectManager && !isCanceled,
+    canEditTimeline: isProjectManager && !isCanceled,
+    canCreateSprint: isProjectManager && !isCanceled,
     canManageKanban: !isCanceled,
   };
 
@@ -137,7 +137,7 @@ export function ProjectDetails() {
         <div className={styles.headerInfo}>
           <h1 className={styles.projectName}>{project.name}</h1>
 
-          {isPO ? (
+          {isProjectManager ? (
             <StatusSelect
               value={project.project_status}
               onChange={handleStatusChange}

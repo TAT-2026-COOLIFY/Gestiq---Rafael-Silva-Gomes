@@ -141,11 +141,11 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-    po_first_name = serializers.CharField(
-        source="po.first_name", read_only=True, default=""
+    project_manager_first_name = serializers.CharField(
+        source="project_manager.first_name", read_only=True, default=""
     )
-    po_last_name = serializers.CharField(
-        source="po.last_name", read_only=True, default=""
+    project_manager_last_name = serializers.CharField(
+        source="project_manager.last_name", read_only=True, default=""
     )
     leader_first_name = serializers.CharField(
         source="leader.first_name", read_only=True, default=""
@@ -166,9 +166,9 @@ class ProjectsSerializer(serializers.ModelSerializer):
             "name",
             "project_type",
             "project_status",
-            "po",
-            "po_first_name",
-            "po_last_name",
+            "project_manager",
+            "project_manager_first_name",
+            "project_manager_last_name",
             "leader",
             "leader_first_name",
             "leader_last_name",
@@ -290,11 +290,13 @@ class ActivitiesSerializer(serializers.ModelSerializer):
             "story_points",
             "priority",
             "create_date",
+            "sprint_added_at",
             "milestone",
             "milestone_name",
             "sprint",
             "sprint_name",
         ]
+        read_only_fields = ["create_date", "sprint_added_at"]
 
     def get_assigned_to_photo(self, obj):
         if (

@@ -47,6 +47,7 @@ export function KanbanModal({
               value={form.title}
               onChange={handleChange}
               autoFocus
+              required
             />
           </div>
 
@@ -84,8 +85,9 @@ export function KanbanModal({
               name="milestone"
               value={form.milestone || ""}
               onChange={handleChange}
+              required
             >
-              <option value="">Nenhum Marco</option>
+              <option value="">Selecione um Marco</option>
               {milestones.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.task}

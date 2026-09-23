@@ -314,6 +314,79 @@ class ActivitiesSerializer(serializers.ModelSerializer):
                 return None
         return None
 
+    def validate(self, attrs):
+        project = attrs.get(
+            "project", self.instance.project if self.instance else None
+        )
+        milestone = attrs.get(
+            "milestone", self.instance.milestone if self.instance else None
+        )
+
+        if milestone is None:
+            raise serializers.ValidationError(
+                {"milestone": "Toda atividade deve estar vinculada a um marco."}
+            )
+        if project and milestone.project_id != project.id:
+            raise serializers.ValidationError(
+                {"milestone": "O marco deve pertencer ao mesmo projeto da atividade."}
+            )
+
+        original_sprint_id = self.instance.sprint_id if self.instance else None
+        requested_sprint = attrs.get(
+            "sprint", self.instance.sprint if self.instance else None
+        )
+        entering_sprint = (
+            requested_sprint is not None
+            and requested_sprint.id != original_sprint_id
+        )
+
+        if entering_sprint:
+            story_points = attrs.get(
+                "story_points",
+                self.instance.story_points if self.instance else None,
+            )
+            assigned_to = attrs.get(
+                "assigned_to",
+                self.instance.assigned_to if self.instance else None,
+            )
+            sprint_errors = {}
+            if story_points is None or story_points <= 0:
+                sprint_errors["story_points"] = (
+                    "Informe uma estimativa maior que zero antes de enviar "
+                    "a atividade para uma sprint."
+                )
+            if assigned_to is None:
+                sprint_errors["assigned_to"] = (
+                    "Defina um responsável antes de enviar a atividade para uma sprint."
+                )
+            if project and requested_sprint.project_id != project.id:
+                sprint_errors["sprint"] = (
+                    "A sprint deve pertencer ao mesmo projeto da atividade."
+                )
+            if sprint_errors:
+                raise serializers.ValidationError(sprint_errors)
+
+        if self.instance and self.instance.sprint_id:
+            original_sprint = self.instance.sprint
+            requested_sprint_id = (
+                requested_sprint.id if requested_sprint is not None else None
+            )
+
+            if (
+                original_sprint.status == "ACTIVE"
+                and requested_sprint_id != original_sprint.id
+            ):
+                raise serializers.ValidationError(
+                    {
+                        "sprint": (
+                            "Não é possível remover ou transferir uma atividade "
+                            "de uma sprint em andamento."
+                        )
+                    }
+                )
+
+        return attrs
+
 
 class MilestonesSerializer(serializers.ModelSerializer):
     percentage_real = serializers.FloatField(read_only=True)

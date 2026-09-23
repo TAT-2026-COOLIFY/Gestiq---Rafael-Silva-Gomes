@@ -81,6 +81,7 @@ export function KanbanDrawer({
             name="title"
             value={form.title}
             onChange={handleChange}
+            required
             readOnly={!canEdit}
             disabled={!canEdit}
           />
@@ -156,9 +157,8 @@ export function KanbanDrawer({
             <input
               id="story_points"
               name="story_points"
-              value={form.story_points}
+              value={form.story_points ?? ""}
               onChange={handleChange}
-              required
               readOnly={!canEdit}
               disabled={!canEdit}
             />
@@ -172,9 +172,10 @@ export function KanbanDrawer({
             name="milestone"
             value={form.milestone}
             onChange={handleChange}
+            required
             disabled={!canEdit}
           >
-            <option value="">Nenhum Marco</option>
+            <option value="">Selecione um Marco</option>
             {milestones.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.task}

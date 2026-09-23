@@ -44,3 +44,23 @@ test("ideal line remains a straight diagonal to the current scope", () => {
     [0, 3, 6, 9],
   );
 });
+
+test("scope increases from 15 to 18 on the exact day a new task is added", () => {
+  const sprint = { start_date: "2026-09-01", end_date: "2026-09-04" };
+  const tasks = [
+    { story_points: 8, sprint_added_at: "2026-09-01T08:00:00-03:00" },
+    { story_points: 7, sprint_added_at: "2026-09-01T08:00:00-03:00" },
+    { story_points: 3, sprint_added_at: "2026-09-03T14:00:00-03:00" },
+  ];
+
+  const data = generateBurnupData(sprint, tasks, new Date(2026, 8, 4));
+
+  assert.deepEqual(
+    data.map((item) => item["Escopo Total"]),
+    [15, 15, 18, 18],
+  );
+  assert.deepEqual(
+    data.map((item) => item.Ideal),
+    [0, 6, 12, 18],
+  );
+});

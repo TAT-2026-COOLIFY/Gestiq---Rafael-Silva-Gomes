@@ -36,16 +36,23 @@ function authReducer(state, action) {
 
 // ─── Helpers de storage ────────────────────────────────────────────────────────
 const storage = {
-  save(token, user) {
-    localStorage.setItem("token", token);
+  save(accessToken, refreshToken, user) {
+    localStorage.setItem("token", accessToken);
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
     localStorage.setItem("user", JSON.stringify(user));
   },
   clear() {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
   },
   getToken() {
     return localStorage.getItem("token");
+  },
+  getRefreshToken() {
+    return localStorage.getItem("refreshToken");
   },
   getUser() {
     try {
@@ -64,14 +71,37 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = storage.getToken();
+    const refreshToken = storage.getRefreshToken();
     const user = storage.getUser();
 
     if (token && user && !isTokenExpired(token)) {
       dispatch({ type: "RESTORE_SESSION", payload: user });
-    } else {
+      return;
+    }
+
+    if (!refreshToken || !user) {
       storage.clear();
       dispatch({ type: "RESTORE_SESSION", payload: null });
+      return;
     }
+
+    let active = true;
+    authService
+      .refresh(refreshToken)
+      .then((data) => {
+        if (!active) return;
+        storage.save(data.access, data.refresh ?? refreshToken, user);
+        dispatch({ type: "RESTORE_SESSION", payload: user });
+      })
+      .catch(() => {
+        if (!active) return;
+        storage.clear();
+        dispatch({ type: "RESTORE_SESSION", payload: null });
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -95,7 +125,7 @@ export function AuthProvider({ children }) {
       username: decoded?.username ?? username,
     };
 
-    storage.save(token, userData);
+    storage.save(token, data.refresh, userData);
     dispatch({ type: "SIGN_IN", payload: userData });
   }
 

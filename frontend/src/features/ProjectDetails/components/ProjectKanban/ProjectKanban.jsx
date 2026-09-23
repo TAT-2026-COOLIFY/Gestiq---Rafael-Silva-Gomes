@@ -160,6 +160,10 @@ export function ProjectKanban({ projectId, permissions }) {
       showToast("O título da tarefa é obrigatório.", "error");
       return;
     }
+    if (!formData.milestone) {
+      showToast("Vincule a tarefa a um marco da linha do tempo.", "error");
+      return;
+    }
 
     setSaving(true);
     try {
@@ -170,6 +174,7 @@ export function ProjectKanban({ projectId, permissions }) {
 
       if (!payload.assigned_to || payload.assigned_to === "")
         payload.assigned_to = null;
+      if (payload.story_points === "") payload.story_points = null;
 
       const res = await api.post("activities/", payload);
       setTasks([...tasks, res.data]);
@@ -191,6 +196,10 @@ export function ProjectKanban({ projectId, permissions }) {
       showToast("O título da tarefa é obrigatório.", "error");
       return;
     }
+    if (!formData.milestone) {
+      showToast("Vincule a tarefa a um marco da linha do tempo.", "error");
+      return;
+    }
 
     setEditSaving(true);
     try {
@@ -202,6 +211,7 @@ export function ProjectKanban({ projectId, permissions }) {
       if (!payload.assigned_to || payload.assigned_to === "") {
         payload.assigned_to = null;
       }
+      if (payload.story_points === "") payload.story_points = null;
 
       const res = await api.put(`activities/${formData.id}/`, payload);
       setTasks(tasks.map((t) => (t.id === res.data.id ? res.data : t)));

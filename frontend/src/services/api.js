@@ -10,6 +10,19 @@ const api = axios.create({
   },
 });
 
+let refreshPromise = null;
+
+function clearSession() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
+  window.dispatchEvent(new Event("auth:unauthorized"));
+}
+
+function isAuthenticationRequest(url = "") {
+  return url.includes("/token/");
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -20,9 +33,42 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      refreshToken &&
+      !isAuthenticationRequest(originalRequest.url)
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        if (!refreshPromise) {
+          refreshPromise = axios
+            .post(`${baseURL}/api/token/refresh/`, { refresh: refreshToken })
+            .then((response) => response.data.access)
+            .finally(() => {
+              refreshPromise = null;
+            });
+        }
+
+        const accessToken = await refreshPromise;
+        localStorage.setItem("token", accessToken);
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        clearSession();
+        return Promise.reject(refreshError);
+      }
+    }
+
     if (error.response?.status === 401) {
-      window.dispatchEvent(new Event("auth:unauthorized"));
+      clearSession();
     }
     return Promise.reject(error);
   },

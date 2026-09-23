@@ -134,6 +134,14 @@ class ProjectMembers(models.Model):
     )
     function = models.CharField(max_length=100)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["project", "user"],
+                name="unique_user_per_project",
+            )
+        ]
+
     def __str__(self):
         return f"{self.user.username} - {self.project.name} ({self.function})"
 

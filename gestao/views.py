@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status, permissions
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -37,9 +37,10 @@ from .serializers import (
     MilestonesSerializer,
     SprintsSerializer,
 )
+from .permissions import accessible_projects, ProjectObjectPermission
 
 
-class UsersViewSet(viewsets.ModelViewSet):
+class UsersViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UsersSerializer
 
@@ -69,29 +70,24 @@ class UserMeView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class AreasViewSet(viewsets.ModelViewSet):
+class AreasViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Areas.objects.all()
     serializer_class = AreasSerializer
 
 
-class CategoriesViewSet(viewsets.ModelViewSet):
+class CategoriesViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
 
 
 class ProjectsViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [ProjectObjectPermission]
+    permission_resource = "project"
+    write_roles = ("manager",)
 
     def get_queryset(self):
-        user = self.request.user
-
-        if user.is_superuser:
-            return Projects.objects.all()
-
-        return Projects.objects.filter(
-            Q(project_manager=user) | Q(leader=user) | Q(project_members__user=user)
-        ).distinct()
+        return accessible_projects(self.request.user)
 
     def perform_create(self, serializer):
         project = serializer.save(project_manager=self.request.user)
@@ -104,26 +100,40 @@ class ProjectsViewSet(viewsets.ModelViewSet):
 
 
 class CanvasViewSet(viewsets.ModelViewSet):
-    queryset = Canvas.objects.all()
     serializer_class = CanvasSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager", "leader")
+
+    def get_queryset(self):
+        return Canvas.objects.filter(project__in=accessible_projects(self.request.user))
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
 
 
 class RisksViewSet(viewsets.ModelViewSet):
-    queryset = Risks.objects.all()
     serializer_class = RisksSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager", "leader")
+
+    def get_queryset(self):
+        return Risks.objects.filter(project__in=accessible_projects(self.request.user))
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
 
 
 class ProjectMembersViewSet(viewsets.ModelViewSet):
-    queryset = ProjectMembers.objects.all()
     serializer_class = ProjectMembersSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager",)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
+
+    def get_queryset(self):
+        return ProjectMembers.objects.filter(
+            project__in=accessible_projects(self.request.user)
+        )
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -186,32 +196,64 @@ class ProjectMembersViewSet(viewsets.ModelViewSet):
 
 
 class CommunicationViewSet(viewsets.ModelViewSet):
-    queryset = Communications.objects.all()
     serializer_class = CommunicationsSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager", "leader")
+
+    def get_queryset(self):
+        return Communications.objects.filter(
+            project__in=accessible_projects(self.request.user)
+        )
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
 
 
 class ActivitiesViewSet(viewsets.ModelViewSet):
-    queryset = Activity.objects.all()
     serializer_class = ActivitiesSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager", "leader", "member")
+
+    def get_queryset(self):
+        return Activity.objects.filter(project__in=accessible_projects(self.request.user))
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project", "milestone", "sprint", "status", "type", "priority"]
 
+    def perform_destroy(self, instance):
+        if instance.sprint and instance.sprint.status == "ACTIVE":
+            raise ValidationError(
+                {
+                    "sprint": (
+                        "Não é possível excluir uma atividade de uma sprint "
+                        "em andamento."
+                    )
+                }
+            )
+        instance.delete()
+
 
 class MilestonesViewSet(viewsets.ModelViewSet):
-    queryset = Milestones.objects.all()
     serializer_class = MilestonesSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager",)
+
+    def get_queryset(self):
+        return Milestones.objects.filter(
+            project__in=accessible_projects(self.request.user)
+        )
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project"]
 
 
 class SprintsViewSet(viewsets.ModelViewSet):
-    queryset = Sprints.objects.all()
     serializer_class = SprintsSerializer
+    permission_classes = [ProjectObjectPermission]
+    write_roles = ("manager",)
+
+    def get_queryset(self):
+        return Sprints.objects.filter(project__in=accessible_projects(self.request.user))
     
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["project", "status"]

@@ -107,6 +107,10 @@ export function ProjectScrum({ projectId, permissions }) {
       showToast("O título da tarefa é obrigatório.", "error");
       return;
     }
+    if (!formData.milestone) {
+      showToast("Vincule a tarefa a um marco da linha do tempo.", "error");
+      return;
+    }
 
     setEditSaving(true);
     try {
@@ -115,6 +119,7 @@ export function ProjectScrum({ projectId, permissions }) {
         payload.milestone = null;
       if (!payload.assigned_to || payload.assigned_to === "")
         payload.assigned_to = null;
+      if (payload.story_points === "") payload.story_points = null;
 
       const res = await api.put(`activities/${formData.id}/`, payload);
 
@@ -137,6 +142,10 @@ export function ProjectScrum({ projectId, permissions }) {
       showToast("O título da tarefa é obrigatório.", "error");
       return;
     }
+    if (!formData.milestone) {
+      showToast("Vincule a tarefa a um marco da linha do tempo.", "error");
+      return;
+    }
 
     setSavingTask(true);
     try {
@@ -149,6 +158,7 @@ export function ProjectScrum({ projectId, permissions }) {
         payload.milestone = null;
       if (!payload.assigned_to || payload.assigned_to === "")
         payload.assigned_to = null;
+      if (payload.story_points === "") payload.story_points = null;
 
       const res = await api.post("activities/", payload);
 
@@ -271,6 +281,21 @@ export function ProjectScrum({ projectId, permissions }) {
         "Você não tem nenhuma Sprint ativa ou planejada. Crie uma primeiro!",
       );
       return;
+    }
+
+    if (targetSprintId !== null) {
+      const selectedTasks = tasks.filter((task) =>
+        selectedTaskIds.includes(task.id),
+      );
+      const invalidTasks = selectedTasks.filter(
+        (task) => !task.assigned_to || Number(task.story_points) <= 0,
+      );
+      if (invalidTasks.length > 0) {
+        showToast(
+          "Defina responsável e estimativa maior que zero antes de enviar as tarefas para a Sprint.",
+        );
+        return;
+      }
     }
     setActionStatus("Movendo...");
     try {

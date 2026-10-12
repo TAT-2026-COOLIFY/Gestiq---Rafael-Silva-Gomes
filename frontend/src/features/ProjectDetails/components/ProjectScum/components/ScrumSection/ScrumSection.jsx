@@ -3,12 +3,6 @@ import { Settings } from "lucide-react";
 import styles from "./ScrumSection.module.css";
 import { TaskItem } from "../TaskItem/TaskItem";
 
-const formatDate = (dateString) => {
-  if (!dateString) return "--/--";
-  const [year, month, day] = dateString.split("-");
-  return `${day}/${month}`;
-};
-
 export function ScrumSection({
   title,
   icon: Icon,

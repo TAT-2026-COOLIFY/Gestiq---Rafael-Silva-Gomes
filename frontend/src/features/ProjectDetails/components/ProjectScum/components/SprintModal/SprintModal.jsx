@@ -22,10 +22,8 @@ export function SprintModal({
 
   return (
     <Modal
-      // 👇 1. Título dinâmico baseado na ação
       title={isEditing ? "Detalhes da Sprint" : "Criar Nova Sprint"}
       onClose={onClose}
-      // 👇 2. Movemos os nossos botões com trava de permissão direto para o Footer do Modal
       footer={
         <div className={styles.modalFooter}>
           <button type="button" onClick={onClose} className={styles.cancelBtn}>
@@ -35,7 +33,7 @@ export function SprintModal({
           {canEdit && (
             <button
               type="submit"
-              form="sprint-modal-form" // Conecta o botão ao formulário para funcionar com o Enter
+              form="sprint-modal-form"
               disabled={saving}
               className={styles.saveBtn}
             >

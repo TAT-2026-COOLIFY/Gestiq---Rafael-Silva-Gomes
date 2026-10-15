@@ -93,6 +93,7 @@ export function KanbanDrawer({
           <textarea
             id="description"
             name="description"
+            rows={5}
             value={form.description || ""}
             onChange={handleChange}
             readOnly={!canEdit}

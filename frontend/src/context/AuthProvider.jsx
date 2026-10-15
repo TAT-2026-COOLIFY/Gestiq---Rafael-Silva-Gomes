@@ -2,7 +2,6 @@ import { useReducer, useEffect } from "react";
 import { authService } from "@/features/Auth/services/authService";
 import { AuthContext } from "./AuthContext";
 
-// ─── Decoder de JWT ────────────────────────────────────────────────────────────
 function decodeJWT(token) {
   try {
     const payload = token.split(".")[1];
@@ -18,7 +17,6 @@ function isTokenExpired(token) {
   return decoded.exp * 1000 < Date.now();
 }
 
-// ─── Reducer ───────────────────────────────────────────────────────────────────
 const initialState = { user: null, loading: true };
 
 function authReducer(state, action) {
@@ -34,7 +32,6 @@ function authReducer(state, action) {
   }
 }
 
-// ─── Helpers de storage ────────────────────────────────────────────────────────
 const storage = {
   save(accessToken, refreshToken, user) {
     localStorage.setItem("token", accessToken);
@@ -65,7 +62,6 @@ const storage = {
   },
 };
 
-// ─── Provider ──────────────────────────────────────────────────────────────────
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 

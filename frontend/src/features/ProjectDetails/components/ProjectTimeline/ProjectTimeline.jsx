@@ -16,7 +16,6 @@ const INITIAL_MILESTONE = {
 };
 
 export function ProjectTimeline({ projectId, permissions }) {
-  // Estados de Dados e UX
   const [tasks, setTasks] = useState([]);
   const [timelineData, setTimelineData] = useState({
     minDate: null,
@@ -25,7 +24,6 @@ export function ProjectTimeline({ projectId, permissions }) {
   });
   const [loading, setLoading] = useState(true);
 
-  // Estados de Modais e Drawers
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(INITIAL_MILESTONE);
@@ -36,7 +34,6 @@ export function ProjectTimeline({ projectId, permissions }) {
   const [toast, setToast] = useState(null);
   const [popup, setPopup] = useState(null);
 
-  // --- Funções Auxiliares de UX ---
   const showToast = useCallback((message, type = "error") => {
     setToast({ id: Math.random(), message, type });
   }, []);
@@ -49,7 +46,6 @@ export function ProjectTimeline({ projectId, permissions }) {
     setPopup({ message, id });
   }, []);
 
-  // --- 1. Buscar Dados da API ---
   const fetchMilestones = useCallback(async () => {
     try {
       setLoading(true);
@@ -70,14 +66,12 @@ export function ProjectTimeline({ projectId, permissions }) {
     fetchMilestones();
   }, [fetchMilestones]);
 
-  // --- 2. Lógica Matemática do Gráfico ---
   const calculateTimelineBounds = (milestones) => {
     if (milestones.length === 0) {
       setTimelineData({ minDate: null, maxDate: null, months: [] });
       return;
     }
 
-    // Usamos 'T00:00:00' para evitar que o JS mude o dia por causa de fuso horário
     const startDates = milestones.map(
       (t) => new Date(`${t.start_date}T00:00:00`),
     );
@@ -139,7 +133,6 @@ export function ProjectTimeline({ projectId, permissions }) {
     return `${leftPercentage}%`;
   };
 
-  // --- 3. CRUD ---
   async function handleSave(formData) {
     if (!canEdit) return;
 
@@ -151,7 +144,7 @@ export function ProjectTimeline({ projectId, permissions }) {
       });
       const newTasks = [...tasks, res.data];
       setTasks(newTasks);
-      calculateTimelineBounds(newTasks); // Recalcula o gráfico
+      calculateTimelineBounds(newTasks);
 
       setForm(INITIAL_MILESTONE);
       setModalOpen(false);
@@ -195,7 +188,7 @@ export function ProjectTimeline({ projectId, permissions }) {
       calculateTimelineBounds(newTasks);
 
       setPopup(null);
-      setSelectedTask(null); // Fecha a gaveta se estiver aberta
+      setSelectedTask(null);
       showToast("Marco excluído com sucesso.", "success");
     } catch {
       showToast("Erro ao excluir marco.");
@@ -289,7 +282,6 @@ export function ProjectTimeline({ projectId, permissions }) {
         </div>
       )}
 
-      {/* Renderização Condicional dos Componentes de UX */}
       <AnimatePresence>
         {modalOpen && (
           <TimelineModal

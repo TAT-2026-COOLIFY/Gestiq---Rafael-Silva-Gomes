@@ -13,7 +13,7 @@
   border-radius: 12px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 480px; /* ← um pouco mais largo por ter 2 colunas */
+  max-width: 480px;
   box-sizing: border-box;
 }
 

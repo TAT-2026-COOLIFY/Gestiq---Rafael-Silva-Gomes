@@ -47,7 +47,7 @@
   border-radius: 12px;
 }
 
-/* --- Gráfico da Timeline --- */
+
 .timelineWrapper {
   display: flex;
   border: 1px solid var(--border);
@@ -188,9 +188,7 @@
   pointer-events: none;
 }
 
-/* ================================
-   MARCADOR
-================================ */
+
 .todayMarker {
   position: absolute;
   top: 0;

@@ -67,11 +67,11 @@
 }
 
 .body {
-  flex: 1; /* ← ocupa todo espaço disponível entre header e footer */
-  overflow-y: auto; /* ← scroll só aqui dentro */
+  flex: 1;
+  overflow-y: auto;
   overflow-x: hidden;
   padding: 1.5rem;
-  min-height: 0; /* ← essencial para o flex + overflow funcionar */
+  min-height: 0;
 }
 
 .footer {
@@ -80,7 +80,7 @@
   gap: 0.75rem;
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border);
-  flex-shrink: 0; /* ← nunca encolhe */
+  flex-shrink: 0;
 }
 
 @media (max-width: 480px) {

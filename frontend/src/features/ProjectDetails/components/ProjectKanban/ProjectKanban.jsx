@@ -49,7 +49,6 @@ export function ProjectKanban({ projectId, permissions }) {
     setPopup({ message, id });
   }, []);
 
-  // --- 1. Buscar Dados Iniciais ---
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -264,8 +263,8 @@ export function ProjectKanban({ projectId, permissions }) {
                     )
                   }
                   title={`${user.name}`}
-                  className={`${styles.filterAvatar} 
-                    ${filterAssignee === user.id ? styles.activeAvatar : ""} 
+                  className={`${styles.filterAvatar}
+                    ${filterAssignee === user.id ? styles.activeAvatar : ""}
                     ${filterAssignee !== null && filterAssignee !== user.id ? styles.inactiveAvatar : ""}`}
                 >
                   {user.photo ? (
@@ -284,8 +283,8 @@ export function ProjectKanban({ projectId, permissions }) {
                     )
                   }
                   title="Não Atribuído"
-                  className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
-                    ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
+                  className={`${styles.filterAvatar} ${styles.unassignedAvatar}
+                    ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""}
                     ${filterAssignee !== null && filterAssignee !== "UNASSIGNED" ? styles.inactiveAvatar : ""}`}
                 >
                   ?

@@ -42,7 +42,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             first_name=validated_data.get("first_name", ""),
             last_name=validated_data.get("last_name", ""),
             email=validated_data.get("email", ""),
-            password=validated_data["password"],     
+            password=validated_data["password"],
         )
         return user
 
@@ -424,10 +424,10 @@ class SprintsSerializer(serializers.ModelSerializer):
             "id",
             "project",
             "name",
-            "goal",           # <- Adicionado
+            "goal",
             "start_date",
             "end_date",
-            "status",         # <- Novo campo no lugar do is_active
-            "status_display", # <- Bônus
+            "status",
+            "status_display",
             "activities_count",
         ]

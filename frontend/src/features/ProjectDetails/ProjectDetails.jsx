@@ -41,13 +41,12 @@ const TABS = [
   { key: "milestones", label: "Cronograma", component: ProjectTimeline },
   { key: "kanban", label: "Kanban", component: ProjectKanban },
   { key: "Scrum", label: "Scrum", component: ProjectScrum },
-  { key: "burnup", label: "Burnup", component: ProjectBurnup }, 
+  { key: "burnup", label: "Burnup", component: ProjectBurnup },
 ];
 
 export function ProjectDetails() {
   const { id } = useParams();
   const { user } = useAuth();
-  // console.log("DADOS DO USUÁRIO LOGADO:", user);
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("canvas");

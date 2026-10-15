@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8fafc; /* Cinza bem clarinho */
+  background-color: #f8fafc;
 }
 
 .loginForm {
@@ -16,14 +16,14 @@
 }
 
 .loginForm h1 {
-  color: #1e293b; /* Azul quase preto */
+  color: #1e293b;
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .loginForm h2 {
-  color: #64748b; /* Cinza médio */
+  color: #64748b;
   font-size: 0.9rem;
   font-weight: 400;
   text-align: center;

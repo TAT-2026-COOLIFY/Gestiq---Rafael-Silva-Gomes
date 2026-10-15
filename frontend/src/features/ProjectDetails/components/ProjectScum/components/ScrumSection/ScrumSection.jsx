@@ -17,7 +17,6 @@ export function ScrumSection({
   finishedSprintIds,
   onOpenSettings,
 }) {
-  // Calcula os Story Points por status exclusivamente para as tarefas desta seção
   const spSums = useMemo(() => {
     const sums = { PLAN: 0, DOING: 0, REVIEW: 0, DONE: 0 };
     tasks.forEach((task) => {
@@ -47,7 +46,6 @@ export function ScrumSection({
             </button>
           )}
 
-          {/* 👇 Bolinhas minimalistas coloridas (só aparecem se o valor for maior que 0) */}
           <div className={styles.indicators}>
             {spSums.PLAN > 0 && (
               <span

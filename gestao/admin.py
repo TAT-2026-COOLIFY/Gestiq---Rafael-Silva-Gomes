@@ -13,11 +13,6 @@ from .models import (
     Sprints,
 )
 
-# -------------------------------------------------------------------------
-# INLINES (Isso faz o Canvas e Membros aparecerem DENTRO da tela do Projeto)
-# -------------------------------------------------------------------------
-
-
 class CanvasInline(admin.StackedInline):
     model = Canvas
     extra = 0
@@ -38,11 +33,6 @@ class MilestonesInline(admin.TabularInline):
 class SprintsInline(admin.TabularInline):
     model = Sprints
     extra = 0
-
-
-# -------------------------------------------------------------------------
-# ADMINS PRINCIPAIS
-# -------------------------------------------------------------------------
 
 
 @admin.register(UsersProfile)
@@ -76,16 +66,12 @@ class ProjectsAdmin(admin.ModelAdmin):
 
     list_filter = ("project_status", "project_type", "area", "category")
 
-    # Barra de pesquisa (Busca por nome do projeto ou nome do líder)
     search_fields = ("name", "project_manager__username", "leader__username")
 
-    # Campos que são apenas leitura (automáticos)
     readonly_fields = ("create_date", "total_percentage_real", "total_percentage_plan")
 
-    # Aqui ativamos os Inlines que criamos lá em cima
     inlines = [CanvasInline, ProjectMembersInline, MilestonesInline, SprintsInline]
 
-    # Paginação (se tiver muitos projetos)
     list_per_page = 20
 
     actions = ["delete_selected"]
@@ -107,7 +93,6 @@ class CommunicationsAdmin(admin.ModelAdmin):
     list_filter = ("channel", "frequency", "project")
     search_fields = ("description", "project__name")
 
-    # Truque para não mostrar a descrição inteira na lista se for gigante
     def short_description(self, obj):
         return (
             obj.description[:50] + "..."
@@ -132,7 +117,6 @@ class RisksAdmin(admin.ModelAdmin):
     list_filter = ("status", "category", "action", "project")
     search_fields = ("description", "project__name")
 
-    # Mostra o score calculado como apenas leitura (já que é automático no save)
     readonly_fields = ("score", "create_date")
 
 

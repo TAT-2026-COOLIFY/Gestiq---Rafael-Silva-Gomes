@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import api from "@/services/api";
-import { generateBurnupData } from "@/utils/burnupUtils"; // 👈 Lembre-se de criar aquele arquivo Utils!
+import { generateBurnupData } from "@/utils/burnupUtils";
 import { BURNUP_CHANGED_EVENT } from "@/utils/burnupEvents";
 import { Loading } from "@/components/Loading/Loading";
 import styles from "./ProjectBurnup.module.css";
@@ -20,7 +20,6 @@ export function ProjectBurnup({ projectId }) {
   const [sprintTasks, setSprintTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Busca apenas a Sprint Ativa e as tarefas atreladas a ela
   const fetchData = useCallback(async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -71,7 +70,6 @@ export function ProjectBurnup({ projectId }) {
     };
   }, [fetchData, projectId]);
 
-  // Gera os pontos do gráfico usando o arquivo Utils
   const data = useMemo(() => {
     return generateBurnupData(currentSprint, sprintTasks);
   }, [currentSprint, sprintTasks]);

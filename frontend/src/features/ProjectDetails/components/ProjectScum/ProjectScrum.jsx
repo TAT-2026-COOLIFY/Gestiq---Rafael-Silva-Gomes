@@ -203,7 +203,7 @@ export function ProjectScrum({ projectId, permissions }) {
   };
 
   const handleSaveSprint = async (form) => {
-    if (!canCreateSprint) return; // Trava de segurança
+    if (!canCreateSprint) return;
     setSavingSprint(true);
 
     try {
@@ -216,11 +216,9 @@ export function ProjectScrum({ projectId, permissions }) {
       };
 
       if (isEditingSprint) {
-        // Atualiza a sprint existente
         await api.patch(`sprints/${currentSprint.id}/`, payload);
         showToast("Sprint atualizada com sucesso!", "success");
       } else {
-        // Cria uma nova (adicionando o status PLANNED)
         payload.status = "PLANNED";
         await api.post("sprints/", payload);
         showToast("Sprint criada com sucesso!", "success");
@@ -441,8 +439,8 @@ export function ProjectScrum({ projectId, permissions }) {
                   )
                 }
                 title={user.name}
-                className={`${styles.filterAvatar} 
-                  ${filterAssignee === user.id ? styles.activeAvatar : ""} 
+                className={`${styles.filterAvatar}
+                  ${filterAssignee === user.id ? styles.activeAvatar : ""}
                   ${filterAssignee !== null && filterAssignee !== user.id ? styles.inactiveAvatar : ""}`}
               >
                 {user.photo ? (
@@ -461,8 +459,8 @@ export function ProjectScrum({ projectId, permissions }) {
                   )
                 }
                 title="Não Atribuído"
-                className={`${styles.filterAvatar} ${styles.unassignedAvatar} 
-                  ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""} 
+                className={`${styles.filterAvatar} ${styles.unassignedAvatar}
+                  ${filterAssignee === "UNASSIGNED" ? styles.activeAvatar : ""}
                   ${filterAssignee !== null && filterAssignee !== "UNASSIGNED" ? styles.inactiveAvatar : ""}`}
               >
                 ?

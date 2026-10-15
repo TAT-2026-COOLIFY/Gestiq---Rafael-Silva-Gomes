@@ -217,14 +217,14 @@
   border-radius: 8px;
 }
 
-/* --- ALINHAMENTO DO CABEÇALHO --- */
+
 .headerLeft {
   display: flex;
   align-items: center;
   gap: 24px;
 }
 
-/* --- FILTRO DE AVATARES --- */
+
 .filterGroup {
   display: flex;
   align-items: center;
@@ -274,14 +274,14 @@
   background-color: #f8fafc;
 }
 
-/* Efeito quando um filtro está clicado */
+
 .activeAvatar {
-  border-color: #2563eb; /* Azul para destacar o selecionado */
+  border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
   transform: scale(1.1);
 }
 
-/* Efeito nos outros avatares que não estão selecionados */
+
 .inactiveAvatar {
   opacity: 0.4;
   filter: grayscale(100%);

@@ -38,7 +38,6 @@ export function ProjectCard({ project }) {
           <span className={styles.progressLabel}>
             <strong style={{ color: progressColor }}>{realProgress}% Concluído</strong>{" "}
           </span>
-          {/* <span className={styles.planLabel}>({planProgress}% do tempo)</span> */}
         </div>
 
         <div className={styles.progressBar}>

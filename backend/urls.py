@@ -40,6 +40,7 @@ router.register(r"milestones", views.MilestonesViewSet, basename="milestone")
 router.register(r"sprints", views.SprintsViewSet, basename="sprint")
 
 urlpatterns = [
+    path("api/health/", views.HealthCheckView.as_view(), name="health-check"),
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

@@ -1,0 +1,67 @@
+name: Validar e publicar no Coolify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validar Django e React
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências do backend
+        run: pip install -r requirements.txt
+
+      - name: Validar migrações
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Executar testes do backend
+        run: python manage.py test
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependências do frontend
+        working-directory: frontend
+        run: npm ci
+
+      - name: Compilar o frontend
+        working-directory: frontend
+        run: npm run build
+
+  deploy:
+    name: Publicar no Coolify
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Acionar o deploy no Coolify
+        env:
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: |
+          curl --fail-with-body --request POST \
+            --url "$COOLIFY_WEBHOOK" \
+            --header "Authorization: Bearer $COOLIFY_TOKEN"
